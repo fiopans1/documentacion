@@ -185,3 +185,154 @@ Un Bean es un componente o un elemento de Spring, una instancia de un componente
 
 ## Métodos HTTP:
 En Spring tenemos las notaciones para los métodos HTTP, tenemos @RequestMapping(donde tenemos que especificar luego la operación), @GetMapping, @PostMapping, @PutMapping, @DeleteMapping
+
+## INYECCION DE DEPENDENCIAS:
+La **inyección de dependencias** en Spring Boot es una técnica de diseño de software que permite gestionar las dependencias entre objetos de manera automática y controlada. En lugar de que un objeto cree o gestione directamente sus dependencias, el framework de Spring las proporciona cuando el objeto las necesita. Esto ayuda a reducir el acoplamiento y facilita el mantenimiento, las pruebas, y la reutilización del código.
+
+### Conceptos clave:
+
+1. **Inversión de Control (IoC)**: En lugar de que una clase sea responsable de instanciar sus dependencias, Spring Boot toma el control de esta tarea. Esto se conoce como Inversión de Control, ya que el flujo de la dependencia se invierte y se maneja externamente.
+  
+2. **Contenedor de Spring**: Spring Boot utiliza un contenedor IoC que crea y administra los objetos, llamados *beans*, a lo largo del ciclo de vida de la aplicación. Cuando se necesita un bean, el contenedor se encarga de proporcionarlo.
+
+3. **Anotaciones comunes**:
+   - `@Autowired`: Se usa para marcar una dependencia en una clase. Spring Boot busca automáticamente un bean compatible en el contenedor y lo inyecta en la clase.
+   - `@Component`, `@Service`, `@Repository`, `@Controller`: Estas anotaciones indican que una clase debe ser gestionada como un bean de Spring, y el contenedor la detectará automáticamente.
+
+### Tipos de inyección:
+
+- **Inyección por constructor**: La inyección se realiza a través del constructor de la clase. Es el método recomendado ya que garantiza que el objeto esté completamente inicializado al crearse.
+  
+- **Inyección por setter**: Usa métodos *setter* para inyectar dependencias. Este método se usa menos, pero permite la inyección de dependencias opcionales.
+
+### Ejemplo básico:
+Supongamos que tenemos una clase `CarService` que depende de `EngineService`:
+
+```java
+@Service
+public class CarService {
+    
+    private final EngineService engineService;
+
+    @Autowired
+    public CarService(EngineService engineService) { 
+        this.engineService = engineService; 
+    }
+    
+    public void startCar() {
+        engineService.startEngine();
+    }
+}
+```
+
+Aquí, Spring Boot se encarga de crear y gestionar la instancia de `EngineService` y la inyecta en `CarService` a través del constructor, gracias a la anotación `@Autowired`.
+
+### Ventajas:
+- **Desacoplamiento**: Las clases dependen de interfaces, no de implementaciones específicas.
+- **Facilidad de pruebas**: Las dependencias se pueden cambiar o simular fácilmente, lo cual facilita las pruebas unitarias.
+- **Mantenimiento y escalabilidad**: Los cambios en una dependencia no afectan directamente a otras clases, lo cual simplifica la gestión y el crecimiento del proyecto.
+
+En resumen, la inyección de dependencias en Spring Boot permite que el contenedor IoC de Spring gestione automáticamente las dependencias entre objetos, promoviendo un diseño de código modular, mantenible y fácilmente testable.
+
+Spring tiene la notación @Autowired, que es una de las anotaciones más habituales cuanod trabajamos con Spring Framework ya que se trata de la anotación que permite inyectar unas dependencias con otras dentro de Spring. 
+
+Otra forma de hacerlo es con:
+
+Por supuesto, en Spring Boot, también se puede usar `@Autowired` directamente en la declaración del atributo. En este caso, no es necesario un constructor o método *setter* para la inyección de dependencias. Spring Boot automáticamente inyectará la dependencia en el atributo marcado con `@Autowired`.
+
+### Ejemplo básico:
+
+Supongamos que tenemos una clase `CarService` que depende de `EngineService`. Aquí inyectaremos `EngineService` directamente en la declaración del atributo usando `@Autowired`:
+
+```java
+@Service
+public class CarService {
+
+    @Autowired
+    private EngineService engineService;
+
+    public void startCar() {
+        engineService.startEngine();
+    }
+}
+```
+
+### Explicación:
+
+- La anotación `@Autowired` en la declaración del atributo `engineService` indica a Spring que debe inyectar automáticamente un bean de tipo `EngineService` cuando se crea una instancia de `CarService`.
+- El contenedor de Spring busca un bean de tipo `EngineService` y lo inyecta en `CarService` sin necesidad de un constructor o un método *setter*.
+
+### Consideraciones:
+
+Aunque esta forma es válida y sencilla, la **inyección por constructor** suele ser preferida porque:
+1. Facilita el diseño de clases inmutables.
+2. Permite que las dependencias se verifiquen en el momento de la creación del objeto.
+3. Es más adecuada para las pruebas unitarias, ya que permite inyectar dependencias en el constructor al crear instancias en pruebas.
+
+Aun así, la inyección en la declaración del atributo es útil en aplicaciones pequeñas y casos en los que se necesita simplicidad.
+
+Ambas formas son válidas, aunque el primer ejemplo es más estricto.
+Para que una clase se pueda instanciar y usar con `@Autowired` en Spring Boot, es necesario que la clase cumpla con algunos requisitos básicos. Aquí están los elementos que necesita:
+
+### 1. Ser un **bean gestionado por el contenedor de Spring**
+   La clase debe estar marcada con una anotación que indique al contenedor de Spring que debe gestionarla como un *bean*. Las anotaciones más comunes son:
+
+   - `@Component`: Para clases genéricas.
+   - `@Service`: Para clases que implementan lógica de negocio.
+   - `@Repository`: Para clases de acceso a datos (DAO).
+   - `@Controller` o `@RestController`: Para clases que actúan como controladores en aplicaciones web.
+
+   Estas anotaciones hacen que Spring detecte automáticamente la clase y la registre en su contenedor IoC (Inversión de Control).
+
+   ```java
+   @Service
+   public class EngineService {
+       public void startEngine() {
+           System.out.println("Engine started!");
+       }
+   }
+   ```
+
+### 2. **Estar dentro de un paquete escaneado por Spring Boot**
+   Spring Boot escanea por defecto el paquete donde está la clase principal (aquella con `@SpringBootApplication`) y todos los subpaquetes de esta. Por lo tanto, la clase con `@Component`, `@Service`, etc., debe estar en el mismo paquete o en uno de los subpaquetes de la clase principal.
+
+   Si la clase está en un paquete distinto, se puede usar `@ComponentScan` en la clase principal para que Spring busque beans en otros paquetes.
+
+   ```java
+   @SpringBootApplication
+   @ComponentScan(basePackages = "com.example.otherpackage") // Si está en otro paquete
+   public class MySpringBootApplication {
+       public static void main(String[] args) {
+           SpringApplication.run(MySpringBootApplication.class, args);
+       }
+   }
+   ```
+
+### 3. Tener un **constructor público** (o el constructor predeterminado si no hay uno definido)
+   Spring necesita acceso a un constructor para instanciar la clase. Aunque en la mayoría de los casos, Spring usará el constructor sin parámetros, también puede usar un constructor con parámetros para inyección de dependencias (inyección por constructor).
+
+   ```java
+   @Service
+   public class CarService {
+
+       private final EngineService engineService;
+
+       // Inyección de dependencia por constructor
+       @Autowired
+       public CarService(EngineService engineService) {
+           this.engineService = engineService;
+       }
+
+       public void startCar() {
+           engineService.startEngine();
+       }
+   }
+   ```
+
+### 4. Tener una dependencia compatible disponible en el contenedor de Spring
+   La clase que deseas inyectar (por ejemplo, `EngineService`) también debe ser un bean gestionado por Spring. Esto significa que `EngineService` también debe estar anotada con `@Component`, `@Service`, o una anotación similar, para que el contenedor IoC pueda instanciarla y gestionarla.
+
+En resumen, para que una clase se pueda inyectar con `@Autowired`, debe ser un *bean* de Spring (anotado con `@Component`, `@Service`, etc.), estar en un paquete escaneado y tener un constructor público accesible.
+
+## PERSISTENCIA DE DATOS:
+min 2:09
