@@ -579,3 +579,816 @@ docker network rm <red>
 Elimina la red
 
 **IMPORTANTE**: El nombre del dominio de un contenedor va a ser el mismo que nosotros le asignamos cuando creamos el contenedor
+
+## DOCKER COMPOSE:
+
+**Docker Compose** es una herramienta que facilita la gestión de aplicaciones Docker de múltiples contenedores mediante un archivo de configuración YAML. Con Docker Compose, puedes definir, configurar y ejecutar todos los servicios necesarios para tu aplicación en un solo archivo, lo que simplifica la configuración, la escalabilidad y la reutilización.
+
+---
+
+### **¿Cómo funciona Docker Compose?**
+
+1. **Definición del entorno**:
+   - Usas un archivo llamado `docker-compose.yml` para describir:
+     - Contenedores que necesitas (servicios).
+     - Redes entre contenedores.
+     - Volúmenes para persistencia de datos.
+     - Configuración de variables de entorno.
+
+2. **Ejecución del entorno**:
+   - Con un solo comando (`docker-compose up`), Docker Compose:
+     - Crea redes personalizadas.
+     - Construye las imágenes (si es necesario).
+     - Inicia los contenedores definidos en el archivo.
+     - Conecta los contenedores entre sí automáticamente según la configuración.
+
+3. **Escalabilidad y limpieza**:
+   - Puedes escalar servicios fácilmente con `docker-compose up --scale`.
+   - Detener y eliminar los contenedores creados es simple con `docker-compose down`.
+
+---
+
+### **Estructura de un archivo `docker-compose.yml`**
+
+El archivo `docker-compose.yml` se estructura en varias secciones principales:
+
+1. **Version**:
+   - Define la versión del esquema de Compose (por ejemplo, `3.9` es común para versiones recientes).
+
+2. **Services**:
+   - Lista los contenedores o servicios que quieres desplegar.
+   - Cada servicio puede incluir:
+     - Imagen base.
+     - Construcción personalizada desde un `Dockerfile`.
+     - Puertos mapeados.
+     - Volúmenes montados.
+     - Variables de entorno.
+     - Dependencias de otros servicios.
+
+3. **Networks**:
+   - Define redes personalizadas que conectan los servicios.
+
+4. **Volumes**:
+   - Declara volúmenes para persistencia de datos.
+
+---
+
+### **Ejemplo completo: `docker-compose.yml`**
+
+Supongamos que quieres configurar una aplicación con una base de datos PostgreSQL y una aplicación web en Python con Flask.
+
+```yaml
+version: '3.9'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_URL=postgres://user:password@db:5432/mydb
+    depends_on:
+      - db
+
+  db:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
+```
+
+**Explicación**:
+- **`web`**:
+  - Construye un contenedor desde el `Dockerfile` en el directorio actual.
+  - Expone el puerto `5000` para que la aplicación sea accesible.
+  - Usa la variable de entorno `DATABASE_URL` para conectarse al servicio `db`.
+  - Declara una dependencia en el servicio `db` con `depends_on`.
+  
+- **`db`**:
+  - Usa una imagen oficial de PostgreSQL.
+  - Configura credenciales mediante variables de entorno.
+  - Monta un volumen para persistir los datos de la base de datos.
+
+- **`volumes`**:
+  - Declara un volumen llamado `pgdata` para que los datos de PostgreSQL persistan incluso si el contenedor es eliminado.
+
+---
+
+### **Comandos básicos de Docker Compose**
+
+1. **Iniciar los servicios**:
+   ```bash
+   docker-compose up
+   ```
+   - Inicia todos los servicios definidos en el archivo `docker-compose.yml`.
+   - Añade el flag `-d` para ejecutarlos en segundo plano:
+     ```bash
+     docker-compose up -d
+     ```
+
+2. **Detener los servicios**:
+   ```bash
+   docker-compose down
+   ```
+   - Detiene y elimina los contenedores, redes y volúmenes anónimos creados.
+
+3. **Ver logs de los servicios**:
+   ```bash
+   docker-compose logs
+   ```
+
+4. **Escalar servicios**:
+   ```bash
+   docker-compose up --scale web=3
+   ```
+   - Lanza 3 instancias del servicio `web`.
+
+5. **Reconstruir servicios**:
+   ```bash
+   docker-compose up --build
+   ```
+   - Vuelve a construir las imágenes antes de iniciar los servicios.
+
+---
+
+### **Ventajas de Docker Compose**
+
+1. **Simplicidad**: Un solo archivo gestiona múltiples contenedores, redes y volúmenes.
+2. **Reusabilidad**: Puedes compartir el archivo con otros desarrolladores o equipos.
+3. **Automatización**: Configura dependencias entre servicios fácilmente.
+4. **Escalabilidad**: Escalar servicios es tan simple como usar un comando.
+5. **Portabilidad**: La configuración es consistente en cualquier entorno que soporte Docker.
+
+---
+
+### **Ejemplo en la práctica**
+
+Imagina que tu proyecto tiene la siguiente estructura:
+```
+project/
+├── Dockerfile
+├── app.py
+├── requirements.txt
+├── docker-compose.yml
+```
+
+1. **Contenido del `Dockerfile`**:
+   ```dockerfile
+   FROM python:3.9-slim
+   WORKDIR /app
+   COPY requirements.txt .
+   RUN pip install -r requirements.txt
+   COPY . .
+   CMD ["python", "app.py"]
+   ```
+
+2. **Ejecutar la aplicación**:
+   ```bash
+   docker-compose up
+   ```
+
+Esto levantará tu aplicación Flask (`web`) y la base de datos PostgreSQL (`db`), conectándolos automáticamente.
+
+---
+
+Docker Compose es ideal para gestionar entornos de desarrollo complejos, permitiendo orquestar múltiples contenedores con facilidad.
+
+---
+Aquí tienes una plantilla genérica para un archivo `docker-compose.yml` que puedes personalizar según las necesidades de tu proyecto:
+
+```yaml
+version: '3.9'  # Esquema de versión, ajusta según sea necesario.
+
+services:
+  app:  # Nombre del servicio principal
+    image: app_image_name  # O usa "build" para construir desde un Dockerfile
+    build:
+      context: ./app  # Directorio donde está el Dockerfile
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"  # Mapea el puerto 80 del contenedor al 8080 del host
+    environment:  # Variables de entorno
+      - ENV_VAR1=value1
+      - ENV_VAR2=value2
+    volumes:
+      - ./app_data:/app/data  # Montaje de volumen: persistencia o uso local
+    depends_on:
+      - db  # Declara dependencias de otros servicios (opcional)
+
+  db:  # Servicio de base de datos
+    image: mysql:8.0  # Imagen de base de datos, cambia según el caso
+    ports:
+      - "3306:3306"  # Puerto para conectarse desde el host
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - db_data:/var/lib/mysql  # Persistencia para los datos de la base de datos
+
+  redis:  # Servicio adicional, como Redis para caching
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data  # Volumen persistente para Redis
+
+volumes:  # Volúmenes para persistencia
+  db_data:  # Volumen para la base de datos
+  redis_data:  # Volumen para Redis
+```
+
+---
+
+### **Cómo usar esta plantilla:**
+
+1. **Personaliza los servicios:**
+   - Cambia los nombres (`app`, `db`, `redis`) y las configuraciones según tus necesidades.
+   - Si tienes un `Dockerfile` para tu aplicación, especifica la ruta en `build`.
+
+2. **Ajusta los puertos:**
+   - Mapea los puertos que necesita cada servicio entre el contenedor y el host.
+
+3. **Define volúmenes:**
+   - Usa volúmenes para persistir datos, como bases de datos o cachés.
+
+4. **Ejecuta el entorno con Docker Compose:**
+   ```bash
+   docker-compose up
+   ```
+
+5. **Detén y elimina el entorno:**
+   ```bash
+   docker-compose down
+   ```
+
+---
+
+Esta plantilla es un punto de partida genérico. Puedes adaptarla para incluir redes personalizadas, configuraciones específicas para orquestadores como Kubernetes, o integrar otros servicios según tu proyecto.
+
+---
+## VOLUMENES:
+
+### **¿Qué son los volúmenes en Docker?**
+
+Los **volúmenes** en Docker son una forma de **persistir datos** generados y utilizados por los contenedores. Se usan para almacenar información fuera del sistema de archivos temporal de los contenedores, asegurando que los datos no se pierdan cuando un contenedor se detiene o elimina.
+
+---
+
+### **Características clave de los volúmenes**
+1. **Persistencia**:
+   - Los datos almacenados en un volumen permanecen incluso si el contenedor asociado se elimina.
+
+2. **Separación de datos**:
+   - Los volúmenes están desacoplados del sistema de archivos del contenedor, facilitando la gestión de datos y contenedores por separado.
+
+3. **Compatibilidad y rendimiento**:
+   - Están optimizados para trabajar con Docker, ofreciendo mejor rendimiento en comparación con el uso de bind mounts (montajes directos de carpetas del host).
+
+4. **Portabilidad**:
+   - Los volúmenes pueden moverse y ser utilizados por diferentes contenedores.
+
+---
+
+### **¿Por qué usar volúmenes?**
+1. **Persistir datos críticos**:
+   - Bases de datos, registros, archivos generados por la aplicación, etc.
+2. **Compartir datos entre contenedores**:
+   - Cuando varios contenedores necesitan acceder al mismo conjunto de datos.
+3. **Separar configuración del código**:
+   - Mantener configuraciones o datos de usuario fuera de la imagen del contenedor.
+
+---
+
+### **Tipos de volúmenes**
+
+1. **Volúmenes administrados por Docker**:
+   - Docker crea y administra el almacenamiento en su sistema interno.
+   - Son ideales para mantener datos sin preocuparse de la ubicación en el host.
+   - **Ejemplo de uso**:
+     ```bash
+     docker run -v my_volume:/data nginx
+     ```
+     Aquí, `my_volume` es un volumen gestionado por Docker, y `nginx` puede acceder a él desde `/data`.
+
+     Cuando ponemos volume:/ruta, ruta va a ser la ruta desde donde va a acceder el contenedor al volumen
+
+2. **Bind Mounts** (Montajes de directorios del host):
+   - Se vincula una carpeta específica del sistema operativo anfitrión con el contenedor.
+   - Son útiles cuando necesitas usar o sincronizar archivos desde tu máquina local.
+   - **Ejemplo de uso**:
+     ```bash
+     docker run -v /mi/carpeta/host:/data nginx
+     ```
+     Aquí, `/mi/carpeta/host` es una carpeta en el host que se monta en `/data` dentro del contenedor.
+
+3. **Volúmenes temporales (`tmpfs`)**:
+   - Se crean en la RAM del host, desapareciendo al detener el contenedor.
+   - Ideales para datos sensibles o temporales.
+   - **Ejemplo de uso**:
+     ```bash
+     docker run --tmpfs /data nginx
+     ```
+
+---
+
+### **Cómo trabajar con volúmenes**
+
+#### 1. Crear un volumen manualmente:
+```bash
+docker volume create mi_volumen
+```
+
+#### 2. Usar el volumen al iniciar un contenedor:
+```bash
+docker run -v mi_volumen:/data nginx
+```
+
+#### 3. Ver volúmenes existentes:
+```bash
+docker volume ls
+```
+
+#### 4. Inspeccionar detalles de un volumen:
+```bash
+docker volume inspect mi_volumen
+```
+
+#### 5. Eliminar un volumen:
+```bash
+docker volume rm mi_volumen
+```
+
+---
+
+### **Volúmenes en Docker Compose**
+
+En **Docker Compose**, puedes declarar volúmenes en la sección `volumes` y asignarlos a servicios. Ejemplo:
+
+```yaml
+version: '3.9'
+
+services:
+  app:
+    image: nginx
+    volumes:
+      - mi_volumen:/data
+
+volumes:
+  mi_volumen:  # Declaración del volumen
+```
+
+---
+
+### **Ventajas de los volúmenes sobre bind mounts**
+1. Más seguros: Docker administra su ciclo de vida y acceso.
+2. Más portables: Pueden usarse independientemente del sistema operativo anfitrión.
+3. Optimizados para Docker: Mejoran el rendimiento en aplicaciones críticas.
+
+---
+
+### **Resumen**
+Los **volúmenes** son esenciales para aplicaciones Docker que necesitan persistir datos o compartirlos entre contenedores. Usarlos correctamente mejora la robustez y flexibilidad de tu entorno.
+
+---
+En Docker, **puedes asignar un volumen a varios contenedores** para que compartan datos. Esto es útil en casos como:
+
+- Compartir archivos de configuración entre servicios.
+- Acceder a los mismos datos desde diferentes aplicaciones.
+- Crear un flujo de trabajo donde un contenedor genera datos y otro los procesa.
+
+---
+
+### **Cómo asignar un volumen a varios contenedores**
+
+#### 1. **Definir y compartir un volumen en Docker CLI**
+
+Un volumen puede ser creado manualmente o automáticamente cuando lo asignas a un contenedor. Luego, puedes usar el mismo volumen en múltiples contenedores.
+
+#### Ejemplo:
+```bash
+# Crear un volumen (opcional, Docker lo crea automáticamente si no existe)
+docker volume create mi_volumen
+
+# Iniciar el primer contenedor con el volumen
+docker run -d --name contenedor1 -v mi_volumen:/app/data nginx
+
+# Iniciar el segundo contenedor usando el mismo volumen
+docker run -d --name contenedor2 -v mi_volumen:/app/data alpine sleep 3600
+```
+
+En este caso:
+- Ambos contenedores (`contenedor1` y `contenedor2`) comparten el volumen `mi_volumen`, que está montado en `/app/data`.
+- Los cambios realizados por uno en `/app/data` serán visibles para el otro.
+
+---
+
+#### 2. **Definir un volumen compartido en Docker Compose**
+
+Con Docker Compose, puedes asignar un volumen compartido a múltiples servicios.
+
+#### Ejemplo `docker-compose.yml`:
+```yaml
+version: '3.9'
+
+services:
+  app1:
+    image: nginx
+    volumes:
+      - datos_compartidos:/app/data
+
+  app2:
+    image: alpine
+    command: sleep 3600
+    volumes:
+      - datos_compartidos:/app/data
+
+volumes:
+  datos_compartidos:
+```
+
+En este caso:
+- El volumen `datos_compartidos` es usado por ambos servicios (`app1` y `app2`).
+- Los datos creados/modificados en `/app/data` por uno estarán disponibles para el otro.
+
+Ejecuta:
+```bash
+docker-compose up
+```
+
+---
+
+### **Consideraciones al compartir volúmenes**
+
+1. **Sincronización de datos**:
+   - Los contenedores tienen acceso concurrente al volumen, por lo que pueden leer y escribir datos simultáneamente.
+   - Asegúrate de que tu aplicación pueda manejar este acceso concurrente.
+
+2. **Diferentes rutas de montaje**:
+   - Puedes montar el mismo volumen en diferentes rutas dentro de los contenedores.
+   ```bash
+   docker run -d --name contenedor1 -v mi_volumen:/app/data nginx
+   docker run -d --name contenedor2 -v mi_volumen:/config alpine
+   ```
+
+3. **Restricciones de acceso**:
+   - Si necesitas que un contenedor solo pueda **leer** los datos, puedes usar la opción `:ro` (read-only).
+   ```bash
+   docker run -d --name contenedor2 -v mi_volumen:/app/data:ro alpine
+   ```
+
+   En este caso, `contenedor2` solo puede leer los datos, no escribirlos.
+
+---
+
+### **Uso típico: Procesamiento colaborativo**
+
+Un ejemplo práctico:
+1. **Un contenedor genera datos**:
+   - Un servidor de logs escribe registros en el volumen.
+2. **Otro contenedor los procesa**:
+   - Una aplicación de análisis lee esos registros desde el mismo volumen.
+
+```bash
+docker run -d --name log_server -v logs:/var/log nginx
+docker run -d --name log_processor -v logs:/logs alpine
+```
+
+El contenedor `log_processor` puede procesar los registros generados por `log_server` porque ambos comparten el volumen `logs`.
+
+---
+
+### **Resumen**
+
+- **Sí, un volumen puede ser asignado a múltiples contenedores.**
+- **Cómo hacerlo**:
+  - Usando la opción `-v` en CLI o `volumes` en Docker Compose.
+- Los datos se comparten y sincronizan automáticamente entre los contenedores.
+- Puedes controlar el acceso con configuraciones como `:ro` para lectura únicamente.
+
+Esto simplifica la colaboración entre contenedores y permite arquitecturas modulares.
+
+---
+
+Y si te lo estás preguntando, sí, puedes usar el mismo volumen y montarlo en rutas diferentes dentro de distintos contenedores. Esto es completamente válido en Docker. Cada contenedor verá el contenido del volumen en la ruta que hayas especificado, pero internamente estarán compartiendo los mismos datos.
+
+---
+
+### **Ejemplo en Docker CLI**
+
+Supongamos que tienes un volumen llamado `mi_volumen`:
+
+1. **Crear el volumen** (opcional, Docker lo crea automáticamente si no existe):
+   ```bash
+   docker volume create mi_volumen
+   ```
+
+2. **Montar el volumen en diferentes rutas en distintos contenedores**:
+
+   - Contenedor 1: monta `mi_volumen` en `/ruta1`.
+   ```bash
+   docker run -d --name contenedor1 -v mi_volumen:/ruta1 nginx
+   ```
+
+   - Contenedor 2: monta `mi_volumen` en `/ruta2`.
+   ```bash
+   docker run -d --name contenedor2 -v mi_volumen:/ruta2 alpine sleep 3600
+   ```
+
+   Ahora:
+   - Los datos que se escriban en `/ruta1` en `contenedor1` estarán disponibles en `/ruta2` en `contenedor2` (y viceversa).
+   - La ruta de montaje dentro del contenedor no afecta el contenido del volumen compartido.
+
+---
+
+### **Ejemplo con Docker Compose**
+
+En Docker Compose, puedes lograr lo mismo definiendo un volumen compartido y especificando rutas de montaje diferentes para cada servicio.
+
+```yaml
+version: '3.9'
+
+services:
+  servicio1:
+    image: nginx
+    volumes:
+      - mi_volumen:/ruta1
+
+  servicio2:
+    image: alpine
+    command: sleep 3600
+    volumes:
+      - mi_volumen:/ruta2
+
+volumes:
+  mi_volumen:
+```
+
+1. Crea y ejecuta el entorno:
+   ```bash
+   docker-compose up
+   ```
+
+2. Los servicios `servicio1` y `servicio2` comparten el volumen `mi_volumen`, pero tienen diferentes rutas internas (`/ruta1` y `/ruta2`, respectivamente).
+
+---
+
+### **¿Qué pasa con los datos?**
+
+- Si `servicio1` escribe un archivo en `/ruta1/archivo.txt`, `servicio2` podrá acceder a ese archivo en `/ruta2/archivo.txt`.
+- La ruta de montaje solo define dónde dentro del contenedor estará disponible el volumen, pero el contenido del volumen es el mismo para ambos contenedores.
+
+---
+
+### **Casos de uso comunes**
+
+1. **Organización por roles**:
+   - Un contenedor almacena datos en una carpeta estructurada (`/ruta1`), mientras que otro accede a una parte de los datos desde una carpeta diferente (`/ruta2`).
+
+2. **Separación lógica de tareas**:
+   - Por ejemplo, un contenedor podría generar logs en `/ruta1`, mientras otro contenedor los procesa desde `/ruta2`.
+
+---
+
+### **Resumen**
+
+- Puedes usar un mismo volumen con rutas de montaje diferentes en distintos contenedores.
+- La ruta de montaje afecta únicamente al contenedor, pero los datos subyacentes son los mismos.
+- Esto es útil para organizar tareas y compartir datos de manera flexible.
+
+---
+**Y puedo enlazarlo y acceder desde mi host a dichos archivos?**
+
+Sí, puedes enlazar un volumen Docker a una carpeta en tu host utilizando **bind mounts**, lo que permite que los archivos sean accesibles tanto desde los contenedores como directamente desde tu sistema host. Esto es especialmente útil para desarrollo, depuración o casos donde necesitas procesar los datos fuera del contenedor.
+
+---
+
+### **Cómo hacerlo**
+
+#### 1. **Usando Docker CLI**
+Puedes vincular una carpeta del host al volumen montado dentro del contenedor utilizando la opción `-v` o `--mount`.
+
+```bash
+docker run -d \
+  --name contenedor1 \
+  -v /mi/carpeta/host:/ruta1 \
+  nginx
+```
+
+#### Explicación:
+- `/mi/carpeta/host`: Es la carpeta en el host donde estarán los archivos.
+- `/ruta1`: Es la ruta en el contenedor donde se monta la carpeta del host.
+- Cualquier archivo creado/modificado en `/ruta1` dentro del contenedor estará visible en `/mi/carpeta/host` en tu máquina local, y viceversa.
+
+---
+
+#### 2. **Usando Docker Compose**
+
+En Docker Compose, puedes especificar una carpeta del host directamente en la sección `volumes`.
+
+```yaml
+version: '3.9'
+
+services:
+  servicio1:
+    image: nginx
+    volumes:
+      - /mi/carpeta/host:/ruta1
+
+  servicio2:
+    image: alpine
+    command: sleep 3600
+    volumes:
+      - /mi/carpeta/host:/ruta2
+```
+
+1. Ejecuta:
+   ```bash
+   docker-compose up
+   ```
+
+2. Ahora:
+   - La carpeta `/mi/carpeta/host` de tu sistema estará accesible como `/ruta1` en `servicio1` y como `/ruta2` en `servicio2`.
+   - Los cambios hechos en los archivos desde cualquier contenedor o el host estarán sincronizados.
+
+---
+
+### **Acceso desde el host**
+
+1. Ve directamente a la carpeta del host vinculada, por ejemplo:
+   ```bash
+   cd /mi/carpeta/host
+   ls
+   ```
+
+2. Cualquier archivo creado dentro del contenedor aparecerá aquí, y viceversa.
+
+---
+
+### **Precauciones**
+
+1. **Permisos**:
+   - Asegúrate de que los permisos de la carpeta en el host permiten que Docker y los contenedores lean y escriban.
+   - Usa `chmod` o `chown` si es necesario:
+     ```bash
+     chmod 777 /mi/carpeta/host
+     ```
+
+2. **Consistencia de datos**:
+   - Si varios contenedores acceden al volumen y lo editan simultáneamente, podría haber conflictos. Considera usar aplicaciones diseñadas para manejo concurrente.
+
+3. **Portabilidad**:
+   - Si mapeas una carpeta del host directamente, tu configuración podría no ser portátil a otras máquinas (ya que las rutas en el host podrían diferir). Usa volúmenes de Docker si necesitas más portabilidad.
+
+---
+
+### **Ejemplo práctico**
+
+Supongamos que tienes un servidor Nginx y quieres que sus archivos de configuración sean editables desde el host:
+
+1. **Crea la carpeta en el host**:
+   ```bash
+   mkdir -p /mi/nginx/conf
+   echo "Configuración personalizada" > /mi/nginx/conf/default.conf
+   ```
+
+2. **Ejecuta el contenedor**:
+   ```bash
+   docker run -d \
+     --name mi_nginx \
+     -v /mi/nginx/conf:/etc/nginx/conf.d \
+     -p 8080:80 \
+     nginx
+   ```
+
+3. **Accede y modifica desde el host**:
+   - Edita `/mi/nginx/conf/default.conf` y el cambio será reflejado inmediatamente en el contenedor.
+
+4. **Prueba desde un navegador**:
+   - Visita `http://localhost:8080` y verifica que tu configuración funciona.
+
+---
+
+### **Resumen**
+
+- Puedes acceder a los archivos de un volumen Docker desde tu host usando bind mounts.
+- Define una carpeta del host para sincronizarla con una ruta en el contenedor.
+- Los cambios son visibles y editables tanto desde el contenedor como desde el host.
+- Es ideal para desarrollo y debugging, pero asegúrate de manejar permisos y evitar conflictos en accesos concurrentes.
+
+---
+### PLANTILLA DOCKER COMPOSE CON VOLUMES:
+
+Aquí tienes una plantilla genérica de un archivo `docker-compose.yml` que incluye la configuración de **volúmenes**:
+
+```yaml
+version: '3.9'  # Esquema de versión, ajusta según la compatibilidad de tu entorno.
+
+services:
+  app:
+    image: nginx  # Imagen del servicio principal
+    ports:
+      - "8080:80"  # Mapea el puerto 80 del contenedor al 8080 del host
+    volumes:
+      - app_data:/usr/share/nginx/html  # Volumen gestionado por Docker
+      - ./config/nginx:/etc/nginx/conf.d  # Bind mount para compartir archivos desde el host
+    depends_on:
+      - db  # Espera que el servicio db esté listo antes de arrancar
+
+  db:
+    image: mysql:8.0  # Servicio de base de datos
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: my_database
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - db_data:/var/lib/mysql  # Volumen persistente para almacenar los datos
+
+volumes:
+  app_data:  # Volumen gestionado por Docker para la aplicación
+  db_data:   # Volumen gestionado por Docker para la base de datos
+```
+
+---
+
+### **Explicación de la plantilla**
+
+#### **Servicios**
+1. **`app`:**
+   - Es un servicio basado en la imagen `nginx`.
+   - Los volúmenes:
+     - `app_data` es un volumen gestionado por Docker donde se almacenan los archivos web.
+     - `./config/nginx` es un **bind mount** para compartir configuraciones de Nginx desde el host.
+
+2. **`db`:**
+   - Servicio basado en MySQL con configuración de variables de entorno.
+   - El volumen `db_data` asegura que los datos de la base de datos se mantengan persistentes incluso si el contenedor se elimina.
+
+#### **Volúmenes**
+- **`app_data`** y **`db_data`** son volúmenes gestionados por Docker que se declaran en la sección `volumes`.
+- Docker se encarga de crear y gestionar estos volúmenes automáticamente.
+
+---
+
+### **Comandos útiles**
+
+1. **Iniciar los servicios**:
+   ```bash
+   docker-compose up -d
+   ```
+
+2. **Listar los volúmenes creados por Docker Compose**:
+   ```bash
+   docker volume ls
+   ```
+
+3. **Ver detalles de un volumen**:
+   ```bash
+   docker volume inspect <nombre_del_volumen>
+   ```
+
+4. **Detener y eliminar los servicios (sin eliminar volúmenes)**:
+   ```bash
+   docker-compose down
+   ```
+
+5. **Eliminar volúmenes junto con los servicios**:
+   ```bash
+   docker-compose down --volumes
+   ```
+
+---
+
+### **Ampliaciones opcionales**
+
+1. **Montar múltiples carpetas desde el host**:
+   ```yaml
+   volumes:
+      - ./host_files:/container_files
+      - ./logs:/var/log/app
+   ```
+
+2. **Volumen de solo lectura**:
+   ```yaml
+   volumes:
+      - ./read_only_folder:/container_read_only:ro
+   ```
+
+3. **Personalizar las redes para conectar contenedores y host**:
+   ```yaml
+   networks:
+     my_network:
+       driver: bridge
+   ```
+
+Esta plantilla es personalizable y puede ampliarse según tus necesidades específicas.
