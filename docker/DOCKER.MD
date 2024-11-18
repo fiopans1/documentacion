@@ -1393,6 +1393,156 @@ volumes:
 
 Esta plantilla es personalizable y puede ampliarse según tus necesidades específicas.
 
+
+## PASAR ARGUMENTOS A UN DOCKER RUN
+
+Para **pasar argumentos a un contenedor Docker** al ejecutarlo con `docker run`, existen varias formas dependiendo de lo que desees hacer:
+
+### **1. Pasar argumentos al comando que se ejecuta dentro del contenedor**
+Puedes pasar argumentos directamente después de la imagen, y serán procesados por el comando que ejecuta el contenedor (ya sea el que defines en `ENTRYPOINT` o `CMD` del Dockerfile).
+
+```bash
+docker run <options> <image_name> <command> <arguments>
+```
+
+#### Ejemplo:
+```bash
+docker run ubuntu bash -c "echo $1" --soyunargumento
+```
+- **`--soyunargumento`** es el argumento que se pasa al contenedor.
+
+---
+
+### **2. Sobrescribir `ENTRYPOINT` o `CMD`**
+Si tu Dockerfile tiene un `ENTRYPOINT` o `CMD` definido, puedes sobrescribirlos al pasar argumentos adicionales al ejecutar el contenedor.
+
+#### Ejemplo Dockerfile:
+```Dockerfile
+ENTRYPOINT ["echo"]
+CMD ["Hello, world!"]
+```
+
+Al ejecutar:
+
+```bash
+docker run ubuntu --soyunargumento
+```
+- Sobrescribe el valor por defecto de `CMD` y pasa el argumento `--soyunargumento` al `echo`.
+
+---
+
+### **3. Pasar argumentos como variables de entorno**
+Puedes usar la opción `-e` para definir variables de entorno dentro del contenedor.
+
+```bash
+docker run -e MI_ARG="--soyunargumento" ubuntu bash -c "echo $MI_ARG"
+```
+
+- Aquí, `MI_ARG` es una variable de entorno que pasas al contenedor, y el contenedor imprime su valor.
+
+---
+
+### **Resumen rápido**:
+- **Argumentos al comando del contenedor**: `docker run <image_name> <command> <arguments>`
+- **Sobrescribir `ENTRYPOINT`/`CMD`**: Pasando nuevos argumentos directamente al ejecutar.
+- **Variables de entorno**: Usar `-e` para pasar valores al contenedor.
+
+¡Eso es todo! Así puedes pasar argumentos a tu contenedor Docker según tus necesidades.
+
+**En resumen si tú defines un comando en el entrypoint en el dockerfile, más adelante le puedes mandar argumentos en el docker run para complementar el comando del entrypoint, por ejemplo si en el entrypoint se ejecuta un script, tú luego en el docker run puedes mandarle argumentos que procesará ese script**
+
+`Si tengo un entrypoint en el dockerfile se sobreescribe si mando un comando en el docker run o solo si añado argumentos?`
+
+Si tienes un `ENTRYPOINT` definido en el **Dockerfile**, el **comando** que pasas en `docker run` **no lo sobrescribe** directamente. Sin embargo, el comportamiento depende de lo que pases al ejecutar el contenedor:
+
+### **1. Si solo pasas argumentos**:
+Cuando ejecutas `docker run` y solo pasas **argumentos**, el **`ENTRYPOINT`** del Dockerfile **se mantiene** y esos argumentos se agregan al comando definido en el `ENTRYPOINT`.
+
+#### Ejemplo:
+
+**Dockerfile**:
+```Dockerfile
+ENTRYPOINT ["echo"]
+```
+
+**Comando `docker run`**:
+```bash
+docker run ubuntu --soyunargumento
+```
+
+**Resultado**:
+El contenedor ejecutará el comando `echo` con el argumento `--soyunargumento`. El `ENTRYPOINT` no se sobrescribe, simplemente recibe los argumentos proporcionados.
+
+**Salida**:
+```
+--soyunargumento
+```
+
+---
+
+### **2. Si pasas un nuevo comando**:
+Si proporcionas un **comando** en el `docker run`, este **sobrescribirá el `ENTRYPOINT`** definido en el Dockerfile. El comando pasado reemplaza al `ENTRYPOINT`, y los argumentos se pasan a este nuevo comando.
+
+#### Ejemplo:
+
+**Dockerfile**:
+```Dockerfile
+ENTRYPOINT ["echo"]
+```
+
+**Comando `docker run`**:
+```bash
+docker run ubuntu bash -c "echo Hola Mundo"
+```
+
+**Resultado**:
+En este caso, el `ENTRYPOINT` que es `echo` se sobrescribe por el comando `bash -c "echo Hola Mundo"`. Esto ejecutará `bash`, no `echo`.
+
+**Salida**:
+```
+Hola Mundo
+```
+
+---
+
+### **3. Uso combinado de `ENTRYPOINT` y `CMD`**:
+- Si defines un **`ENTRYPOINT`** y **`CMD`** en el Dockerfile, **`CMD`** actúa como un argumento por defecto que se pasa al `ENTRYPOINT`.
+- Si pasas un comando o argumento en `docker run`, este sobrescribirá a `CMD`, pero no a `ENTRYPOINT`.
+
+#### Ejemplo Dockerfile:
+
+```Dockerfile
+ENTRYPOINT ["echo"]
+CMD ["Hola"]
+```
+
+**Comando `docker run`**:
+```bash
+docker run ubuntu --soyunargumento
+```
+
+**Resultado**:
+El `ENTRYPOINT` es `echo`, y el argumento por defecto es `Hola`, pero cuando pasas `--soyunargumento`, lo sobrescribes:
+
+**Salida**:
+```
+--soyunargumento
+```
+
+---
+
+### Resumen:
+
+1. **Si solo pasas argumentos**: Se añaden al `ENTRYPOINT`, pero **no sobrescriben** el comando.
+2. **Si pasas un comando** (por ejemplo, `bash`): El **`ENTRYPOINT` se sobrescribe** con el nuevo comando.
+3. **`CMD` es un valor por defecto**: Solo se usa si no pasas nada al ejecutar el contenedor.
+
+¡Espero que esto aclare cómo funciona el `ENTRYPOINT` y cómo se maneja en `docker run`! Si tienes más dudas, ¡aquí estoy para ayudarte!
+
+---
+---
+---
+
 ## NOTAS Y MÁS COMANDOS:
 
 **NOTA:** Si queremos pasar variables de entorno en docker build no es con -e, es con --build-arg (no persisten durate toda la imagen, solo durante la construcción)
@@ -1414,4 +1564,3 @@ Diferencias entre CMD y ENTRYPOINT
 | **Compatibilidad**           | Puede combinarse con `CMD` para agregar argumentos. | Se sobrescribe si `docker run` incluye un comando. |
 
 ---
-
