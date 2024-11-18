@@ -1392,3 +1392,26 @@ volumes:
    ```
 
 Esta plantilla es personalizable y puede ampliarse según tus necesidades específicas.
+
+## NOTAS Y MÁS COMANDOS:
+
+**NOTA:** Si queremos pasar variables de entorno en docker build no es con -e, es con --build-arg (no persisten durate toda la imagen, solo durante la construcción)
+
+---
+**NOTA:** Un `ENTRYPOINT` en un DOCKERFILE es una instrucción que define el comando principal que se ejecutará cuando se inciie un contenedor basado en la imagen creada.
+
+Las diferencias con CMD son las siguientes:
+
+
+Un **ENTRYPOINT** en un Dockerfile es una instrucción que define el comando principal que se ejecutará cuando se inicie un contenedor basado en la imagen creada. Este comando es el punto de entrada del contenedor, y generalmente se utiliza para especificar un proceso principal que siempre debe ejecutarse.
+
+
+Diferencias entre CMD y ENTRYPOINT
+| **Característica**          | **ENTRYPOINT**                             | **CMD**                                   |
+|------------------------------|--------------------------------------------|-------------------------------------------|
+| **Propósito**                | Define el comando principal fijo.          | Proporciona valores por defecto al contenedor. |
+| **Sobreescritura**           | Más rígido; no se sobreescribe fácilmente. | Puede ser reemplazado al ejecutar el contenedor. |
+| **Compatibilidad**           | Puede combinarse con `CMD` para agregar argumentos. | Se sobrescribe si `docker run` incluye un comando. |
+
+---
+
