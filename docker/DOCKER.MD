@@ -1539,6 +1539,74 @@ El `ENTRYPOINT` es `echo`, y el argumento por defecto es `Hola`, pero cuando pas
 
 ¡Espero que esto aclare cómo funciona el `ENTRYPOINT` y cómo se maneja en `docker run`! Si tienes más dudas, ¡aquí estoy para ayudarte!
 
+## CONECTARSE A UN CONTENEDOR:
+Para conectarte a un contenedor en Docker y poder interactuar con él, puedes usar el comando `docker exec` o `docker attach`, dependiendo de lo que necesites hacer.
+
+### **1. Conectarte a un contenedor en ejecución usando `docker exec`**
+
+Si deseas **ejecutar comandos** dentro de un contenedor en ejecución (por ejemplo, acceder a una terminal interactiva), puedes usar el comando `docker exec`.
+
+#### **Ejemplo:**
+
+```bash
+docker exec -it <container_id_or_name> bash
+```
+
+- **`-it`**: Esta opción permite que la terminal sea interactiva (`-i` para interactiva y `-t` para asignar una pseudo-terminal).
+- **`<container_id_or_name>`**: El ID o nombre del contenedor al que deseas conectarte.
+- **`bash`**: El comando que ejecutarás dentro del contenedor. Usualmente `bash` para acceder a la shell, pero puede ser `sh` si la imagen no tiene `bash`.
+
+#### **Ejemplo de uso:**
+
+```bash
+docker exec -it my_container bash
+```
+
+Esto abrirá una sesión interactiva en el contenedor con nombre `my_container`, permitiéndote ejecutar comandos dentro del mismo.
+
+### **2. Conectarte a un contenedor en ejecución usando `docker attach`**
+
+Si prefieres **adjuntarte** a la sesión principal del contenedor (en lugar de ejecutar nuevos comandos), puedes usar `docker attach`. Esto te conecta directamente al flujo de salida y entrada estándar del contenedor.
+
+#### **Ejemplo:**
+
+```bash
+docker attach <container_id_or_name>
+```
+
+- **`<container_id_or_name>`**: El ID o nombre del contenedor al que deseas conectarte.
+
+**Nota**: `docker attach` te lleva a la sesión principal del contenedor, lo que puede ser útil si el contenedor está ejecutando un programa interactivo.
+
+#### **Ejemplo de uso:**
+
+```bash
+docker attach my_container
+```
+
+Esto conectará tu terminal a la salida estándar del contenedor `my_container`. 
+
+### **3. Desconectarte de un contenedor sin detenerlo**
+
+Si usas `docker attach`, para salir de la sesión interactiva sin detener el contenedor, debes presionar `Ctrl + C` o usar el comando de salida de la aplicación que está ejecutándose.
+
+Si prefieres desconectarte sin detener el contenedor, puedes hacerlo con la siguiente combinación de teclas:
+
+```bash
+Ctrl + P + Q
+```
+
+Esto te permitirá salir del contenedor y dejarlo en ejecución.
+
+---
+
+### **Resumen:**
+
+- **`docker exec -it <container_id_or_name> bash`**: Accede a una terminal interactiva dentro del contenedor.
+- **`docker attach <container_id_or_name>`**: Conéctate al proceso principal del contenedor.
+
+Ambos métodos te permiten interactuar con el contenedor, pero `docker exec` es generalmente más flexible para ejecutar comandos dentro del contenedor, mientras que `docker attach` te conecta directamente a la sesión en curso del contenedor.
+
 ---
 ---
 ---
