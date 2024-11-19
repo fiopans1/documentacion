@@ -1607,6 +1607,85 @@ Esto te permitirá salir del contenedor y dejarlo en ejecución.
 
 Ambos métodos te permiten interactuar con el contenedor, pero `docker exec` es generalmente más flexible para ejecutar comandos dentro del contenedor, mientras que `docker attach` te conecta directamente a la sesión en curso del contenedor.
 
+
+## HOT RELOAD:
+
+El **Hot Reload** en el contexto de Docker se refiere a la capacidad de un contenedor de reflejar automáticamente los cambios realizados en los archivos o código de la aplicación sin necesidad de reconstruir la imagen o reiniciar el contenedor manualmente. Esto es especialmente útil durante el desarrollo, ya que ahorra tiempo y mejora la productividad.
+
+### **Cómo funciona Hot Reload en Docker**
+
+El Hot Reload generalmente se logra mediante **volúmenes de Docker**, que permiten compartir directorios entre el sistema host y el contenedor. Cuando haces un cambio en los archivos en tu máquina local, los cambios se reflejan en tiempo real dentro del contenedor.
+
+### **Escenario típico de uso**
+
+Un ejemplo común es cuando desarrollas una aplicación web (por ejemplo, en Node.js, Python, o PHP). Configuras el contenedor para que use un volumen que apunte al directorio donde está tu código. Al guardar los cambios en tu editor, el contenedor detecta automáticamente esos cambios y los aplica.
+
+---
+
+### **Pasos para implementar Hot Reload con Docker**
+
+#### 1. **Configura un volumen compartido**
+En tu archivo `docker-compose.yml` o al usar `docker run`, debes montar un volumen que sincronice tu código local con el directorio en el contenedor.
+
+**Ejemplo (docker-compose.yml):**
+```yaml
+version: '3.8'
+services:
+  app:
+    image: node:16
+    working_dir: /app
+    volumes:
+      - ./src:/app
+    ports:
+      - "3000:3000"
+    command: npm run start
+```
+
+- **`./src:/app`**: Monta el directorio `src` de tu máquina local en `/app` dentro del contenedor. Los cambios locales en `src` se reflejarán automáticamente en el contenedor.
+
+#### 2. **Configura una herramienta de Hot Reload**
+Dentro del contenedor, necesitas que el entorno de ejecución de tu aplicación soporte Hot Reload. Algunas herramientas comunes son:
+
+- **Node.js**: Usa [Nodemon](https://nodemon.io/) para detectar cambios y reiniciar automáticamente el servidor.
+  ```bash
+  npm install -g nodemon
+  nodemon app.js
+  ```
+
+- **Python**: Usa la opción `--reload` en frameworks como Flask o FastAPI:
+  ```bash
+  uvicorn main:app --reload --host 0.0.0.0 --port 8000
+  ```
+
+- **PHP**: Si usas un servidor como Apache o Nginx, la configuración del volumen sincroniza automáticamente los cambios.
+
+#### 3. **Ejecuta el contenedor**
+Cuando corres el contenedor, los cambios locales se reflejan automáticamente dentro del contenedor debido al volumen montado, y la herramienta de Hot Reload reinicia el servidor o aplica los cambios.
+
+---
+
+### **Ventajas del Hot Reload en Docker**
+
+1. **Productividad**: Permite probar cambios rápidamente sin necesidad de reconstruir la imagen o reiniciar el contenedor.
+2. **Simplicidad**: Configurar un volumen es sencillo y directo.
+3. **Ahorro de tiempo**: Evita ciclos largos de "build-restart-test".
+
+---
+
+### **Problemas comunes con Hot Reload en Docker**
+
+1. **Problemas de permisos**:
+   - A veces, los archivos creados dentro del contenedor pueden tener permisos diferentes a los locales. Solución: Configura usuarios correctamente en Docker.
+2. **Sincronización lenta**:
+   - En algunos sistemas, como macOS, la sincronización de volúmenes puede ser más lenta. Usa herramientas como `docker-sync` o evalúa opciones como Mutagen.
+3. **Herramientas que no soportan Hot Reload**:
+   - Asegúrate de usar una herramienta en tu aplicación que detecte y recargue los cambios.
+
+---
+
+### **Resumen**
+El Hot Reload en Docker te permite sincronizar cambios de código entre tu máquina local y un contenedor en tiempo real usando volúmenes. Esto es ideal para entornos de desarrollo. Configura volúmenes correctamente y utiliza herramientas en tu stack que soporten recargas automáticas para aprovecharlo al máximo.
+
 ---
 ---
 ---
@@ -1630,5 +1709,9 @@ Diferencias entre CMD y ENTRYPOINT
 | **Propósito**                | Define el comando principal fijo.          | Proporciona valores por defecto al contenedor. |
 | **Sobreescritura**           | Más rígido; no se sobreescribe fácilmente. | Puede ser reemplazado al ejecutar el contenedor. |
 | **Compatibilidad**           | Puede combinarse con `CMD` para agregar argumentos. | Se sobrescribe si `docker run` incluye un comando. |
+
+---
+
+**NOTA:**Con -f tanto en docker compose como en docker build le podemos especificar el Dockerfile/docker-compose que queremos utilizar
 
 ---
