@@ -210,8 +210,100 @@ IMPORTANTE: Cuando se hace el Merge se realiza un commit de unión.
 
 ```
 git merge --squash mirama
-````
+```
 Si estando en rama main y después de ejecutar este comando, tendrás todos los cambios de mirama listos en el área de preparación, pero no habrás hecho aún un commit. Puedes revisar y luego hacer un solo commit que contenga todos esos cambios para subir a main.
+
+
+## DESHACER CAMBIOS EN GIT:
+
+En Git, tanto **`revert`** como **`reset`** se utilizan para deshacer cambios, pero funcionan de manera diferente y tienen propósitos distintos:
+
+---
+
+### **1. `git revert`**
+
+El comando `git revert` se utiliza para **crear un nuevo commit que deshace los cambios de un commit específico**, sin alterar el historial existente. Esto lo hace ideal para entornos colaborativos.
+
+#### **Características de `git revert`**:
+- **Crea un nuevo commit**: No elimina el commit original, sino que agrega un nuevo commit inverso.
+- **Seguro en colaboración**: Mantiene el historial completo, lo que evita conflictos con otros desarrolladores.
+- **Es reversible**: Puedes volver a revertir si cambias de opinión.
+
+#### **Ejemplo:**
+Si tienes un historial como este:
+```
+A → B → C → D
+```
+Y decides revertir el commit `C`, el historial se verá así después de usar `git revert C`:
+```
+A → B → C → D → C' (revert C)
+```
+
+El commit `C'` contiene los cambios necesarios para deshacer `C`.
+
+#### **Cuándo usar `git revert`**:
+- Cuando trabajas en un repositorio compartido y necesitas deshacer un cambio sin afectar el historial.
+- Para mantener el historial limpio y rastreable.
+
+---
+
+### **2. `git reset`**
+
+El comando `git reset` **mueve el puntero de tu rama a un commit anterior**, eliminando los commits posteriores del historial (dependiendo de la opción usada). Puede alterar el historial de manera drástica.
+
+#### **Opciones principales de `git reset`**:
+
+1. **`--soft`**: Conserva los cambios realizados en los commits eliminados en el área de preparación (staging area).
+   - Solo mueve el puntero de la rama, pero los cambios siguen listos para commitear.
+2. **`--mixed`** (por defecto): Conserva los cambios en el directorio de trabajo, pero los elimina del área de preparación.
+   - Los cambios están sin preparar para el commit.
+3. **`--hard`**: Elimina los commits y borra los cambios del directorio de trabajo. **Cuidado: los cambios se pierden definitivamente**.
+
+#### **Ejemplo:**
+Si tienes un historial como este:
+```
+A → B → C → D
+```
+Y haces `git reset --hard B`, el historial se verá así:
+```
+A → B
+```
+Los commits `C` y `D` desaparecen y los cambios asociados se pierden (en caso de usar `--hard`).
+
+#### **Cuándo usar `git reset`**:
+- Cuando trabajas en un repositorio personal y necesitas eliminar commits recientes.
+- Si quieres modificar commits sin mantener su rastro en el historial.
+- Para eliminar errores recientes sin necesidad de compartirlos.
+
+---
+
+### **Diferencias principales entre `revert` y `reset`**
+
+| Característica                | `git revert`                       | `git reset`                          |
+|-------------------------------|-------------------------------------|---------------------------------------|
+| **Efecto en el historial**    | Crea un nuevo commit inverso       | Elimina commits (puede sobrescribir) |
+| **Seguridad en colaboración** | Seguro (no altera el historial)    | No seguro (puede causar conflictos)  |
+| **Uso principal**             | Deshacer un commit específico      | Retroceder el estado del repositorio |
+| **Perdida de datos**          | No (los cambios quedan rastreables)| Depende de la opción (`--hard` borra)|
+| **Ideal para**                | Repositorios compartidos           | Repositorios personales              |
+
+---
+
+### **Ejemplo práctico combinado**
+1. Cometiste un error en el commit más reciente:
+   - Si estás colaborando: Usa `git revert <commit>`.
+   - Si trabajas solo y quieres eliminarlo completamente: Usa `git reset --hard <commit>`.
+
+2. Quieres deshacer múltiples commits en el historial:
+   - Si quieres eliminar cambios y borrar los commits: Usa `git reset`.
+   - Si quieres mantener un registro de los cambios revertidos: Usa `git revert`.
+
+---
+
+En resumen:
+- Usa **`git revert`** para mantener un historial limpio y seguro en equipos.
+- Usa **`git reset`** para borrar commits y cambios recientes en un entorno controlado.
+
 
 ## Comandos que tenemos que mirar
 ```
@@ -222,4 +314,9 @@ git merge --squash
 git stash
 
 git rebase --reapply-cherry-pick :(Cuando se hace un rebase git suele ignorar los commits de los que ya se hayan hecho cherry-pick, con esto se aplica igual)
+
+Diferencia git reset hard y soft
+
+Diferencia git reset y git revert
 ```
+

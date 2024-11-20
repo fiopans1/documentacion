@@ -335,4 +335,12 @@ Para que una clase se pueda instanciar y usar con `@Autowired` en Spring Boot, e
 En resumen, para que una clase se pueda inyectar con `@Autowired`, debe ser un *bean* de Spring (anotado con `@Component`, `@Service`, etc.), estar en un paquete escaneado y tener un constructor público accesible.
 
 ## PERSISTENCIA DE DATOS:
-min 2:09
+
+**ORM*: Un ORM es una técnica de programación utilizada en el desarrollo de aplicaciones para mapear objetos en lenguajes de programación orientados a objetos, como Java, a tablas en una base de datos relacional. En esencia permite que las aplicaciones interactúen con la base de datos utilizando objetos y métodos en lugar de escribir consultas SQL directamente. JPA es una interfaz de esto, que nos permite mapear objetos a base de datos. Una implementación de esto por ejemplo es Hibernate, que se encarga de convertir los objetos java a la base de datos.
+
+Spring Data es un proyecto dentro del ecosistema Spring que simplifica aún más el acceso a bases de datos y la persistencia en general. No es una implementación de JPA, sino una capa de abstracción adicional que trabaja en conjunto con JPA y otras tecnologías de persistencia. Spring Data proporciona repositorios CRUD predefinidos y facilidades para definir consultas personalizadas utilizando métodos de repositorio. Además, Spring Data ofrece soporte para múltiples tecnologías de almacenamiento, como JPA, MongoDB, Redis y más.
+Spring Data JPA es una subparte de Spring Data que se centra en facilitar el uso de JPA. En resumen, Spring Data es una implementación para acceder a base de datos, y que me permite trabajar con distintas tecnlogías, y Spring Data JPA es la que me permite trabajar con JPA.
+
+Esto todo se relaciona con la capa de acceso a datos, de @Repository, es la encargada de manejar el acceso a base de datos
+
+2:30
