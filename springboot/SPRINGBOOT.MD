@@ -343,4 +343,6 @@ Spring Data JPA es una subparte de Spring Data que se centra en facilitar el uso
 
 Esto todo se relaciona con la capa de acceso a datos, de @Repository, es la encargada de manejar el acceso a base de datos
 
-2:30
+## CONFIGURACIONES:
+
+Cuando creamos un proyecto lo primero es configurar la base de datos y el JPA (si queremos que cada vez cree la base de datos, la actualice, etc) y el dialecto
