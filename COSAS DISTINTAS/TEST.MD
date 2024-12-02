@@ -95,6 +95,7 @@ Feature: Retrieve user details
 - **Herramientas comunes**:
   - JMeter.
   - Gatling.
+  - Locust
 
 ---
 
@@ -202,7 +203,7 @@ describe('Visual Regression', () => {
 | Unit Tests         | JUnit, Mockito, pytest         | Jest, Jasmine               |
 | Integration Tests  | Spring Boot Test, Testcontainers | Cypress, React Testing Library |
 | End-to-End Tests   | Cucumber, Robot Framework      | Cypress, Playwright         |
-| Performance Tests  | JMeter, Gatling                | Lighthouse                  |
+| Performance Tests  | JMeter, Gatling, Locust                | Lighthouse                  |
 | Regression Visual  | -                              | Percy, BackstopJS           |
 
 Con esta guía puedes abordar los diferentes niveles de pruebas y asegurar la calidad tanto en el backend como en el frontend. 🚀
