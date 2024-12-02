@@ -346,3 +346,675 @@ Esto todo se relaciona con la capa de acceso a datos, de @Repository, es la enca
 ## CONFIGURACIONES:
 
 Cuando creamos un proyecto lo primero es configurar la base de datos y el JPA (si queremos que cada vez cree la base de datos, la actualice, etc) y el dialecto
+
+## REPOSITORIOS:
+
+Los repositorios **siempre** tienen que ser interfaces, siempre, y heredan haciendo extends de otras interfaces de spring
+### **¿Qué es `@Repository` en Spring?**
+
+`@Repository` es una anotación de **Spring Framework** que marca una clase como un **componente de acceso a datos**. Indica que la clase es responsable de interactuar con la base de datos o cualquier otra fuente de datos. Es una de las tres anotaciones especializadas de estereotipos en Spring, junto con `@Controller` y `@Service`.
+
+---
+
+### **Características principales de `@Repository`:**
+1. **Detección automática de componentes:**
+   - Al usar la anotación `@Repository`, Spring puede detectar y registrar automáticamente la clase en el contexto de aplicación durante el escaneo de componentes.
+   - Esto significa que puedes inyectar esta clase en otras partes de tu aplicación.
+
+2. **Manejo de excepciones:**
+   - Spring traduce automáticamente las excepciones específicas de la base de datos (como `SQLException`) a excepciones genéricas de Spring (`DataAccessException`) cuando se usa `@Repository`.
+
+3. **Facilita el desacoplamiento:**
+   - Promueve la separación de responsabilidades al concentrar el acceso a datos en un único lugar.
+
+---
+
+### **Cómo usar `@Repository`**
+
+#### **1. Uso con clases personalizadas**
+Puedes usar `@Repository` para marcar una clase donde implementes manualmente la lógica de acceso a datos:
+
+```java
+@Repository
+public class UserRepository {
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    public User findUserById(Long id) {
+        return entityManager.find(User.class, id);
+    }
+}
+```
+
+#### **2. Uso con interfaces y Spring Data JPA**
+Cuando utilizas Spring Data JPA, los repositorios suelen ser **interfaces** que extienden las interfaces de Spring Data (`JpaRepository`, `CrudRepository`, etc.). No necesitas implementar nada manualmente; Spring genera automáticamente la implementación:
+
+```java
+@Repository // Opcional, ya que Spring Data la detecta automáticamente
+public interface UserRepository extends JpaRepository<User, Long> {
+
+    List<User> findByLastName(String lastName);
+
+    @Query("SELECT u FROM User u WHERE u.email = :email")
+    User findByEmail(@Param("email") String email);
+}
+```
+
+#### **3. Inyección del repositorio**
+Puedes inyectar el repositorio en tus servicios o controladores usando `@Autowired` o constructor injection:
+
+```java
+@Service
+public class UserService {
+
+    private final UserRepository userRepository;
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+    }
+}
+```
+
+---
+
+### **Buenas prácticas**
+1. **Mantén la lógica de acceso a datos en el repositorio:**
+   - Evita escribir lógica de negocio en las clases marcadas con `@Repository`.
+2. **Usa interfaces cuando sea posible:**
+   - Aprovecha las capacidades de Spring Data JPA para reducir el código manual.
+3. **Define consultas personalizadas con `@Query`:**
+   - Úsalo cuando los métodos derivados no sean suficientes.
+4. **Gestiona excepciones genéricas:**
+   - Deja que Spring maneje las excepciones específicas del proveedor de la base de datos.
+
+---
+
+### **Resumen**
+- **`@Repository`** marca una clase como un componente de acceso a datos.
+- Puede ser usada con clases personalizadas o interfaces.
+- En Spring Data JPA, no necesitas implementaciones manuales gracias a las interfaces como `JpaRepository`.
+- Es fundamental para separar la lógica de acceso a datos de otras capas como servicios o controladores.
+- Proporciona la mayoría de métodos que vas a necesitar para interactuar con la base de datos
+
+
+
+
+## COMMANDLINERUNNER:
+
+La clase **`CommandLineRunner`** en Spring Boot se utiliza para ejecutar lógica al inicio de la aplicación, justo después de que el contexto de Spring haya sido cargado y configurado. Es una interfaz funcional que permite ejecutar código una sola vez, útil para tareas iniciales como cargar datos, configurar propiedades o realizar pruebas rápidas.
+
+---
+
+### **Definición**
+La interfaz `CommandLineRunner` tiene un único método:
+
+```java
+@FunctionalInterface
+public interface CommandLineRunner {
+    void run(String... args) throws Exception;
+}
+```
+
+El método `run` recibe como parámetro un arreglo de `String` con los argumentos pasados al ejecutar la aplicación.
+
+---
+
+### **Uso principal**
+El principal propósito de **`CommandLineRunner`** es ejecutar lógica personalizada inmediatamente después de que el contexto de la aplicación esté completamente inicializado.
+
+#### **Ejemplo básico**
+```java
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
+
+@Component
+public class StartupRunner implements CommandLineRunner {
+
+    @Override
+    public void run(String... args) throws Exception {
+        System.out.println("La aplicación ha iniciado correctamente.");
+    }
+}
+```
+
+- En este caso:
+  - Spring Boot detecta automáticamente la clase `StartupRunner` porque está marcada con `@Component`.
+  - El método `run` se ejecutará automáticamente después de que la aplicación haya arrancado.
+
+---
+
+### **Usos comunes**
+1. **Inicialización de datos:**
+   Puedes cargar datos en la base de datos o inicializar estructuras necesarias para la ejecución de la aplicación.
+   ```java
+   @Component
+   public class DataInitializer implements CommandLineRunner {
+
+       private final UserRepository userRepository;
+
+       public DataInitializer(UserRepository userRepository) {
+           this.userRepository = userRepository;
+       }
+
+       @Override
+       public void run(String... args) {
+           userRepository.save(new User("admin", "admin@example.com"));
+           System.out.println("Datos iniciales cargados.");
+       }
+   }
+   ```
+
+2. **Ejecución de tareas al inicio:**
+   Por ejemplo, verificar la conectividad con servicios externos.
+   ```java
+   @Component
+   public class ConnectivityChecker implements CommandLineRunner {
+
+       @Override
+       public void run(String... args) {
+           System.out.println("Verificando conectividad con servicios externos...");
+           // Lógica de verificación aquí
+       }
+   }
+   ```
+
+3. **Procesar argumentos de línea de comando:**
+   Puedes trabajar directamente con los argumentos pasados al iniciar la aplicación.
+   ```java
+   @Component
+   public class ArgsProcessor implements CommandLineRunner {
+
+       @Override
+       public void run(String... args) {
+           for (String arg : args) {
+               System.out.println("Argumento recibido: " + arg);
+           }
+       }
+   }
+   ```
+
+---
+
+### **Diferencia entre `CommandLineRunner` y `ApplicationRunner`**
+Spring Boot también proporciona otra interfaz llamada **`ApplicationRunner`**, que es muy similar pero usa un enfoque más estructurado al manejar los argumentos de la aplicación:
+
+- `CommandLineRunner`: Los argumentos se reciben como un arreglo de `String`.
+- `ApplicationRunner`: Los argumentos se encapsulan en un objeto `ApplicationArguments`, lo que permite acceder a los argumentos con nombres y sin nombres.
+
+```java
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.stereotype.Component;
+
+@Component
+public class ApplicationStartup implements ApplicationRunner {
+
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        System.out.println("Argumentos sin nombres: " + args.getNonOptionArgs());
+        System.out.println("Argumentos con nombres: " + args.getOptionNames());
+    }
+}
+```
+
+---
+
+### **¿Cuándo usar `CommandLineRunner`?**
+- **Inicialización ligera:** Para cargar datos o realizar tareas sencillas al inicio.
+- **Depuración rápida:** Para probar funciones o realizar comprobaciones rápidas.
+- **Tareas únicas:** Cuando necesitas ejecutar código solo una vez al arrancar la aplicación.
+
+Es una herramienta muy útil para casos simples. Sin embargo, para lógica más compleja, considera usar inicializadores específicos o métodos como eventos de arranque de contexto (`ContextRefreshedEvent`).
+
+## SERVICIOS:
+
+**Una buena práctica es declarar una interfaz del servicio y luego una clase que la impemente**
+
+### **¿Qué es `@Service` en Spring?**
+
+`@Service` es una anotación de **Spring Framework** que marca una clase como un **componente de lógica de negocio o servicio de aplicación**. Es parte de las anotaciones de estereotipo de Spring, junto con `@Controller` y `@Repository`.
+
+La anotación no tiene un impacto técnico distinto al de `@Component` (ambas indican que Spring debe registrar la clase en el contenedor de beans). Sin embargo, **`@Service` tiene un propósito semántico**, ya que deja claro que la clase pertenece a la capa de servicio en la arquitectura de la aplicación.
+
+---
+
+### **Características principales de `@Service`:**
+
+1. **Detección automática de componentes:**
+   - Al usar `@Service`, Spring detecta automáticamente la clase durante el escaneo de componentes y la registra como un bean en el contenedor.
+   - Esto significa que puedes inyectar esta clase en otras partes de tu aplicación.
+
+2. **Separación de responsabilidades:**
+   - Se utiliza para centralizar la lógica de negocio, separándola de otras capas como los controladores (`@Controller`) o los repositorios (`@Repository`).
+
+3. **Soporte para transacciones:**
+   - Al combinarse con `@Transactional`, permite manejar transacciones directamente en la capa de servicio.
+
+---
+
+### **Cómo usar `@Service`**
+
+#### **1. Crear un servicio básico**
+
+```java
+import org.springframework.stereotype.Service;
+
+@Service
+public class UserService {
+
+    public String greetUser(String name) {
+        return "¡Hola, " + name + "!";
+    }
+}
+```
+
+En este caso:
+- La clase `UserService` está marcada como un servicio con `@Service`.
+- Spring registrará automáticamente esta clase como un bean, permitiendo su inyección en otras partes de la aplicación.
+
+#### **2. Inyección en otras capas**
+
+El servicio se puede inyectar en un controlador o en otra clase utilizando **`@Autowired`** o inyección de constructor (recomendado).
+
+```java
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class UserController {
+
+    private final UserService userService;
+
+    // Inyección a través del constructor
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @GetMapping("/greet")
+    public String greetUser(@RequestParam String name) {
+        return userService.greetUser(name);
+    }
+}
+```
+
+---
+
+### **Usos comunes de `@Service`**
+
+1. **Centralizar la lógica de negocio:**
+   - Coloca toda la lógica de negocio en servicios, no en controladores ni repositorios.
+
+   ```java
+   @Service
+   public class OrderService {
+
+       public double calculateTotal(double price, int quantity) {
+           return price * quantity;
+       }
+   }
+   ```
+
+2. **Coordinación entre capas:**
+   - Los servicios suelen coordinar llamadas entre la capa de repositorio y otras partes de la aplicación.
+
+   ```java
+   @Service
+   public class ProductService {
+
+       private final ProductRepository productRepository;
+
+       public ProductService(ProductRepository productRepository) {
+           this.productRepository = productRepository;
+       }
+
+       public Product getProductById(Long id) {
+           return productRepository.findById(id)
+                                   .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+       }
+   }
+   ```
+
+3. **Soporte para transacciones:**
+   - Puedes usar `@Transactional` en los métodos de servicio para manejar transacciones de base de datos de forma automática.
+
+   ```java
+   import org.springframework.transaction.annotation.Transactional;
+
+   @Service
+   public class BankService {
+
+       private final AccountRepository accountRepository;
+
+       public BankService(AccountRepository accountRepository) {
+           this.accountRepository = accountRepository;
+       }
+
+       @Transactional
+       public void transferMoney(Long fromAccountId, Long toAccountId, double amount) {
+           Account fromAccount = accountRepository.findById(fromAccountId)
+                                                  .orElseThrow(() -> new RuntimeException("Cuenta no encontrada"));
+           Account toAccount = accountRepository.findById(toAccountId)
+                                                .orElseThrow(() -> new RuntimeException("Cuenta no encontrada"));
+
+           fromAccount.withdraw(amount);
+           toAccount.deposit(amount);
+
+           accountRepository.save(fromAccount);
+           accountRepository.save(toAccount);
+       }
+   }
+   ```
+
+---
+
+### **Buenas prácticas para servicios**
+
+1. **Evitar dependencias circulares:**
+   - Asegúrate de que los servicios no dependan unos de otros en un ciclo infinito. Si necesitas resolver un caso complejo, usa eventos o servicios más generales.
+
+2. **Mantén la lógica de negocio en los servicios:**
+   - No pongas lógica de negocio en controladores ni repositorios.
+
+3. **Divide responsabilidades:**
+   - Si un servicio crece demasiado, divídelo en varios servicios más pequeños.
+
+4. **Combina con patrones de diseño:**
+   - Implementa patrones como **estrategia**, **plantilla** o **fábrica** dentro de tus servicios si es necesario.
+
+---
+
+### **Resumen**
+- **`@Service`** indica que una clase pertenece a la capa de servicios y contiene la lógica de negocio.
+- Se detecta automáticamente como un bean y puede ser inyectada en otras capas.
+- Centraliza la lógica de negocio, coordina capas y maneja transacciones.
+- Es fundamental para mantener la arquitectura limpia y modular en aplicaciones Spring.
+
+## THYMELEAF:
+
+Nació para hacer aplicaciones monolíticas y poder hacer el frontend con Springboot también. Thymeleaf es un motor de plantillas
+
+### **Guía Completa de Thymeleaf y su Uso en Aplicaciones Spring Boot**
+
+**Thymeleaf** es un motor de plantillas para Java que se utiliza principalmente en aplicaciones **Spring Boot** para renderizar vistas del lado del servidor. Es una alternativa popular a tecnologías como JSP o Freemarker y destaca por ser fácil de usar y compatible con HTML estándar, lo que permite a los desarrolladores trabajar en conjunto con diseñadores de front-end.
+
+A continuación, se explican sus conceptos principales y se ofrecen ejemplos detallados para comprender su uso.
+
+---
+
+## **1. Instalación y Configuración**
+
+Cuando generas un proyecto Spring Boot usando **Spring Initializr**, puedes agregar Thymeleaf como dependencia seleccionando `Spring Web` y `Thymeleaf`.
+
+### **Dependencia Maven**
+En caso de que necesites agregarlo manualmente, incluye la dependencia en tu archivo `pom.xml`:
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-thymeleaf</artifactId>
+</dependency>
+```
+
+Para Gradle, agrega esto al archivo `build.gradle`:
+```groovy
+implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+```
+
+---
+
+## **2. ¿Cómo funciona Thymeleaf?**
+
+- Thymeleaf procesa archivos **HTML** y permite insertar dinámicamente contenido desde el backend.
+- Combina etiquetas y atributos específicos (`th:*`) con datos enviados desde controladores de Spring.
+- Permite trabajar directamente con HTML, lo que simplifica la colaboración con diseñadores.
+
+---
+
+## **3. Estructura Básica del Proyecto**
+
+```plaintext
+src
+├── main
+│   ├── java
+│   │   └── com.example.demo
+│   │       ├── DemoApplication.java
+│   │       └── controller
+│   │           └── HomeController.java
+│   ├── resources
+│       ├── static          # Recursos estáticos (CSS, JS, imágenes)
+│       ├── templates       # Vistas Thymeleaf (HTML)
+│       └── application.properties
+```
+
+### **Configuración predeterminada**
+Spring Boot buscará los archivos Thymeleaf en el directorio `src/main/resources/templates`. Si necesitas cambiar este comportamiento, agrega lo siguiente a tu `application.properties`:
+
+```properties
+spring.thymeleaf.prefix=classpath:/misplantillas/
+spring.thymeleaf.suffix=.html
+```
+
+---
+
+## **4. Ejemplo Básico: Renderizar una Página HTML**
+
+### **4.1. Controlador Simple**
+Crea un controlador en Java para manejar solicitudes HTTP y devolver vistas Thymeleaf.
+
+```java
+package com.example.demo.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+public class HomeController {
+
+    @GetMapping("/")
+    public String home(Model model) {
+        model.addAttribute("message", "¡Bienvenido a Thymeleaf con Spring Boot!");
+        return "home"; // Renderiza home.html en templates/
+    }
+}
+```
+
+### **4.2. Plantilla HTML (home.html)**
+
+Guarda este archivo en `src/main/resources/templates/home.html`:
+
+```html
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Home Page</title>
+</head>
+<body>
+    <h1 th:text="${message}">Texto predeterminado</h1>
+</body>
+</html>
+```
+
+### **¿Qué hace el atributo `th:text`?**
+- **`${message}`**: Es una expresión que Thymeleaf evalúa para reemplazar el contenido con el valor del modelo enviado desde el controlador.
+
+Cuando visitas `http://localhost:8080/`, Thymeleaf renderiza el contenido con el mensaje enviado desde el controlador.
+
+---
+
+## **5. Atributos Thymeleaf Comunes**
+
+### **5.1. Mostrar Contenido**
+- **`th:text`**: Reemplaza el texto dentro de un elemento.
+- **Ejemplo:**
+
+```html
+<p th:text="'Hola, ' + ${nombre} + '!'">Placeholder</p>
+```
+
+Si `nombre = "Juan"`, el resultado será:
+```html
+<p>Hola, Juan!</p>
+```
+
+---
+
+### **5.2. Enlaces y Recursos**
+- **`th:href`**: Genera enlaces dinámicos.
+- **`th:src`**: Configura rutas de imágenes o recursos.
+
+#### Ejemplo de `th:href`
+```html
+<a th:href="@{/contacto}">Ir a Contacto</a>
+```
+
+Si tu controlador tiene:
+```java
+@GetMapping("/contacto")
+public String contacto() {
+    return "contacto"; // Renderiza contacto.html
+}
+```
+
+El HTML resultante será:
+```html
+<a href="/contacto">Ir a Contacto</a>
+```
+
+---
+
+### **5.3. Listas y Bucles**
+- **`th:each`**: Itera sobre colecciones para generar contenido dinámico.
+
+#### Ejemplo
+Controlador:
+```java
+@GetMapping("/productos")
+public String productos(Model model) {
+    List<String> productos = Arrays.asList("Laptop", "Mouse", "Teclado");
+    model.addAttribute("productos", productos);
+    return "productos";
+}
+```
+
+Plantilla HTML:
+```html
+<ul>
+    <li th:each="producto : ${productos}" th:text="${producto}"></li>
+</ul>
+```
+
+Resultado:
+```html
+<ul>
+    <li>Laptop</li>
+    <li>Mouse</li>
+    <li>Teclado</li>
+</ul>
+```
+
+---
+
+### **5.4. Formularios**
+Thymeleaf facilita la creación de formularios dinámicos.
+
+#### Ejemplo: Crear un formulario y manejar datos
+Controlador:
+```java
+@PostMapping("/submit")
+public String submit(@RequestParam String nombre, Model model) {
+    model.addAttribute("mensaje", "Hola, " + nombre + "!");
+    return "resultado";
+}
+```
+
+Formulario HTML:
+```html
+<form action="/submit" method="post">
+    <label for="nombre">Nombre:</label>
+    <input type="text" id="nombre" name="nombre">
+    <button type="submit">Enviar</button>
+</form>
+```
+
+Resultado (después de enviar):
+```html
+<h1>Hola, Juan!</h1>
+```
+
+---
+
+## **6. Internacionalización**
+Thymeleaf soporta archivos de mensajes para traducción.
+
+### Configuración de mensajes
+1. Crea archivos de propiedades, por ejemplo:
+   - `messages_en.properties`:
+     ```properties
+     saludo=Hello!
+     ```
+   - `messages_es.properties`:
+     ```properties
+     saludo=¡Hola!
+     ```
+
+2. En tu plantilla, usa `th:text` con `#{}`
+   ```html
+   <p th:text="#{saludo}">Default Text</p>
+   ```
+
+El texto se traducirá automáticamente según la configuración de idioma de Spring.
+
+---
+
+## **7. Extensiones y Avanzado**
+
+### **Fragmentos Reutilizables**
+Thymeleaf permite reutilizar fragmentos de HTML como cabeceras o pies de página.
+
+#### Ejemplo
+Archivo de fragmento (`header.html`):
+```html
+<div th:fragment="header">
+    <h1>Mi Sitio Web</h1>
+</div>
+```
+
+Archivo principal (`home.html`):
+```html
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div th:include="header :: header"></div>
+</body>
+</html>
+```
+
+---
+
+### **Condicionales**
+- **`th:if`**: Muestra un elemento si se cumple una condición.
+- **Ejemplo**:
+
+```html
+<p th:if="${usuarioLogeado}">Bienvenido, usuario!</p>
+<p th:unless="${usuarioLogeado}">Por favor, inicia sesión.</p>
+```
+
+---
+
+## **Conclusión**
+
+Thymeleaf es una herramienta poderosa para crear aplicaciones web con Spring Boot. Proporciona:
+- Un lenguaje intuitivo para renderizar contenido dinámico.
+- Soporte completo para formularios, listas, internacionalización y fragmentos reutilizables.
+- Una integración perfecta con Spring MVC, haciendo que sea ideal para proyectos Java.
+
+
+Thymelead funciona con plantillas de html
