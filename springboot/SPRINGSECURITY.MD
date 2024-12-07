@@ -2819,3 +2819,199 @@ Spring Security ofrece múltiples enfoques para manejar roles y permisos:
 - Configuración en memoria para proyectos simples.
 - Bases de datos para sistemas más complejos.
 - Uso de anotaciones para facilitar el control a nivel de métodos.
+
+
+## Algunas anotaciones:
+Spring Security ofrece una variedad de anotaciones que facilitan la configuración de seguridad a nivel de clase, método o endpoint. A continuación, te doy un resumen de las principales anotaciones que puedes usar en Spring Security, su propósito y cómo aplicarlas:
+
+---
+
+### **1. `@EnableWebSecurity`**
+- **Propósito:** Habilita la configuración personalizada de Spring Security en tu aplicación.
+- **Uso común:**
+  - Se utiliza en clases de configuración para activar la seguridad web personalizada.
+- **Ejemplo:**
+  ```java
+  @Configuration
+  @EnableWebSecurity
+  public class SecurityConfig {
+      // Configuración de seguridad aquí
+  }
+  ```
+- **Nota:** En Spring Boot no siempre es necesaria, ya que Spring Boot detecta automáticamente la configuración.
+
+---
+
+### **2. `@PreAuthorize`**
+- **Propósito:** Restringe el acceso a métodos basándose en roles o authorities antes de que se ejecute el método.
+- **Requiere:** Habilitar con `@EnableGlobalMethodSecurity(prePostEnabled = true)`.
+- **Uso común:**
+  - Se utiliza en servicios o controladores para aplicar reglas de seguridad específicas.
+- **Ejemplo:**
+  ```java
+  @PreAuthorize("hasRole('ADMIN') and hasAuthority('MANAGE_USERS')")
+  public void manageUsers() {
+      // Lógica del método
+  }
+  ```
+
+#### **Expresiones más usadas:**
+- `hasRole('ROLE_NAME')`: Verifica si el usuario tiene un rol específico.
+- `hasAuthority('AUTHORITY_NAME')`: Verifica si el usuario tiene una autoridad específica.
+- Operadores lógicos:
+  - `and`, `or`, `not`.
+
+---
+
+### **3. `@PostAuthorize`**
+- **Propósito:** Restringe el acceso **después** de que se ejecute el método. Útil para validar el resultado de un método.
+- **Requiere:** Habilitar con `@EnableGlobalMethodSecurity(prePostEnabled = true)`.
+- **Uso común:**
+  - Se utiliza para filtrar los datos retornados por un método según las reglas de seguridad.
+- **Ejemplo:**
+  ```java
+  @PostAuthorize("returnObject.owner == authentication.name")
+  public User getUserDetails(String id) {
+      return userService.findById(id); // Verifica si el usuario autenticado es el propietario
+  }
+  ```
+
+---
+
+### **4. `@Secured`**
+- **Propósito:** Restringe el acceso a métodos basándose en roles.
+- **Requiere:** Habilitar con `@EnableGlobalMethodSecurity(securedEnabled = true)`.
+- **Uso común:**
+  - Más limitada que `@PreAuthorize`, ya que no permite expresiones complejas ni authorities, solo roles.
+- **Ejemplo:**
+  ```java
+  @Secured("ROLE_ADMIN")
+  public void deleteUser(Long id) {
+      // Lógica del método
+  }
+  ```
+
+- **Nota:** Usa roles directamente con el prefijo `ROLE_`. No soporta expresiones complejas como `hasAuthority`.
+
+---
+
+### **5. `@RolesAllowed`**
+- **Propósito:** Similar a `@Secured`, pero se basa en la especificación de seguridad de Java EE.
+- **Requiere:** Habilitar con `@EnableGlobalMethodSecurity(jsr250Enabled = true)`.
+- **Uso común:**
+  - Se utiliza para restringir acceso basado en roles, generalmente en aplicaciones compatibles con JSR-250.
+- **Ejemplo:**
+  ```java
+  @RolesAllowed("ROLE_USER")
+  public void viewProfile() {
+      // Lógica del método
+  }
+  ```
+
+- **Diferencia con `@Secured`:** Es parte de las especificaciones JSR-250 y soporta más interoperabilidad con otras plataformas.
+
+---
+
+### **6. `@WithMockUser`**
+- **Propósito:** Crea un usuario simulado para pruebas en métodos de test.
+- **Uso común:**
+  - En pruebas unitarias o de integración para simular la autenticación de un usuario.
+- **Ejemplo:**
+  ```java
+  @Test
+  @WithMockUser(username = "testUser", roles = {"USER"})
+  public void testGetProfile() throws Exception {
+      mockMvc.perform(get("/profile"))
+             .andExpect(status().isOk());
+  }
+  ```
+
+---
+
+### **7. `@AuthenticationPrincipal`**
+- **Propósito:** Permite inyectar el usuario autenticado directamente en un controlador o método.
+- **Uso común:**
+  - Se usa para acceder al principal (usuario autenticado) en métodos del controlador.
+- **Ejemplo:**
+  ```java
+  @GetMapping("/profile")
+  public String getProfile(@AuthenticationPrincipal UserDetails userDetails) {
+      return "Hola " + userDetails.getUsername();
+  }
+  ```
+
+---
+
+### **8. `@PermitAll` y `@DenyAll`**
+- **Propósito:** Permiten o deniegan acceso a todos los usuarios.
+- **Requiere:** Habilitar con `@EnableGlobalMethodSecurity(jsr250Enabled = true)`.
+- **Uso común:**
+  - Se utiliza para marcar métodos o clases con acceso abierto o cerrado.
+- **Ejemplo:**
+  ```java
+  @PermitAll
+  public String publicResource() {
+      return "Recurso público";
+  }
+
+  @DenyAll
+  public String privateResource() {
+      return "Acceso denegado";
+  }
+  ```
+
+---
+
+### **9. `@EnableGlobalMethodSecurity`**
+- **Propósito:** Habilita el uso de anotaciones como `@PreAuthorize`, `@PostAuthorize`, `@Secured` y `@RolesAllowed`.
+- **Configuración:**
+  - Debe incluirse en la configuración de seguridad.
+- **Ejemplo:**
+  ```java
+  @Configuration
+  @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
+  public class MethodSecurityConfig {
+      // Configuración de seguridad
+  }
+  ```
+
+---
+
+### **10. `@CrossOrigin`**
+- **Propósito:** Permite el acceso a recursos desde dominios cruzados (CORS) en controladores específicos.
+- **Uso común:**
+  - Útil para habilitar CORS en aplicaciones RESTful.
+- **Ejemplo:**
+  ```java
+  @RestController
+  @CrossOrigin(origins = "http://example.com")
+  public class ApiController {
+      @GetMapping("/data")
+      public String getData() {
+          return "Datos";
+      }
+  }
+  ```
+
+---
+
+### **Resumen general**
+
+| **Anotación**           | **Propósito**                                                                                      |
+|-------------------------|--------------------------------------------------------------------------------------------------|
+| `@EnableWebSecurity`     | Habilita la configuración de seguridad personalizada.                                            |
+| `@PreAuthorize`          | Restringe acceso **antes** de ejecutar un método, con soporte para expresiones complejas.        |
+| `@PostAuthorize`         | Restringe acceso **después** de ejecutar un método.                                              |
+| `@Secured`               | Restringe acceso basado en roles (simple, sin expresiones).                                      |
+| `@RolesAllowed`          | Basada en JSR-250, restringe acceso por roles.                                                  |
+| `@WithMockUser`          | Crea usuarios simulados para pruebas.                                                           |
+| `@AuthenticationPrincipal` | Inyecta el usuario autenticado en un controlador o método.                                     |
+| `@PermitAll` / `@DenyAll`| Permiten o deniegan acceso a todos los usuarios.                                                |
+| `@CrossOrigin`           | Habilita el acceso desde dominios cruzados (CORS).                                              |
+
+---
+
+### **¿Cuál usar?**
+- Usa **`@PreAuthorize`** para máxima flexibilidad con expresiones lógicas.
+- Usa **`@Secured`** o **`@RolesAllowed`** si solo necesitas restricciones simples basadas en roles.
+- Usa **`@AuthenticationPrincipal`** si necesitas acceder al usuario autenticado directamente en un método o controlador.
