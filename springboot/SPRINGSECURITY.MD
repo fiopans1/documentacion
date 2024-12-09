@@ -3015,3 +3015,278 @@ Spring Security ofrece una variedad de anotaciones que facilitan la configuraci�
 - Usa **`@PreAuthorize`** para máxima flexibilidad con expresiones lógicas.
 - Usa **`@Secured`** o **`@RolesAllowed`** si solo necesitas restricciones simples basadas en roles.
 - Usa **`@AuthenticationPrincipal`** si necesitas acceder al usuario autenticado directamente en un método o controlador.
+
+---
+
+## Guía: Uso de `hasPermission` en Spring Security y asignación de permisos a usuarios
+
+Esta guía te llevará paso a paso a implementar el método `hasPermission` en **Spring Security** y configurar la lógica para asignar permisos a usuarios sobre recursos específicos.
+
+---
+
+### **1. Conceptos básicos**
+- **`hasPermission`**: Es una expresión de Spring Security que se usa para verificar si un usuario tiene un permiso específico sobre un recurso (por ejemplo, "leer", "editar", "eliminar").
+- **Permisos**: Son controles más finos que los roles. En lugar de simplemente verificar "Administrador", puedes validar permisos como "EDITAR_DOCUMENTO" o "VER_REPORTE".
+- **Access Control List (ACL)**: Un enfoque que Spring Security utiliza para administrar permisos sobre recursos individuales.
+
+---
+
+### **2. Configuración inicial**
+Antes de usar `hasPermission`, necesitas implementar un sistema de permisos en tu aplicación.
+
+#### **2.1. Agregar dependencias**
+Asegúrate de tener las dependencias de Spring Security en tu archivo `pom.xml` (Maven):
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+```
+
+#### **2.2. Habilitar anotaciones de seguridad**
+En tu clase de configuración de seguridad, habilita la seguridad a nivel de método:
+
+```java
+@Configuration
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class SecurityConfig extends GlobalMethodSecurityConfiguration {
+}
+```
+
+---
+
+### **3. Crear un `PermissionEvaluator` personalizado**
+El `PermissionEvaluator` es el núcleo de `hasPermission`, ya que define cómo se verifica un permiso.
+
+#### **3.1. Implementar el `PermissionEvaluator`**
+Crea una clase que implemente la lógica personalizada para verificar permisos.
+
+```java
+@Component
+public class CustomPermissionEvaluator implements PermissionEvaluator {
+
+    @Override
+    public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
+        if (targetDomainObject == null || !(permission instanceof String)) {
+            return false;
+        }
+
+        // Lógica personalizada para verificar permisos
+        String username = authentication.getName();
+        String resource = targetDomainObject.toString();
+        String requiredPermission = permission.toString();
+
+        // Aquí podrías consultar una base de datos, un servicio o cualquier lógica de negocio
+        return checkUserPermission(username, resource, requiredPermission);
+    }
+
+    @Override
+    public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
+        // Otra lógica personalizada basada en el ID del recurso
+        return false; // Modifícalo según sea necesario
+    }
+
+    private boolean checkUserPermission(String username, String resource, String permission) {
+        // Aquí defines cómo verificar los permisos
+        // Ejemplo: consulta en una base de datos
+        return true; // Cambiar según la lógica de tu negocio
+    }
+}
+```
+
+#### **3.2. Registrar el `PermissionEvaluator`**
+Registra tu `CustomPermissionEvaluator` en la configuración de seguridad:
+
+```java
+@Configuration
+public class SecurityConfig extends GlobalMethodSecurityConfiguration {
+
+    @Override
+    protected MethodSecurityExpressionHandler createExpressionHandler() {
+        DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
+        expressionHandler.setPermissionEvaluator(new CustomPermissionEvaluator());
+        return expressionHandler;
+    }
+}
+```
+
+---
+
+### **4. Uso de `hasPermission` en métodos**
+Puedes proteger métodos usando la anotación `@PreAuthorize` con la expresión `hasPermission`.
+
+#### **Ejemplo:**
+```java
+@PreAuthorize("hasPermission(#document, 'edit')")
+public void editDocument(Document document) {
+    // Solo los usuarios con el permiso 'edit' pueden ejecutar este método
+}
+```
+
+En este caso:
+- `#document` es el objeto sobre el que se verifica el permiso.
+- `'edit'` es el permiso requerido.
+
+---
+
+### **5. Diseño de la base de datos para permisos**
+Necesitas una estructura en tu base de datos para almacenar los permisos. Un diseño típico puede incluir:
+
+#### **Tablas sugeridas**
+1. **Usuarios (`users`)**
+   - `id`
+   - `username`
+   - `password`
+
+2. **Recursos (`resources`)**
+   - `id`
+   - `name` (por ejemplo, "documento_1")
+
+3. **Permisos (`permissions`)**
+   - `id`
+   - `name` (por ejemplo, "read", "edit", "delete")
+
+4. **Asignación de permisos (`user_permissions`)**
+   - `user_id` (FK a `users`)
+   - `resource_id` (FK a `resources`)
+   - `permission_id` (FK a `permissions`)
+
+---
+
+### **6. Asignar permisos a un usuario sobre un recurso**
+Crea un servicio para asignar permisos dinámicamente.
+
+```java
+@Service
+public class PermissionService {
+
+    @Autowired
+    private UserPermissionRepository userPermissionRepository;
+
+    public void assignPermission(String username, Long resourceId, String permissionName) {
+        // Busca al usuario y el permiso
+        User user = userRepository.findByUsername(username);
+        Permission permission = permissionRepository.findByName(permissionName);
+
+        // Asocia el permiso con el recurso
+        UserPermission userPermission = new UserPermission();
+        userPermission.setUser(user);
+        userPermission.setResourceId(resourceId);
+        userPermission.setPermission(permission);
+
+        userPermissionRepository.save(userPermission);
+    }
+}
+```
+
+---
+
+### **7. Verificación de permisos en la lógica**
+Cuando uses `hasPermission`, el `PermissionEvaluator` verificará si el usuario tiene el permiso necesario según lo asignado en tu base de datos.
+
+#### **Ejemplo de método protegido:**
+```java
+@PreAuthorize("hasPermission(#resourceId, 'com.example.Document', 'read')")
+public Document getDocumentById(Long resourceId) {
+    // Lógica del método
+    return documentRepository.findById(resourceId).orElseThrow();
+}
+```
+
+---
+
+### **8. Pruebas**
+Realiza pruebas unitarias y de integración para asegurarte de que los permisos se asignan y verifican correctamente.
+
+#### **Prueba de asignación:**
+```java
+@Test
+public void testAssignPermission() {
+    permissionService.assignPermission("john_doe", 1L, "edit");
+
+    // Verifica que el permiso se haya asignado correctamente
+    assertTrue(userPermissionRepository.existsByUserAndResourceAndPermission("john_doe", 1L, "edit"));
+}
+```
+
+#### **Prueba de acceso a un método protegido:**
+```java
+@Test
+@WithMockUser(username = "john_doe")
+public void testProtectedMethod() {
+    // Solo debe ejecutarse si el usuario tiene el permiso
+    Document doc = documentService.getDocumentById(1L);
+    assertNotNull(doc);
+}
+```
+
+---
+
+### **9. Resumen**
+1. Implementa un `PermissionEvaluator` para manejar la lógica de permisos.
+2. Define tablas para usuarios, recursos y permisos en la base de datos.
+3. Usa `@PreAuthorize` con `hasPermission` para proteger tus métodos.
+4. Crea un servicio para asignar permisos dinámicamente.
+5. Prueba tu sistema para garantizar que los permisos funcionen correctamente.
+
+¡Con esta guía puedes implementar un sistema de permisos granular utilizando `hasPermission`!
+
+
+
+---
+
+## La diferencia principal entre **`@PreAuthorize`** y **`@PostAuthorize`** radica en **cuándo** se realiza la evaluación de la autorización en el flujo de ejecución de un método. Vamos a desglosarlo:
+
+---
+
+### **1. `@PreAuthorize`**
+- **¿Cuándo se ejecuta?**  
+  La autorización se verifica **antes** de que se ejecute el método. Si el usuario no tiene los permisos necesarios, el método no se ejecuta.
+
+- **Uso típico:**  
+  Ideal para restringir el acceso a un método basado en roles, permisos o condiciones antes de realizar la operación.
+
+- **Ejemplo:**
+  ```java
+  @PreAuthorize("hasRole('ADMIN')")
+  public void deleteUser(Long userId) {
+      // Solo los administradores pueden ejecutar este método
+      userRepository.deleteById(userId);
+  }
+  ```
+  En este caso, si el usuario no tiene el rol `ADMIN`, Spring Security bloqueará la ejecución **antes** de llegar al cuerpo del método.
+
+---
+
+### **2. `@PostAuthorize`**
+- **¿Cuándo se ejecuta?**  
+  La autorización se verifica **después** de que el método se haya ejecutado, pero antes de que se devuelva el resultado al cliente.
+
+- **Uso típico:**  
+  Útil en situaciones donde necesitas validar permisos basándote en el resultado del método. Es decir, el método se ejecuta primero, y luego se revisa si el usuario tiene acceso al resultado devuelto.
+
+- **Ejemplo:**
+  ```java
+  @PostAuthorize("returnObject.owner == authentication.name")
+  public Document getDocument(Long documentId) {
+      // Cualquier usuario puede ejecutar este método, pero solo
+      // podrá ver el documento si es el propietario
+      return documentRepository.findById(documentId).orElseThrow();
+  }
+  ```
+  En este ejemplo:
+  - El método `getDocument` se ejecuta y recupera el documento.
+  - Después, Spring Security evalúa si el usuario autenticado es el propietario del documento (comparando `owner` con el nombre del usuario autenticado).
+  - Si no es el propietario, se lanza una excepción de acceso denegado.
+
+---
+
+### **3. Resumen de diferencias**
+
+| Característica          | `@PreAuthorize`                       | `@PostAuthorize`                     |
+|--------------------------|----------------------------------------|---------------------------------------|
+| **Momento de evaluación**| Antes de ejecutar el método.           | Después de ejecutar el método.        |
+| **Acceso al resultado**  | No se tiene acceso al resultado.       | Sí se tiene acceso al resultado.      |
+| **Uso típico**           | Verificar permisos previos a una operación. | Verificar permisos basados en el resultado del método. |
+| **Efecto si falla**      | El método no se ejecuta.               | El resultado no

@@ -1355,5 +1355,142 @@ Estas herramientas combinadas son esenciales para aplicaciones basadas en el pat
 - Todas las vistas de thymeleaf se guardar en la carpeta templates
 
 
+---
+  
+Para enviar datos de un formulario desde el front-end al back-end usando **Thymeleaf** y **Spring Boot**, puedes seguir estos pasos detallados:
 
-MIN 3:48
+---
+
+### **1. Crear la clase del modelo (Entidad o DTO):**
+Define una clase en el backend que represente los datos del formulario.
+
+```java
+public class FormData {
+    private String nombre;
+    private String email;
+    private int edad;
+
+    // Getters y Setters
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public int getEdad() {
+        return edad;
+    }
+
+    public void setEdad(int edad) {
+        this.edad = edad;
+    }
+}
+```
+
+---
+
+### **2. Crear el controlador en el back-end:**
+Crea un controlador que procese el formulario.
+
+```java
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+
+@Controller
+public class FormController {
+
+    // Muestra el formulario
+    @GetMapping("/formulario")
+    public String mostrarFormulario(Model model) {
+        model.addAttribute("formData", new FormData());
+        return "formulario"; // Nombre del archivo HTML Thymeleaf
+    }
+
+    // Procesa el formulario
+    @PostMapping("/procesarFormulario")
+    public String procesarFormulario(@ModelAttribute FormData formData, Model model) {
+        // Aquí puedes manejar los datos enviados
+        System.out.println("Nombre: " + formData.getNombre());
+        System.out.println("Email: " + formData.getEmail());
+        System.out.println("Edad: " + formData.getEdad());
+
+        model.addAttribute("mensaje", "Formulario enviado correctamente.");
+        return "resultado"; // Redirige a una página de resultados
+    }
+}
+```
+
+---
+
+### **3. Crear la vista del formulario (HTML Thymeleaf):**
+El archivo `formulario.html` mostrará el formulario y enviará los datos al backend.
+
+```html
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Formulario</title>
+</head>
+<body>
+    <h1>Formulario de ejemplo</h1>
+    <form th:action="@{/procesarFormulario}" th:object="${formData}" method="post">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" th:field="*{nombre}" /><br/>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" th:field="*{email}" /><br/>
+
+        <label for="edad">Edad:</label>
+        <input type="number" id="edad" th:field="*{edad}" /><br/>
+
+        <button type="submit">Enviar</button>
+    </form>
+</body>
+</html>
+```
+
+---
+
+### **4. Crear la vista para mostrar el resultado:**
+El archivo `resultado.html` mostrará el mensaje o la respuesta.
+
+```html
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Resultado</title>
+</head>
+<body>
+    <h1>Resultado del Formulario</h1>
+    <p th:text="${mensaje}"></p>
+</body>
+</html>
+```
+
+---
+
+### **5. Ejecutar la aplicación:**
+1. Corre tu aplicación Spring Boot.
+2. Abre el navegador y visita `http://localhost:8080/formulario`.
+3. Llena el formulario y envíalo. Los datos se procesarán en el backend, y la página de resultado mostrará el mensaje de confirmación.
+
+---
+
+### **Notas adicionales:**
+- **Validación de datos:** Puedes agregar validaciones usando anotaciones de Java como `@NotNull`, `@Size`, o `@Email` en la clase del modelo y manejar errores en el controlador.
+- **Estilo y diseño:** Puedes usar CSS o frameworks como Bootstrap para darle un mejor aspecto al formulario.
+
+¿Te gustaría agregar alguna funcionalidad adicional como validación o mostrar los datos enviados en la página de resultados?
