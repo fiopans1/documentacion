@@ -1494,3 +1494,133 @@ El archivo `resultado.html` mostrará el mensaje o la respuesta.
 - **Estilo y diseño:** Puedes usar CSS o frameworks como Bootstrap para darle un mejor aspecto al formulario.
 
 ¿Te gustaría agregar alguna funcionalidad adicional como validación o mostrar los datos enviados en la página de resultados?
+
+---
+
+En **Thymeleaf**, el **Model** y el **@ModelAttribute** son conceptos fundamentales en el flujo de datos entre el controlador y la vista en aplicaciones basadas en **Spring MVC**. Aquí te lo explico:
+
+---
+
+### **1. El `Model` en Spring MVC**
+
+El **`Model`** es una interfaz que Spring proporciona para pasar datos desde el controlador a la vista (en este caso, una plantilla Thymeleaf). Es un contenedor de datos que permite añadir atributos que luego serán accesibles en la vista.
+
+#### Uso del `Model`:
+Cuando añades datos al objeto **`Model`**, estos estarán disponibles en la vista con los nombres que les hayas asignado.
+
+**Ejemplo de uso en un controlador:**
+
+```java
+@Controller
+public class MiControlador {
+
+    @GetMapping("/saludo")
+    public String mostrarSaludo(Model model) {
+        model.addAttribute("mensaje", "¡Hola desde Spring MVC!");
+        return "saludo"; // Nombre de la plantilla Thymeleaf (saludo.html)
+    }
+}
+```
+
+**Correspondiente en Thymeleaf:**
+
+En el archivo **`saludo.html`** puedes acceder a los atributos del modelo usando la sintaxis de Thymeleaf:
+
+```html
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Saludo</title>
+</head>
+<body>
+    <h1 th:text="${mensaje}">Mensaje por defecto</h1>
+</body>
+</html>
+```
+
+- **`${mensaje}`**: Recupera el valor del atributo llamado `mensaje` en el modelo.
+
+---
+
+### **2. La anotación `@ModelAttribute`**
+
+La anotación **`@ModelAttribute`** tiene dos principales usos en Spring:
+
+#### **a. Para agregar atributos al modelo globalmente**
+Si anotas un método con `@ModelAttribute`, el valor devuelto por ese método se agregará automáticamente al modelo **para todas las vistas**. Esto es útil para datos comunes que deben estar disponibles en muchas vistas.
+
+**Ejemplo:**
+
+```java
+@Controller
+public class MiControlador {
+
+    @ModelAttribute("nombreApp")
+    public String nombreDeLaAplicacion() {
+        return "Mi Aplicación Spring";
+    }
+
+    @GetMapping("/pagina")
+    public String mostrarPagina(Model model) {
+        model.addAttribute("mensaje", "Contenido de la página");
+        return "pagina";
+    }
+}
+```
+
+En la vista **`pagina.html`**, puedes acceder tanto a `mensaje` como a `nombreApp`:
+
+```html
+<p th:text="${nombreApp}"></p>
+<p th:text="${mensaje}"></p>
+```
+
+#### **b. Para vincular datos a un objeto del modelo**
+Cuando usas **`@ModelAttribute`** como parámetro de un método controlador, le dices a Spring que vincule los datos de una solicitud HTTP (como datos enviados desde un formulario) a un objeto específico.
+
+**Ejemplo de un formulario:**
+
+```java
+@Controller
+public class UsuarioControlador {
+
+    @GetMapping("/formulario")
+    public String mostrarFormulario(Model model) {
+        model.addAttribute("usuario", new Usuario());
+        return "formulario";
+    }
+
+    @PostMapping("/formulario")
+    public String procesarFormulario(@ModelAttribute Usuario usuario) {
+        System.out.println("Datos del usuario: " + usuario);
+        return "resultado";
+    }
+}
+```
+
+En este caso:
+
+1. El controlador crea un objeto vacío de la clase `Usuario` y lo añade al modelo.
+2. En la vista **`formulario.html`**, puedes usar Thymeleaf para llenar los datos del objeto `Usuario`:
+    ```html
+    <form action="#" th:action="@{/formulario}" th:object="${usuario}" method="post">
+        <label>Nombre:</label>
+        <input type="text" th:field="*{nombre}" />
+        <br/>
+        <label>Email:</label>
+        <input type="email" th:field="*{email}" />
+        <br/>
+        <button type="submit">Enviar</button>
+    </form>
+    ```
+
+3. Cuando se envía el formulario, Spring automáticamente llena el objeto `Usuario` con los datos enviados y lo pasa al controlador como parámetro.
+
+---
+
+### Resumen:
+- **`Model`**: Contenedor para pasar datos desde el controlador a la vista.
+  - Ejemplo: `model.addAttribute("clave", valor)`.
+- **`@ModelAttribute`**:
+  - **Método**: Agrega datos al modelo de forma global.
+  - **Parámetro**: Vincula datos de entrada (como formularios) a un objeto del modelo.

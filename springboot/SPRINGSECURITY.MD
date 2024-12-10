@@ -3290,3 +3290,5 @@ public void testProtectedMethod() {
 | **Acceso al resultado**  | No se tiene acceso al resultado.       | Sí se tiene acceso al resultado.      |
 | **Uso típico**           | Verificar permisos previos a una operación. | Verificar permisos basados en el resultado del método. |
 | **Efecto si falla**      | El método no se ejecuta.               | El resultado no
+
+
