@@ -1,3 +1,140 @@
+# CONCEPTOS BASICOS:
+
+## **CORS** (**Cross-Origin Resource Sharing**, o **Intercambio de Recursos de Origen Cruzado**) es un mecanismo de seguridad implementado en navegadores web para controlar cómo un recurso (como datos, imágenes, o archivos) en un servidor puede ser solicitado desde un dominio diferente al que aloja dicho recurso.
+
+### **1. ¿Qué problema resuelve CORS?**
+Por defecto, los navegadores aplican la **Política del mismo origen** (*Same-Origin Policy*), que restringe que un sitio web (dominio) haga solicitudes HTTP a otro dominio diferente. Esto protege a los usuarios contra posibles ataques, como el **Cross-Site Request Forgery (CSRF)**.
+
+Por ejemplo:
+- Tu aplicación en `https://mi-app.com` no puede acceder directamente a recursos alojados en `https://api-externa.com` (otro origen).
+- Pero CORS permite que el servidor externo (`api-externa.com`) especifique en sus cabeceras si acepta solicitudes desde dominios externos como `mi-app.com`.
+
+### **2. ¿Qué es un origen (origin)?**
+Un origen está definido por tres componentes:
+1. El **protocolo** (HTTP o HTTPS).
+2. El **dominio** (por ejemplo, `example.com`).
+3. El **puerto** (por ejemplo, `:8080`).
+
+Dos URLs se consideran del **mismo origen** si tienen el mismo protocolo, dominio y puerto. Si cualquiera de estos es diferente, se considera un **origen cruzado** (cross-origin).
+
+---
+
+### **3. ¿Cómo funciona CORS?**
+Cuando un navegador hace una solicitud HTTP a un servidor de otro origen, el servidor puede responder con cabeceras específicas de CORS para permitir o denegar el acceso. Algunas de estas cabeceras son:
+
+- **`Access-Control-Allow-Origin`**: Define qué dominios tienen permiso para acceder al recurso. Puede ser un dominio específico (`https://mi-app.com`) o un comodín (`*`) para permitir acceso desde cualquier origen.
+- **`Access-Control-Allow-Methods`**: Especifica los métodos HTTP permitidos, como `GET`, `POST`, `PUT`, etc.
+- **`Access-Control-Allow-Headers`**: Define qué cabeceras HTTP personalizadas pueden enviarse.
+- **`Access-Control-Allow-Credentials`**: Indica si se pueden enviar credenciales (cookies o encabezados de autenticación).
+
+#### Ejemplo de respuesta CORS:
+El servidor responde con algo como esto:
+
+```
+Access-Control-Allow-Origin: https://mi-app.com
+Access-Control-Allow-Methods: GET, POST
+Access-Control-Allow-Headers: Content-Type
+Access-Control-Allow-Credentials: true
+```
+
+Esto indica al navegador que:
+- Permita solicitudes desde el dominio `https://mi-app.com`.
+- Sólo permita métodos `GET` y `POST`.
+- Autorice cabeceras personalizadas como `Content-Type`.
+- Acepte el envío de cookies o credenciales.
+
+---
+
+### **4. Tipos de solicitudes CORS**
+
+#### **a. Solicitud simple:**
+Una solicitud se considera "simple" si cumple con ciertos criterios (por ejemplo, usa métodos como `GET` o `POST` y no tiene cabeceras personalizadas). En este caso, el navegador envía la solicitud directamente, y el servidor responde con las cabeceras de CORS.
+
+#### **b. Solicitud preflight (preparación):**
+Cuando la solicitud incluye métodos no estándar (como `PUT` o `DELETE`), cabeceras personalizadas, o credenciales, el navegador realiza primero una **solicitud preflight** usando el método `OPTIONS`. Esto comprueba si el servidor permite la solicitud antes de enviarla realmente.
+
+**Ejemplo de solicitud preflight:**
+```http
+OPTIONS /recurso HTTP/1.1
+Origin: https://mi-app.com
+Access-Control-Request-Method: POST
+Access-Control-Request-Headers: Content-Type
+```
+
+El servidor responde indicando si la solicitud real será permitida:
+```http
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin: https://mi-app.com
+Access-Control-Allow-Methods: POST
+Access-Control-Allow-Headers: Content-Type
+```
+
+---
+
+### **5. Configuración de CORS en el servidor**
+El soporte para CORS debe configurarse en el servidor. Aquí tienes ejemplos para algunas tecnologías comunes:
+
+#### **Spring Boot**
+```java
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@Configuration
+public class CorsConfig implements WebMvcConfigurer {
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("https://mi-app.com")
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowedHeaders("*")
+                .allowCredentials(true);
+    }
+}
+```
+
+#### **Node.js (Express)**
+```javascript
+const express = require('express');
+const cors = require('cors');
+const app = express();
+
+app.use(cors({
+    origin: 'https://mi-app.com',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true
+}));
+
+app.listen(3000, () => {
+    console.log('Servidor corriendo en puerto 3000');
+});
+```
+
+---
+
+### **6. Errores comunes relacionados con CORS**
+Si el servidor no responde correctamente con las cabeceras CORS necesarias, el navegador bloquea la solicitud. Algunos errores comunes son:
+
+- **Falta la cabecera `Access-Control-Allow-Origin`**.
+- El origen no está permitido en el servidor.
+- El servidor no admite el método HTTP usado en la solicitud.
+- Las credenciales no están configuradas correctamente.
+
+---
+
+### **Resumen:**
+- **CORS** permite que un navegador solicite recursos de un origen diferente de manera segura.
+- El servidor controla qué orígenes, métodos y cabeceras están permitidos mediante las cabeceras CORS.
+- Necesitas configurar el servidor correctamente para permitir solicitudes cross-origin según sea necesario.
+
+---
+---
+---
+
+# SPRING SECURITY:
+
 ## **1. Introducción a Spring Security**
 
 Spring Security es un potente framework que proporciona autenticación, autorización y varias funcionalidades relacionadas con la seguridad para aplicaciones basadas en Spring. Es ampliamente utilizado en aplicaciones modernas debido a su flexibilidad, personalización y facilidad de integración.
