@@ -431,3 +431,35 @@ Piensa en Maven como una máquina con pasos lógicos:
 3. **Prueba tu código:** `mvn test`
 4. **Empaqueta el proyecto:** `mvn package`
 5. **Guárdalo para usar en otros proyectos:** `mvn install`
+
+
+
+## DIFERENCIA MVN INSTALL Y MVN CLEAN INSTALL
+La diferencia principal entre `mvn install` y `mvn clean install` radica en la inclusión de la fase **`clean`** en el ciclo de vida de Maven cuando se utiliza el comando `mvn clean install`. Veamos en detalle:
+
+### 1. **`mvn install`**
+- Este comando ejecuta el ciclo de vida de Maven desde la fase inicial hasta la fase **`install`**. 
+- **Fase `install`**: En esta fase, Maven compila el código fuente, ejecuta las pruebas, empaqueta el proyecto (en JAR, WAR, etc.) y copia el artefacto generado (junto con las dependencias necesarias) en el repositorio local de Maven (generalmente en `~/.m2/repository`).
+- **No elimina archivos previos**: Si ya tienes artefactos generados (como JARs o WARs) y carpetas de compilación en el directorio `target`, Maven los reutilizará, lo que puede resultar en inconsistencias si los artefactos o clases generadas previamente están desactualizados.
+
+### 2. **`mvn clean install`**
+- Este comando **incluye la fase `clean` antes de la fase `install`**.
+- **Fase `clean`**: Borra la carpeta `target` y cualquier archivo generado anteriormente, asegurando un entorno limpio para la compilación.
+- Después de limpiar, Maven ejecuta el ciclo de vida completo desde el principio hasta la fase `install`, compilando el código, ejecutando pruebas, empaquetando y colocando los artefactos en el repositorio local.
+
+### Diferencias clave:
+| Aspecto                     | `mvn install`                       | `mvn clean install`                  |
+|-----------------------------|--------------------------------------|--------------------------------------|
+| **Limpieza previa**         | No elimina archivos previos.        | Limpia los archivos y directorios generados antes de la ejecución. |
+| **Reutilización**           | Puede reutilizar archivos obsoletos.| Asegura que el proceso se ejecute desde cero. |
+| **Tiempo de ejecución**     | Generalmente más rápido.             | Puede tomar más tiempo debido al paso adicional de limpieza. |
+| **Consistencia**            | Puede generar resultados inconsistentes si hay cambios previos. | Garantiza un entorno limpio y resultados confiables. |
+
+### ¿Cuándo usar cada uno?
+- **`mvn install`**: Cuando estás trabajando iterativamente y no necesitas realizar una limpieza completa, por ejemplo, si no ha habido cambios en archivos generados previamente o dependencias.
+- **`mvn clean install`**: Es preferible cuando:
+  - Haces cambios significativos en el código o dependencias.
+  - Quieres garantizar que no haya residuos de compilaciones anteriores.
+  - Has encontrado problemas inesperados en la ejecución del proyecto y necesitas empezar desde un entorno limpio.
+
+En resumen, **`mvn clean install`** es una opción más segura pero un poco más lenta, mientras que **`mvn install`** es más rápido pero puede resultar en inconsistencias si no se tiene cuidado.
