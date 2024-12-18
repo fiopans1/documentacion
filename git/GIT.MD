@@ -305,6 +305,151 @@ En resumen:
 - Usa **`git reset`** para borrar commits y cambios recientes en un entorno controlado.
 
 
+## `git rebase --onto`
+
+El comando `git rebase --onto` es una herramienta avanzada en Git que permite mover un rango específico de commits de una rama y re-aplicarlos sobre una nueva base. Aunque el resultado puede parecer similar a un rebase "normal", `--onto` proporciona mayor control sobre qué commits se seleccionan y dónde se aplican.
+
+---
+
+## Estructura del comando
+
+La sintaxis básica es la siguiente:
+
+```bash
+git rebase --onto <nueva-base> <desde-dónde> <rama>
+```
+
+- **`<nueva-base>`**: Es el commit o rama sobre el cual quieres mover y re-aplicar los commits seleccionados.
+- **`<desde-dónde>`**: Define el commit anterior al rango de commits que serán seleccionados. Los commits hasta este punto **no serán re-aplicados**.
+- **`<rama>`**: La rama que contiene los commits que serán movidos.
+
+---
+
+## Ejemplo práctico
+
+Imagina que tienes el siguiente historial de commits:
+
+```
+A - B - C (main)
+         \
+          D - E - F (feature)
+```
+
+Y tienes otra rama llamada `new-base` con este historial:
+
+```
+A - B - X - Y - Z (new-base)
+```
+
+### Objetivo
+Quieres mover los commits `D`, `E` y `F` de la rama `feature` para que estén basados en `new-base` (es decir, después de `Z`).
+
+### Comando
+El comando con `--onto` sería:
+
+```bash
+git rebase --onto new-base main feature
+```
+
+### ¿Qué hace este comando?
+1. **`main` (`C`)**: Define el punto de inicio del rebase. Git seleccionará todos los commits de `feature` que están **después de `main`** (es decir, `D`, `E` y `F`).
+2. **`new-base` (`Z`)**: Especifica la nueva base sobre la que se aplicarán los commits seleccionados.
+3. **`feature`**: Es la rama que contiene los commits que serán movidos.
+
+### Resultado
+Después del rebase, el historial quedará así:
+
+```
+A - B - C (main)
+         \
+          X - Y - Z - D' - E' - F' (feature)
+```
+
+- Los commits `D`, `E` y `F` ahora están basados en `new-base` (`Z`).
+- Los commits originales (`D`, `E`, `F`) han sido "re-aplicados" y tienen nuevos identificadores (`D'`, `E'`, `F'`).
+
+---
+
+## Diferencia entre `git rebase` y `git rebase --onto`
+
+En un **rebase normal**, Git selecciona automáticamente el punto de partida como el commit donde la rama se desvía de su base original. Por ejemplo:
+
+### Rebase normal
+Si ejecutas:
+
+```bash
+git checkout feature
+git rebase new-base
+```
+
+Git:
+1. Encuentra el punto de divergencia entre `feature` y su base original (`main`, en este caso el commit `C`).
+2. Selecciona todos los commits de `feature` después de la divergencia (`D`, `E`, `F`).
+3. Re-aplica esos commits sobre la nueva base (`new-base`, después de `Z`).
+
+El resultado es el mismo:
+
+```
+A - B - C (main)
+         \
+          X - Y - Z - D' - E' - F' (feature)
+```
+
+Sin embargo, el **rebase normal** siempre selecciona automáticamente todos los commits después del punto de divergencia. No permite controlar el rango de commits que serán movidos.
+
+### ¿Cuándo usar `--onto`?
+
+El comando `--onto` se vuelve útil en escenarios más complejos, donde necesitas mover solo un subconjunto específico de commits. Por ejemplo:
+
+#### Escenario avanzado
+Imagina esta estructura:
+
+```
+A - B - C (main)
+         \
+          D - E - F (feature)
+                 \
+                  G - H - I (other-branch)
+```
+
+Quieres mover **solo los commits `E` y `F`** de `feature` a `new-base`. Si haces un rebase normal:
+
+```bash
+git rebase new-base
+```
+
+Git movería **todo el rango de commits desde la divergencia con `main`**, es decir, `D`, `E`, y `F`.
+
+Pero con `--onto`, puedes seleccionar exactamente qué parte del historial mover:
+
+```bash
+git rebase --onto new-base E feature
+```
+
+#### Resultado:
+
+```
+A - B - C (main)
+         \
+          D - E (feature)
+         \
+          X - Y - Z - F' (feature)
+```
+
+- Git seleccionó solo el commit `F` (todo lo después de `E`).
+- El commit `F` fue re-aplicado sobre `new-base` (`Z`).
+
+---
+
+## Resumen
+
+- **`git rebase` (normal)**: Reorganiza commits desde el punto de divergencia automáticamente. Es útil para mover ramas enteras.
+- **`git rebase --onto`**: Te permite seleccionar un rango específico de commits y moverlos explícitamente a una nueva base. Ofrece más flexibilidad para manejar ramas complejas.
+
+Usar `--onto` es especialmente útil cuando necesitas control preciso sobre el rango de commits a mover, o en flujos de trabajo avanzados donde varias ramas interactúan y divergen.
+
+
+
 ## Comandos que tenemos que mirar
 ```
 git checkout -b nuevarama ramactual
