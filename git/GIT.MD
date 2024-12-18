@@ -305,6 +305,9 @@ En resumen:
 - Usa **`git reset`** para borrar commits y cambios recientes en un entorno controlado.
 
 
+---
+---
+
 ## `git rebase --onto`
 
 El comando `git rebase --onto` es una herramienta avanzada en Git que permite mover un rango específico de commits de una rama y re-aplicarlos sobre una nueva base. Aunque el resultado puede parecer similar a un rebase "normal", `--onto` proporciona mayor control sobre qué commits se seleccionan y dónde se aplican.
