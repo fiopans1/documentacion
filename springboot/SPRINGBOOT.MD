@@ -1831,3 +1831,167 @@ En este caso:
 - **`@ModelAttribute`**:
   - **Método**: Agrega datos al modelo de forma global.
   - **Parámetro**: Vincula datos de entrada (como formularios) a un objeto del modelo.
+
+
+
+
+# COSAS A MAYORES SOBRE SPRINGBOOT:
+
+## @Embeddable
+
+Aquí tienes una guía breve y clara sobre el uso de la anotación `@Embeddable` en **Spring Boot con JPA**:
+
+---
+
+### **¿Qué es `@Embeddable`?**
+
+`@Embeddable` es una anotación en JPA que se utiliza para declarar una clase cuyos atributos **formarán parte de otra entidad** y no tendrán una tabla independiente en la base de datos. Los campos de la clase `@Embeddable` se almacenan como columnas en la tabla de la entidad que la contiene.
+
+### **Cuándo usar `@Embeddable`**
+- Cuando necesitas representar un conjunto lógico de atributos que no tienen sentido como una entidad independiente.
+- Ejemplo típico: direcciones, coordenadas geográficas, información de contacto, etc.
+
+---
+
+### **Pasos para usar `@Embeddable`**
+
+#### 1. Crear la clase embebida
+
+- Declara una clase con la anotación `@Embeddable`.
+- Define los atributos que se incluirán en la clase principal.
+
+**Ejemplo: Clase `Direccion`**
+```java
+import jakarta.persistence.Embeddable;
+
+@Embeddable
+public class Direccion {
+    private String calle;
+    private String ciudad;
+    private String codigoPostal;
+
+    // Getters y Setters
+    public String getCalle() {
+        return calle;
+    }
+
+    public void setCalle(String calle) {
+        this.calle = calle;
+    }
+
+    public String getCiudad() {
+        return ciudad;
+    }
+
+    public void setCiudad(String ciudad) {
+        this.ciudad = ciudad;
+    }
+
+    public String getCodigoPostal() {
+        return codigoPostal;
+    }
+
+    public void setCodigoPostal(String codigoPostal) {
+        this.codigoPostal = codigoPostal;
+    }
+}
+```
+
+#### 2. Usar la clase embebida en una entidad
+
+- Usa la anotación `@Embedded` en la entidad que contiene la clase embebida.
+
+**Ejemplo: Clase `Usuario`**
+```java
+import jakarta.persistence.*;
+
+@Entity
+public class Usuario {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String nombre;
+
+    @Embedded
+    private Direccion direccion; // Clase embebida
+
+    // Getters y Setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public Direccion getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(Direccion direccion) {
+        this.direccion = direccion;
+    }
+}
+```
+
+#### 3. Opcional: Configurar los nombres de columnas con `@AttributeOverrides`
+
+Si quieres personalizar los nombres de las columnas de la clase embebida, usa `@AttributeOverrides` y `@AttributeOverride`.
+
+**Ejemplo: Renombrar columnas de `Direccion`**
+```java
+@Entity
+public class Usuario {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String nombre;
+
+    @Embedded
+    @AttributeOverrides({
+        @AttributeOverride(name = "calle", column = @Column(name = "direccion_calle")),
+        @AttributeOverride(name = "ciudad", column = @Column(name = "direccion_ciudad")),
+        @AttributeOverride(name = "codigoPostal", column = @Column(name = "direccion_codigo_postal"))
+    })
+    private Direccion direccion;
+
+    // Getters y Setters
+}
+```
+
+---
+
+### **Cómo se refleja en la base de datos**
+
+En el ejemplo anterior, la tabla `Usuario` incluirá las columnas:
+
+| id  | nombre | direccion_calle | direccion_ciudad | direccion_codigo_postal |
+|-----|--------|-----------------|------------------|--------------------------|
+| 1   | Juan   | Calle Falsa 123 | Springfield      | 12345                   |
+
+---
+
+### **Ventajas de usar `@Embeddable`**
+1. **Modelo más limpio**: Agrupas atributos relacionados en una clase lógica.
+2. **No crea una tabla adicional**: Reduce la complejidad de la base de datos.
+3. **Reutilización**: Puedes usar la misma clase embebida en varias entidades.
+
+---
+
+### **Casos de uso comunes**
+- Direcciones (como el ejemplo).
+- Información de contacto (teléfono, correo, etc.).
+- Coordenadas (latitud, longitud).
+- Valores compuestos (por ejemplo, dimensiones: alto, ancho, profundidad).
+
+---
