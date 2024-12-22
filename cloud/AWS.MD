@@ -1592,3 +1592,615 @@ En RDS, las plantillas de configuración son preajustes diseñados para diferent
 Producción: Alta disponibilidad (Multi-AZ), copias de seguridad automáticas, monitoreo detallado y escalabilidad habilitada para cargas críticas.
 Desarrollo/Pruebas: Configuración de bajo costo, sin Multi-AZ, menor retención de backups y recursos limitados para optimizar el presupuesto.
 Personalizado: Configuración ajustable según necesidades específicas, permitiendo combinar opciones de costo y rendimiento.
+
+Aquí tienes una guía detallada sobre **Amazon S3**.  
+
+# Amazon S3  
+
+## ¿Qué es Amazon S3?  
+Amazon Simple Storage Service (S3) es un servicio de almacenamiento en la nube altamente escalable, seguro y diseñado para almacenar y recuperar cualquier cantidad de datos desde cualquier lugar. S3 es utilizado por aplicaciones para almacenar datos como objetos, que incluyen texto, imágenes, videos, bases de datos, logs, y más.  
+
+### Características principales  
+- **Escalabilidad**: Maneja cualquier cantidad de datos sin preocuparte por la infraestructura subyacente.  
+- **Durabilidad**: Diseñado para garantizar el 99.999999999% (11 nueves) de durabilidad de los datos.  
+- **Alta disponibilidad**: Acceso continuo a los datos con mínimas interrupciones.  
+- **Seguridad**: Ofrece cifrado en tránsito y en reposo, además de herramientas avanzadas como políticas de IAM y control de accesos.  
+- **Clases de almacenamiento**: Opciones para equilibrar costo y rendimiento.  
+
+---
+
+## Arquitectura de Amazon S3  
+
+### Buckets  
+- Un **bucket** es el contenedor principal donde se almacenan los objetos.  
+- Cada bucket tiene un nombre único a nivel global.  
+- Puedes definir configuraciones específicas por bucket, como permisos y versiones.  
+
+### Objetos  
+- Los **objetos** son los archivos almacenados en S3.  
+- Cada objeto tiene:  
+  - **Clave (Key)**: El identificador único dentro del bucket.  
+  - **Valor**: Los datos binarios (contenido del archivo).  
+  - **Metadatos**: Información adicional del objeto.  
+  - **Versión**: Si la versión está habilitada en el bucket.  
+
+---
+
+## Clases de almacenamiento  
+Amazon S3 ofrece varias clases de almacenamiento para diferentes necesidades:  
+
+### 1. **S3 Standard**  
+- Para acceso frecuente a datos.  
+- Alta disponibilidad y baja latencia.  
+- Uso típico: Almacenamiento de datos críticos y en tiempo real.  
+
+### 2. **S3 Intelligent-Tiering**  
+- Transfiere automáticamente los datos entre niveles de almacenamiento basándose en patrones de acceso.  
+- Ideal para datos con patrones de acceso desconocidos o variables.  
+
+### 3. **S3 Standard-Infrequent Access (Standard-IA)**  
+- Diseñado para datos de acceso poco frecuente pero que necesitan alta durabilidad.  
+- Uso típico: Copias de seguridad y recuperación de desastres.  
+
+### 4. **S3 One Zone-Infrequent Access (One Zone-IA)**  
+- Similar a Standard-IA pero almacena datos en una sola zona de disponibilidad.  
+- Uso típico: Datos replicados o no críticos.  
+
+### 5. **S3 Glacier**  
+- Para archivado a largo plazo con tiempos de recuperación en minutos u horas.  
+- Más económico.  
+
+### 6. **S3 Glacier Deep Archive**  
+- Almacenamiento más económico, diseñado para archivos que se necesitan una vez al año o menos.  
+- Recuperación típica: 12 horas.  
+
+---
+
+## Gestión y seguridad  
+
+### Control de acceso  
+1. **Políticas de bucket**: Permiten definir permisos a nivel de bucket.  
+2. **Listas de control de acceso (ACL)**: Controlan permisos a nivel de objeto.  
+3. **IAM**: Gestiona usuarios y roles con permisos específicos para S3.  
+
+### Cifrado  
+- **Cifrado en reposo**:  
+  - Server-Side Encryption (SSE): SSE-S3, SSE-KMS, SSE-C.  
+- **Cifrado en tránsito**: HTTPS/TLS para proteger datos en movimiento.  
+
+### Versionado  
+- Habilita el control de versiones para protegerse contra eliminación accidental o corrupción.  
+
+---
+
+## Funcionalidades avanzadas  
+
+### 1. **Transfer Acceleration**  
+- Mejora la velocidad de carga utilizando una red de puntos de acceso distribuidos globalmente (CloudFront).  
+
+### 2. **Event Notifications**  
+- Configura eventos para que S3 notifique a otros servicios como Lambda, SQS o SNS.  
+
+### 3. **Replicación**  
+- **CRR (Cross-Region Replication)**: Replica objetos entre regiones.  
+- **SRR (Same-Region Replication)**: Replica dentro de la misma región para casos de compliance.  
+
+### 4. **Lifecycle Policies**  
+- Automatiza el movimiento de objetos entre clases de almacenamiento o la eliminación de datos antiguos.  
+
+### 5. **Logging y monitoreo**  
+- **Access Logs**: Registra todas las solicitudes al bucket.  
+- **AWS CloudTrail**: Audita acciones realizadas en S3.  
+- **Amazon CloudWatch**: Proporciona métricas de uso y desempeño.  
+
+---
+
+## Casos de uso  
+1. **Backup y recuperación de datos**: Almacena y recupera datos críticos con alta durabilidad.  
+2. **Distribución de contenido estático**: Hosting de sitios web estáticos y distribución mediante Amazon CloudFront.  
+3. **Archivos de datos grandes**: Uso en Big Data, Data Lakes y Machine Learning.  
+4. **Cumplimiento y auditoría**: Garantiza políticas regulatorias con el versionado y la replicación.  
+
+---
+
+## Precios  
+Amazon S3 utiliza un modelo de precios basado en:  
+1. **Cantidad de almacenamiento utilizado**.  
+2. **Solicitudes y recuperación de datos**.  
+3. **Transferencia de datos**.  
+4. **Clases de almacenamiento utilizadas**.  
+
+**Tip**: Usa la calculadora de precios de AWS para estimar costos.  
+
+---
+
+## Ejemplo práctico: Crear un bucket S3  
+1. Ve a la consola de AWS y selecciona **Amazon S3**.  
+2. Haz clic en **Create Bucket**.  
+3. Configura:  
+   - Nombre único del bucket.  
+   - Región.  
+   - Opciones como versionado, cifrado y políticas de acceso.  
+4. Haz clic en **Create**.  
+
+---
+
+# Políticas de Bucket en Amazon S3  
+
+## ¿Qué son las políticas de bucket?  
+Las políticas de bucket son un conjunto de permisos escritos en JSON que controlan el acceso a los datos dentro de un bucket de Amazon S3. Estas políticas permiten definir quién puede acceder al bucket y qué acciones puede realizar, proporcionando un control detallado a nivel de bucket.  
+
+---
+
+## Estructura de una política de bucket  
+Una política de bucket se compone de los siguientes elementos clave:  
+- **Version**: Especifica la versión del lenguaje de políticas (generalmente `"2012-10-17"`).  
+- **Statement**: Contiene una o más declaraciones de permisos, cada una con:  
+  - **Effect**: Define si la acción es `Allow` (permitir) o `Deny` (denegar).  
+  - **Principal**: Especifica quién tiene acceso (usuarios, roles o cuentas).  
+  - **Action**: Enumera las acciones permitidas o denegadas, como `s3:GetObject` o `s3:PutObject`.  
+  - **Resource**: Define los recursos afectados, generalmente en formato ARN (`arn:aws:s3:::bucket-name/*`).  
+  - **Condition** (opcional): Agrega reglas adicionales, como restricciones por IP o tiempo.  
+
+---
+
+## Ejemplo básico de política de bucket  
+
+### Permitir acceso público de solo lectura a un bucket  
+Esta política permite que cualquier usuario lea los objetos del bucket.  
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::example-bucket/*"
+    }
+  ]
+}
+```  
+
+### Denegar todas las acciones desde una IP específica  
+Esta política deniega cualquier acción en el bucket desde una IP en particular.  
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "s3:*",
+      "Resource": "arn:aws:s3:::example-bucket/*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    }
+  ]
+}
+```  
+
+---
+
+## Buenas prácticas  
+1. **Principio de mínimo privilegio**: Solo otorga los permisos estrictamente necesarios.  
+2. **Evitar acceso público no intencional**: Usa herramientas como el **Bucket Policy Validator** para verificar configuraciones.  
+3. **Cifrado obligatorio**: Implementa políticas que exijan el cifrado de los datos.  
+
+### Ejemplo: Forzar el cifrado de objetos al subirlos  
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:s3:::example-bucket/*",
+      "Condition": {
+        "StringNotEquals": {
+          "s3:x-amz-server-side-encryption": "AES256"
+        }
+      }
+    }
+  ]
+}
+```  
+
+---
+
+## Cómo aplicar una política de bucket  
+1. Ve a la consola de AWS y selecciona **S3**.  
+2. Abre el bucket al que quieres aplicar la política.  
+3. En la pestaña **Permissions**, selecciona **Bucket Policy**.  
+4. Pega la política en formato JSON y haz clic en **Save**.  
+
+---
+
+
+# Guía Completa sobre IAM en AWS: Usuarios, Claves y Gestión de Accesos  
+
+## ¿Qué es AWS Identity and Access Management (IAM)?  
+AWS IAM es un servicio que permite gestionar de forma segura el acceso a los recursos de AWS. Con IAM, puedes crear usuarios, grupos, roles y políticas para controlar quién tiene acceso a qué recursos y en qué condiciones.  
+
+---
+
+## Componentes clave de IAM  
+
+### 1. **Usuarios de IAM**  
+- Representan a una persona o aplicación que necesita acceso a AWS.  
+- Cada usuario tiene credenciales propias (contraseña y/o claves de acceso).  
+- No tienen permisos por defecto; deben asignarse mediante políticas.  
+
+### 2. **Grupos de IAM**  
+- Un grupo es una colección de usuarios de IAM.  
+- Se utilizan para administrar permisos a nivel grupal en lugar de individual.  
+- Ejemplo: Un grupo "Desarrolladores" con permisos de acceso a EC2 y S3.  
+
+### 3. **Roles de IAM**  
+- Un rol es una identidad similar a un usuario, pero no tiene credenciales asociadas.  
+- Los roles se asumen temporalmente para obtener permisos específicos.  
+- Ejemplo: Un servicio como EC2 asume un rol para interactuar con S3.  
+
+### 4. **Políticas de IAM**  
+- Declaraciones en JSON que definen permisos.  
+- Tipos de políticas:  
+  - **Administradas por AWS**: Plantillas predefinidas.  
+  - **Administradas por el cliente**: Políticas personalizadas creadas por el usuario.  
+  - **Adjuntas a recursos**: Políticas específicas de servicio.  
+
+---
+
+## Crear un usuario de IAM  
+
+### Pasos en la consola de AWS  
+1. Ve al servicio **IAM** en la consola de AWS.  
+2. Haz clic en **Users** > **Add users**.  
+3. Ingresa un nombre para el usuario.  
+4. Selecciona el tipo de acceso:  
+   - **Programmatic access**: Claves de acceso para la CLI/SDK.  
+   - **AWS Management Console access**: Acceso con usuario/contraseña a la consola.  
+5. Asigna permisos al usuario:  
+   - Adjunta una política existente (como `AdministratorAccess`).  
+   - Añade al usuario a un grupo con permisos configurados.  
+6. Revisa y confirma la creación del usuario.  
+
+**Resultado**: Obtendrás una clave de acceso (Access Key) y una clave secreta (Secret Access Key) para uso en la CLI o SDK. Descarga este archivo y guárdalo de forma segura.  
+
+---
+
+## Crear un grupo y asignar usuarios  
+
+1. En la consola de IAM, selecciona **Groups** > **Create Group**.  
+2. Asigna un nombre al grupo, como `Developers`.  
+3. Adjunta políticas predefinidas, como `AmazonS3FullAccess`.  
+4. Agrega usuarios al grupo.  
+5. Finaliza la creación.  
+
+---
+
+## Crear y gestionar roles de IAM  
+
+1. Ve a **Roles** en la consola de IAM.  
+2. Haz clic en **Create Role**.  
+3. Selecciona una entidad confiable:  
+   - **Servicio de AWS** (por ejemplo, EC2).  
+   - **Cuenta de AWS** (para acceso entre cuentas).  
+4. Adjunta políticas para definir los permisos del rol.  
+5. Revisa y crea el rol.  
+
+**Ejemplo**: Un rol para EC2 que permite acceso a un bucket S3:  
+- Permite que una instancia de EC2 lea y escriba en un bucket S3 específico.  
+
+---
+
+## Crear una política personalizada  
+
+1. Ve a **Policies** en la consola de IAM.  
+2. Haz clic en **Create Policy**.  
+3. Usa el generador visual o ingresa el JSON directamente.  
+
+**Ejemplo de política: Acceso restringido a un bucket S3**  
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "s3:ListBucket",
+      "Resource": "arn:aws:s3:::example-bucket"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::example-bucket/*"
+    }
+  ]
+}
+```  
+
+4. Adjunta esta política a un usuario, grupo o rol.  
+
+---
+
+## Gestión de claves de acceso  
+
+### ¿Qué son las claves de acceso?  
+- **Access Key ID**: Identificador público.  
+- **Secret Access Key**: Identificador privado.  
+- Son necesarias para autenticarse con la AWS CLI, SDK o API.  
+
+### Crear una clave de acceso  
+1. Ve a **Users** en la consola de IAM.  
+2. Selecciona el usuario y haz clic en la pestaña **Security credentials**.  
+3. Haz clic en **Create access key**.  
+4. Descarga la clave en un archivo `.csv`.  
+
+### Rotación de claves  
+- AWS recomienda rotar las claves regularmente.  
+- Desactiva la clave antigua solo después de verificar la funcionalidad de la nueva.  
+
+---
+
+## Buenas prácticas de IAM  
+
+1. **Principio de mínimo privilegio**:  
+   - Asigna solo los permisos necesarios.  
+   - Evita otorgar permisos amplios como `AdministratorAccess` innecesariamente.  
+
+2. **Usa roles en lugar de claves de acceso**:  
+   - Para servicios de AWS como EC2 o Lambda, asigna roles en lugar de usar claves de acceso.  
+
+3. **Habilita MFA (Multi-Factor Authentication)**:  
+   - Protege el acceso a cuentas críticas.  
+   - Compatible con aplicaciones como Google Authenticator.  
+
+4. **Auditoría y monitoreo**:  
+   - Usa AWS CloudTrail para registrar eventos relacionados con IAM.  
+   - Configura alarmas en AWS CloudWatch para actividades sospechosas.  
+
+5. **Políticas basadas en condiciones**:  
+   - Restringe el acceso según IP, hora, región, etc.  
+
+**Ejemplo: Restringir acceso a una región específica**  
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Deny",
+      "Action": "*",
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    }
+  ]
+}
+```  
+
+---
+
+## Comandos útiles de AWS CLI para IAM  
+
+### Crear un usuario  
+```bash
+aws iam create-user --user-name DeveloperUser
+```  
+
+### Crear una política  
+```bash
+aws iam create-policy --policy-name S3ReadAccess --policy-document file://policy.json
+```  
+
+### Adjuntar una política a un usuario  
+```bash
+aws iam attach-user-policy --user-name DeveloperUser --policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess
+```  
+
+---
+
+# Guía Completa sobre AWS Lambda  
+
+## ¿Qué es AWS Lambda?  
+AWS Lambda es un servicio de computación sin servidor (serverless) que permite ejecutar código en respuesta a eventos sin necesidad de gestionar servidores. AWS Lambda escala automáticamente y solo cobra por el tiempo real de ejecución del código, lo que lo hace ideal para aplicaciones event-driven (impulsadas por eventos).  
+
+---
+
+## Características principales  
+- **Sin servidor**: No necesitas aprovisionar, gestionar ni escalar infraestructura.  
+- **Pago por uso**: Se cobra en función de la cantidad de solicitudes y el tiempo de ejecución (en milisegundos).  
+- **Escalabilidad automática**: Lambda escala automáticamente en respuesta al número de eventos.  
+- **Integración con otros servicios de AWS**: Como S3, DynamoDB, API Gateway, y más.  
+- **Compatibilidad con múltiples lenguajes**: Soporta Node.js, Python, Java, Go, Ruby, .NET, y más.  
+
+---
+
+## Arquitectura de AWS Lambda  
+
+### Elementos clave  
+1. **Función Lambda**: El código que ejecuta Lambda en respuesta a un evento.  
+2. **Eventos desencadenantes (Triggers)**: Servicios o acciones que activan una función Lambda, como S3, DynamoDB, o API Gateway.  
+3. **Contexto de ejecución**: Entorno donde se ejecuta la función, con recursos como memoria, tiempo de ejecución y variables de entorno.  
+4. **Roles de IAM**: Define los permisos necesarios para que la función interactúe con otros servicios de AWS.  
+
+---
+
+## Crear una función Lambda  
+
+### Pasos en la consola de AWS  
+
+1. **Ir a AWS Lambda**  
+   - En la consola de AWS, busca **Lambda** y selecciona el servicio.  
+
+2. **Crear una función**  
+   - Haz clic en **Create function**.  
+   - Elige el método de creación:  
+     - **Author from scratch**: Crear una función desde cero.  
+     - **Use a blueprint**: Usar una plantilla preconfigurada.  
+
+3. **Configurar la función**  
+   - Ingresa un nombre para la función.  
+   - Selecciona el tiempo de ejecución (Node.js, Python, Java, etc.).  
+   - Asigna un rol de IAM:  
+     - Crear un nuevo rol con permisos básicos (ej.: ejecución de Lambda).  
+     - Usar un rol existente.  
+
+4. **Escribir el código**  
+   - Escribe el código directamente en el editor integrado o sube un archivo ZIP o un paquete desplegable desde S3.  
+
+5. **Configurar el trigger**  
+   - Selecciona un servicio o evento que activará la función Lambda (ej.: carga de archivos en un bucket S3).  
+
+6. **Guardar y probar**  
+   - Guarda la configuración y usa la funcionalidad de prueba para verificar el comportamiento de la función.  
+
+---
+
+## Ejemplo básico: Función Lambda en Python  
+Esta función se activa cuando se carga un archivo en un bucket S3 y registra el nombre del archivo en los logs.  
+
+```python
+import json
+
+def lambda_handler(event, context):
+    # Extraer el nombre del archivo del evento
+    bucket = event['Records'][0]['s3']['bucket']['name']
+    key = event['Records'][0]['s3']['object']['key']
+    print(f"Archivo subido: {key} en el bucket: {bucket}")
+    
+    return {
+        'statusCode': 200,
+        'body': json.dumps('Archivo procesado exitosamente.')
+    }
+}
+```  
+
+---
+
+## Configuración avanzada de AWS Lambda  
+
+### 1. **Ajuste de recursos**  
+- **Memoria**: Configurable entre 128 MB y 10,240 MB.  
+- **Tiempo máximo de ejecución**: Hasta 15 minutos.  
+
+### 2. **Variables de entorno**  
+- Almacena valores como credenciales, URLs o configuraciones que la función necesita.  
+
+### 3. **Control de versiones y alias**  
+- Usa versiones para manejar diferentes iteraciones de una función.  
+- Usa alias para referenciar versiones específicas (ej.: `dev`, `prod`).  
+
+### 4. **Capas de Lambda**  
+- Reutiliza librerías o dependencias externas entre funciones.  
+- Ejemplo: Subir una librería común como una capa para usarla en múltiples funciones.  
+
+---
+
+## Desencadenantes comunes de Lambda  
+
+### 1. **Amazon S3**  
+- Activar una función Lambda cuando se cargan, eliminan o modifican objetos en un bucket.  
+
+### 2. **Amazon DynamoDB**  
+- Procesar cambios en tablas (streaming de datos).  
+
+### 3. **Amazon API Gateway**  
+- Crear endpoints HTTP/REST que llamen a funciones Lambda.  
+
+### 4. **Amazon EventBridge**  
+- Programar funciones Lambda para ejecutarse en horarios específicos o en respuesta a eventos personalizados.  
+
+### 5. **AWS Step Functions**  
+- Orquestar flujos de trabajo complejos con múltiples funciones Lambda.  
+
+---
+
+## Buenas prácticas  
+
+1. **Principio de mínima responsabilidad**:  
+   - Cada función Lambda debe realizar una tarea específica.  
+
+2. **Uso de capas**:  
+   - Reutiliza dependencias y reduce el tamaño del paquete de despliegue.  
+
+3. **Gestión de excepciones**:  
+   - Implementa bloques `try-catch` y registra errores para facilitar la depuración.  
+
+4. **Monitoreo y logs**:  
+   - Usa **Amazon CloudWatch Logs** para registrar la actividad de Lambda.  
+
+5. **Optimización del tiempo de ejecución**:  
+   - Usa el tiempo de ejecución y la memoria adecuados para reducir costos y mejorar el rendimiento.  
+
+6. **Pruebas locales**:  
+   - Usa herramientas como **AWS SAM (Serverless Application Model)** para probar las funciones localmente.  
+
+---
+
+## Monitoreo y Debugging  
+
+### Amazon CloudWatch  
+- **Métricas**: Monitorea invocaciones, errores, duración y más.  
+- **Logs**: Cada ejecución de Lambda genera logs que puedes consultar en CloudWatch.  
+
+### AWS X-Ray  
+- Realiza trazabilidad de las solicitudes para identificar cuellos de botella o errores.  
+
+---
+
+## Precios de AWS Lambda  
+
+### Componentes del costo:  
+1. **Número de solicitudes**:  
+   - Primer millón de solicitudes al mes: Gratis.  
+   - Más allá del millón: $0.20 por cada millón adicional.  
+
+2. **Duración de ejecución**:  
+   - Se cobra por gigabyte-segundo (GB-s) de memoria asignada.  
+   - Ejemplo: Si una función usa 512 MB y se ejecuta en 1 segundo, consume 0.5 GB-s.  
+
+3. **Costos adicionales**:  
+   - Uso de servicios relacionados, como S3, API Gateway o DynamoDB.  
+
+**Tip**: Usa el nivel gratuito de Lambda para pequeñas cargas de trabajo y pruebas.  
+
+---
+
+## Comandos útiles de AWS CLI para Lambda  
+
+### Crear una función Lambda  
+```bash
+aws lambda create-function \
+    --function-name MiFuncionLambda \
+    --runtime python3.9 \
+    --role arn:aws:iam::123456789012:role/lambda-role \
+    --handler lambda_function.lambda_handler \
+    --zip-file fileb://mi-funcion.zip
+```  
+
+### Actualizar el código de una función  
+```bash
+aws lambda update-function-code \
+    --function-name MiFuncionLambda \
+    --zip-file fileb://mi-funcion.zip
+```  
+
+### Invocar una función Lambda  
+```bash
+aws lambda invoke \
+    --function-name MiFuncionLambda \
+    --payload '{"key": "value"}' response.json
+```  
+
+---
+
+¿Te gustaría profundizar en algún aspecto como triggers, monitoreo o integración con otros servicios?
