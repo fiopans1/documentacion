@@ -2202,5 +2202,3 @@ aws lambda invoke \
 ```  
 
 ---
-
-¿Te gustaría profundizar en algún aspecto como triggers, monitoreo o integración con otros servicios?
