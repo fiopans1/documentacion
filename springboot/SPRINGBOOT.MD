@@ -1995,3 +1995,14 @@ En el ejemplo anterior, la tabla `Usuario` incluirá las columnas:
 - Valores compuestos (por ejemplo, dimensiones: alto, ancho, profundidad).
 
 ---
+--- 
+
+## Si tengo una interfaz exampleService, y luego una implementacion exampleServiceImpl, en springboot que debo marcar como @Service, y cuando ponga @Autowired que debo hacer, y si tengo dos implementaciones?
+
+Marcar la implementación (exampleServiceImpl) con @Service. Al inyectarla con @Autowired, si hay dos implementaciones, usar @Qualifier para indicar cuál se inyecta, por ejemplo:
+
+```java
+@Autowired
+@Qualifier("exampleServiceImpl")
+private ExampleService service;
+```
