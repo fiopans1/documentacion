@@ -22,4 +22,12 @@ Creamos en validations un UserValidation con las diferentes validaciones, lo nec
 Configurar los cors, para adMapping /** y alowed origins la url de origen y alowedmethods lso metodos permitidos, y allowedheaders
 origins, contenttype  y accept y authorization, y allowCredentialstrue para indicar que tiene que haber credenciales, y maxAge 3600, si en allowedorigins ponemos un * se acepta cualquier ruta
 
-Crear una interfaz de IJWTUtilityService, este debe cargar la clave privada
+Crear una interfaz de IJWTUtilityService, este debe cargar la clave privada y publica, y crear el jwt y parsearlo para validarlo
+
+Luego creamos una clase que extienda de OncePerRequestFilter y Overide a doFilterInternal 
+
+Luego configuramos todo e la clase SecurityConfig
+
+Luego creamos la clase AuthService (un UserService bien hecho)
+
+Luego creamos el authRestControler

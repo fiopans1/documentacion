@@ -2006,3 +2006,284 @@ Marcar la implementación (exampleServiceImpl) con @Service. Al inyectarla con @
 @Qualifier("exampleServiceImpl")
 private ExampleService service;
 ```
+
+---
+---
+
+## Guía completa sobre cómo usar `ResponseEntity` en Spring Framework
+
+### ¿Qué es `ResponseEntity`?
+
+`ResponseEntity` es una clase del **Spring Framework** utilizada para representar la respuesta completa de una solicitud HTTP. Esto incluye:
+
+- El **cuerpo** de la respuesta (un objeto o dato a devolver).
+- El **código de estado HTTP** (como 200 OK, 404 Not Found, etc.).
+- Las **cabeceras HTTP** (como Content-Type, Authorization, etc.).
+
+Proporciona un control total sobre cómo se formatea y entrega la respuesta al cliente, lo que es especialmente útil para construir APIs RESTful.
+
+---
+
+### ¿Cuándo usar `ResponseEntity`?
+
+1. **Cuando necesitas personalizar la respuesta**:
+   - Configurar el estado HTTP.
+   - Añadir cabeceras personalizadas.
+   - Controlar el cuerpo de la respuesta.
+
+2. **Para manejar errores y excepciones**:
+   - Enviar mensajes de error personalizados junto con códigos de estado HTTP adecuados (404, 500, etc.).
+
+3. **Para mejorar la seguridad y flexibilidad**:
+   - Incluir cabeceras de control, como `Cache-Control` o `Content-Type`.
+
+---
+
+### Métodos comunes de `ResponseEntity`
+
+1. **`ResponseEntity.ok()`**  
+   Devuelve una respuesta con el estado HTTP 200 OK.
+
+   ```java
+   return ResponseEntity.ok(objeto);
+   ```
+
+2. **`ResponseEntity.status(HttpStatus)`**  
+   Permite establecer un estado HTTP específico.
+
+   ```java
+   return ResponseEntity.status(HttpStatus.CREATED).body(objeto);
+   ```
+
+3. **`ResponseEntity.noContent()`**  
+   Devuelve una respuesta con el estado HTTP 204 No Content.
+
+   ```java
+   return ResponseEntity.noContent().build();
+   ```
+
+4. **`ResponseEntity.badRequest()`**  
+   Devuelve una respuesta con el estado HTTP 400 Bad Request.
+
+   ```java
+   return ResponseEntity.badRequest().body("Solicitud inválida");
+   ```
+
+5. **`ResponseEntity.notFound()`**  
+   Devuelve una respuesta con el estado HTTP 404 Not Found.
+
+   ```java
+   return ResponseEntity.notFound().build();
+   ```
+
+6. **`ResponseEntity.headers(HttpHeaders)`**  
+   Permite incluir cabeceras HTTP personalizadas.
+
+   ```java
+   HttpHeaders headers = new HttpHeaders();
+   headers.add("Custom-Header", "ValorPersonalizado");
+   return ResponseEntity.ok().headers(headers).body(objeto);
+   ```
+
+---
+
+### Ejemplos prácticos de uso
+
+#### 1. **Devolver una respuesta simple con un objeto**
+```java
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class MiControlador {
+
+    @GetMapping("/mensaje")
+    public ResponseEntity<String> obtenerMensaje() {
+        String mensaje = "Hola, este es un mensaje!";
+        return ResponseEntity.ok(mensaje);
+    }
+}
+```
+
+- **Respuesta HTTP**:
+```http
+HTTP/1.1 200 OK
+Content-Type: text/plain;charset=UTF-8
+
+Hola, este es un mensaje!
+```
+
+---
+
+#### 2. **Devolver un objeto JSON con estado personalizado**
+```java
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class MiControlador {
+
+    @GetMapping("/usuario")
+    public ResponseEntity<Usuario> obtenerUsuario() {
+        Usuario usuario = new Usuario("Juan", "Perez", "juan.perez@example.com");
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuario);
+    }
+
+    static class Usuario {
+        private String nombre;
+        private String apellido;
+        private String email;
+
+        // Constructor, getters y setters
+        public Usuario(String nombre, String apellido, String email) {
+            this.nombre = nombre;
+            this.apellido = apellido;
+            this.email = email;
+        }
+
+        // Getters y setters omitidos por brevedad
+    }
+}
+```
+
+- **Respuesta HTTP**:
+```http
+HTTP/1.1 201 Created
+Content-Type: application/json
+
+{
+    "nombre": "Juan",
+    "apellido": "Perez",
+    "email": "juan.perez@example.com"
+}
+```
+
+---
+
+#### 3. **Devolver un error personalizado**
+```java
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class MiControlador {
+
+    @GetMapping("/recurso-no-encontrado")
+    public ResponseEntity<String> recursoNoEncontrado() {
+        String mensajeError = "El recurso solicitado no existe.";
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(mensajeError);
+    }
+}
+```
+
+- **Respuesta HTTP**:
+```http
+HTTP/1.1 404 Not Found
+Content-Type: text/plain;charset=UTF-8
+
+El recurso solicitado no existe.
+```
+
+---
+
+#### 4. **Agregar cabeceras personalizadas**
+```java
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class MiControlador {
+
+    @GetMapping("/cabeceras")
+    public ResponseEntity<String> respuestaConCabeceras() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Custom-Header", "ValorPersonalizado");
+
+        String mensaje = "Respuesta con cabeceras personalizadas";
+        return ResponseEntity.ok().headers(headers).body(mensaje);
+    }
+}
+```
+
+- **Respuesta HTTP**:
+```http
+HTTP/1.1 200 OK
+Custom-Header: ValorPersonalizado
+Content-Type: text/plain;charset=UTF-8
+
+Respuesta con cabeceras personalizadas
+```
+
+---
+
+#### 5. **Devolver una respuesta vacía**
+```java
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class MiControlador {
+
+    @DeleteMapping("/borrar")
+    public ResponseEntity<Void> borrarRecurso() {
+        // Lógica para borrar el recurso
+        return ResponseEntity.noContent().build();
+    }
+}
+```
+
+- **Respuesta HTTP**:
+```http
+HTTP/1.1 204 No Content
+```
+
+---
+
+### Manejo de excepciones con `ResponseEntity`
+
+Puedes usar `ResponseEntity` junto con una clase global para manejar excepciones de forma centralizada.
+
+#### Ejemplo:
+```java
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+@RestControllerAdvice
+public class ManejoExcepciones {
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<String> manejarRuntimeException(RuntimeException ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + ex.getMessage());
+    }
+}
+```
+
+---
+
+### Resumen de métodos útiles de `ResponseEntity`
+
+| Método                             | Descripción                                     |
+|------------------------------------|-------------------------------------------------|
+| `ResponseEntity.ok()`              | Devuelve una respuesta con estado HTTP 200 OK. |
+| `ResponseEntity.status(HttpStatus)`| Permite especificar un estado HTTP personalizado. |
+| `ResponseEntity.badRequest()`      | Devuelve una respuesta con estado HTTP 400.    |
+| `ResponseEntity.notFound()`        | Devuelve una respuesta con estado HTTP 404.    |
+| `ResponseEntity.noContent()`       | Devuelve una respuesta con estado HTTP 204.    |
+| `ResponseEntity.headers()`         | Configura cabeceras personalizadas.            |
+
+---
+
+### Conclusión
+
+`ResponseEntity` es una herramienta clave en el desarrollo de APIs RESTful con Spring. Proporciona flexibilidad para controlar el cuerpo, estado y cabeceras de las respuestas HTTP, mejorando la experiencia del cliente y facilitando la gestión de errores y personalizaciones.
