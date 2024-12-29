@@ -3429,3 +3429,330 @@ public void testProtectedMethod() {
 | **Efecto si falla**      | El método no se ejecuta.               | El resultado no
 
 
+
+
+
+
+# MINIGUÍAS DETALLADAS:
+
+## Guía Completa: Configurar Roles y Permisos para Usuarios con Spring Security
+
+Spring Security es un framework que permite manejar la autenticación y autorización en aplicaciones Java. A continuación, aprenderás cómo configurar roles y permisos para usuarios, y proteger rutas o métodos en tu aplicación utilizando Spring Security.
+
+---
+
+### **1. Configuración Inicial de Spring Security**
+
+#### **1.1. Dependencias en `pom.xml`**
+
+Asegúrate de incluir las dependencias necesarias en tu proyecto. Si usas Maven, agrega:
+
+```xml
+<dependencies>
+    <!-- Spring Security -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+    <!-- JPA for database access -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+    <!-- Thymeleaf (si usas vistas HTML con Spring Boot) -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-thymeleaf</artifactId>
+    </dependency>
+    <!-- Base de datos H2 (para pruebas) -->
+    <dependency>
+        <groupId>com.h2database</groupId>
+        <artifactId>h2</artifactId>
+        <scope>runtime</scope>
+    </dependency>
+</dependencies>
+```
+
+---
+
+#### **1.2. Configurar el modelo de usuarios y roles**
+
+Crea las entidades `User` y `Role` para almacenar información en la base de datos.
+
+```java
+import jakarta.persistence.*;
+import java.util.Set;
+
+@Entity
+public class Role {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(unique = true, nullable = false)
+    private String name;
+
+    @ManyToMany(mappedBy = "roles")
+    private Set<User> users;
+
+    // Getters y Setters
+}
+```
+
+```java
+import jakarta.persistence.*;
+import java.util.Set;
+
+@Entity
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(unique = true, nullable = false)
+    private String username;
+
+    @Column(nullable = false)
+    private String password;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "user_roles",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles;
+
+    // Getters y Setters
+}
+```
+
+---
+
+#### **1.3. Repositorios de Usuarios y Roles**
+
+Crea interfaces para acceder a los datos de los usuarios y roles:
+
+```java
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface UserRepository extends JpaRepository<User, Long> {
+    User findByUsername(String username);
+}
+```
+
+```java
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface RoleRepository extends JpaRepository<Role, Long> {
+    Role findByName(String name);
+}
+```
+
+---
+
+### **2. Configurar Spring Security**
+
+#### **2.1. Implementar UserDetailsService**
+
+`UserDetailsService` es una interfaz que Spring Security utiliza para cargar detalles de los usuarios.
+
+```java
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+@Service
+public class CustomUserDetailsService implements UserDetailsService {
+
+    private final UserRepository userRepository;
+
+    public CustomUserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("Usuario no encontrado: " + username);
+        }
+
+        return new org.springframework.security.core.userdetails.User(
+            user.getUsername(),
+            user.getPassword(),
+            user.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .toList()
+        );
+    }
+}
+```
+
+---
+
+#### **2.2. Configurar el Password Encoder**
+
+Spring Security requiere un codificador para las contraseñas.
+
+```java
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+@Configuration
+public class SecurityConfig {
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+}
+```
+
+---
+
+#### **2.3. Configurar la Clase de Seguridad**
+
+Crea una clase de configuración que extienda `SecurityFilterChain`.
+
+```java
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+public class SecurityConfig {
+
+    private final CustomUserDetailsService customUserDetailsService;
+
+    public SecurityConfig(CustomUserDetailsService customUserDetailsService) {
+        this.customUserDetailsService = customUserDetailsService;
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.csrf().disable()
+            .authorizeHttpRequests()
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
+                .anyRequest().authenticated()
+            .and()
+            .formLogin().permitAll()
+            .and()
+            .logout().permitAll();
+
+        return http.build();
+    }
+}
+```
+
+---
+
+### **3. Crear Usuarios y Roles en la Base de Datos**
+
+Puedes inicializar usuarios y roles con datos predeterminados usando un `CommandLineRunner`.
+
+```java
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+
+@Component
+public class DataInitializer {
+
+    @Bean
+    CommandLineRunner init(RoleRepository roleRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        return args -> {
+            // Crear roles
+            Role adminRole = new Role();
+            adminRole.setName("ROLE_ADMIN");
+            roleRepository.save(adminRole);
+
+            Role userRole = new Role();
+            userRole.setName("ROLE_USER");
+            roleRepository.save(userRole);
+
+            // Crear usuarios
+            User admin = new User();
+            admin.setUsername("admin");
+            admin.setPassword(passwordEncoder.encode("admin123"));
+            admin.setRoles(Set.of(adminRole));
+            userRepository.save(admin);
+
+            User user = new User();
+            user.setUsername("user");
+            user.setPassword(passwordEncoder.encode("user123"));
+            user.setRoles(Set.of(userRole));
+            userRepository.save(user);
+        };
+    }
+}
+```
+
+---
+
+### **4. Proteger Métodos con Anotaciones**
+
+Además de proteger rutas, puedes usar anotaciones para controlar el acceso a métodos específicos.
+
+#### **4.1. Habilitar Seguridad en Métodos**
+
+Agrega la anotación `@EnableMethodSecurity` en tu clase de configuración de seguridad.
+
+```java
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+
+@Configuration
+@EnableMethodSecurity
+public class SecurityConfig {
+    // Configuración previa...
+}
+```
+
+#### **4.2. Usar Anotaciones en Métodos**
+
+- `@PreAuthorize("hasRole('ADMIN')")`: Solo usuarios con el rol ADMIN.
+- `@PreAuthorize("hasAnyRole('USER', 'ADMIN')")`: Usuarios con los roles USER o ADMIN.
+
+Ejemplo:
+
+```java
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class TestController {
+
+    @GetMapping("/admin/data")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String adminData() {
+        return "Datos solo para administradores";
+    }
+
+    @GetMapping("/user/data")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public String userData() {
+        return "Datos accesibles para usuarios y administradores";
+    }
+}
+```
+
+---
+
+### **5. Probar la Configuración**
+
+1. Ejecuta tu aplicación.
+2. Accede a `/login` e inicia sesión con las credenciales configuradas.
+3. Prueba las rutas `/admin/data` y `/user/data` para verificar que las restricciones de roles funcionan correctamente.
+
+---
+
+### **Resumen**
+
+Con esta configuración, puedes manejar roles y permisos para usuarios utilizando Spring Security. Además, puedes extender esta guía para añadir funcionalidades como JWT, OAuth2 o personalización avanzada. ¡Ahora tienes una aplicación más segura y robusta!
