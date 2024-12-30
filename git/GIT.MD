@@ -451,7 +451,153 @@ A - B - C (main)
 
 Usar `--onto` es especialmente útil cuando necesitas control preciso sobre el rango de commits a mover, o en flujos de trabajo avanzados donde varias ramas interactúan y divergen.
 
+## Miniguía sobre Git Tags
 
+### ¿Qué es un tag en Git?
+Un **tag** en Git es un marcador o referencia que apunta a un commit específico en el historial del repositorio. Generalmente, los tags se usan para identificar puntos importantes en la historia, como versiones de software (por ejemplo, `v1.0.0`).
+
+### Tipos de tags
+1. **Lightweight tags**: Un marcador simple que apunta a un commit específico.
+2. **Annotated tags**: Contienen metadatos adicionales como el nombre del autor, la fecha y un mensaje asociado. Estos se almacenan como objetos completos en la base de datos de Git.
+
+---
+
+### Comandos básicos para trabajar con tags
+
+#### Crear un tag
+1. **Lightweight tag**:
+   ```bash
+   git tag <nombre-del-tag>
+   ```
+   Ejemplo:
+   ```bash
+   git tag v1.0.0
+   ```
+
+2. **Annotated tag**:
+   ```bash
+   git tag -a <nombre-del-tag> -m "Mensaje descriptivo"
+   ```
+   Ejemplo:
+   ```bash
+   git tag -a v1.0.0 -m "Primera versión del proyecto"
+   ```
+
+#### Listar tags existentes
+```bash
+git tag
+```
+
+Para buscar tags específicos con un patrón:
+```bash
+git tag -l "v1.*"
+```
+
+#### Ver detalles de un tag anotado
+```bash
+git show <nombre-del-tag>
+```
+
+---
+
+### Subir tags al repositorio remoto
+
+Por defecto, los tags no se suben automáticamente al remoto. Para subirlos:
+
+1. Subir un tag específico:
+   ```bash
+   git push origin <nombre-del-tag>
+   ```
+   Ejemplo:
+   ```bash
+   git push origin v1.0.0
+   ```
+
+2. Subir todos los tags:
+   ```bash
+   git push --tags
+   ```
+
+---
+
+### Eliminar un tag
+1. Eliminar un tag local:
+   ```bash
+   git tag -d <nombre-del-tag>
+   ```
+   Ejemplo:
+   ```bash
+   git tag -d v1.0.0
+   ```
+
+2. Eliminar un tag en el remoto:
+   ```bash
+   git push origin --delete <nombre-del-tag>
+   ```
+   Ejemplo:
+   ```bash
+   git push origin --delete v1.0.0
+   ```
+
+---
+
+### Mover un tag a otro commit
+Si necesitas que un tag apunte a otro commit, puedes eliminarlo y recrearlo:
+
+1. Elimina el tag local:
+   ```bash
+   git tag -d <nombre-del-tag>
+   ```
+
+2. Crea el tag apuntando al nuevo commit:
+   ```bash
+   git tag -a <nombre-del-tag> <commit-id> -m "Nuevo mensaje"
+   ```
+
+3. Actualiza el remoto:
+   ```bash
+   git push --force origin <nombre-del-tag>
+   ```
+
+---
+
+### Usar tags para checkout
+Puedes usar un tag para hacer checkout a un commit específico:
+
+```bash
+git checkout <nombre-del-tag>
+```
+
+Nota: Esto crea un **detached HEAD**, es decir, no estarás en una rama activa.
+
+---
+
+### Ejemplo práctico
+
+1. Crear un tag para la versión `v1.0.0`:
+   ```bash
+   git tag -a v1.0.0 -m "Lanzamiento inicial"
+   ```
+
+2. Subir el tag al remoto:
+   ```bash
+   git push origin v1.0.0
+   ```
+
+3. Listar los tags:
+   ```bash
+   git tag
+   ```
+
+4. Ver detalles del tag:
+   ```bash
+   git show v1.0.0
+   ```
+
+---
+
+### Conclusión
+Los tags en Git son una excelente herramienta para marcar versiones importantes o hitos en el desarrollo de un proyecto. Usar tags anotados es recomendable para agregar contexto adicional, y siempre es buena práctica subir los tags relevantes al repositorio remoto para colaborar con otros.
 
 ## Comandos que tenemos que mirar
 ```
