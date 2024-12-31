@@ -4303,3 +4303,652 @@ Si estás usando Thymeleaf, puedes restringir secciones de la interfaz de usuari
 - Spring Security maneja la verificación de roles de forma automática basándose en las autoridades que configuraste.
 
 Con esta configuración, tienes flexibilidad para aplicar seguridad tanto en el backend como en las vistas.
+
+---
+
+# Añadir permisos a los roles:
+Para añadir permisos a los roles y que puedas utilizar el método **`hasPermission`** en tu aplicación con Spring Security, debes integrar un modelo basado en permisos. Esto implica que no solo tengas roles, sino que cada rol tenga permisos asociados. Los permisos pueden ser verificados en el código mediante expresiones como `@PreAuthorize("hasPermission(...))`.
+
+A continuación, te explico cómo lograrlo paso a paso:
+
+---
+
+## **1. Extiende tu Modelo de Seguridad**
+
+### Crea la entidad **Permission**:
+Cada permiso representa una acción específica que puede realizar un usuario (como `READ`, `WRITE`, `DELETE`).
+
+```java
+@Entity
+public class Permission {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name; // Ejemplo: "READ_PRIVILEGES", "WRITE_PRIVILEGES"
+
+    // Getters y setters
+}
+```
+
+### Relaciona **Permission** con **Role**:
+Cada rol tendrá una lista de permisos asociados.
+
+```java
+@Entity
+public class Role {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name; // Ejemplo: "ROLE_ADMIN", "ROLE_USER"
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "role_permissions",
+        joinColumns = @JoinColumn(name = "role_id"),
+        inverseJoinColumns = @JoinColumn(name = "permission_id")
+    )
+    private Set<Permission> permissions = new HashSet<>();
+
+    // Getters y setters
+}
+```
+
+### Relaciona **Role** con **User**:
+Los usuarios mantienen sus roles como hasta ahora.
+
+```java
+@Entity
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String username;
+    private String password;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "user_roles",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles = new HashSet<>();
+
+    // Getters y setters
+}
+```
+
+---
+
+## **2. Implementa un Custom PermissionEvaluator**
+
+Spring Security tiene un mecanismo llamado **`PermissionEvaluator`** que puedes personalizar para implementar la lógica de permisos.
+
+### Clase CustomPermissionEvaluator:
+
+```java
+@Component
+public class CustomPermissionEvaluator implements PermissionEvaluator {
+
+    @Override
+    public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
+        if (authentication == null || permission == null) {
+            return false;
+        }
+
+        // Obtener el usuario autenticado
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        Set<Role> roles = ((CustomUserDetails) userDetails).getRoles(); // Reemplaza con tu implementación
+
+        // Verificar si algún rol tiene el permiso requerido
+        for (Role role : roles) {
+            for (Permission perm : role.getPermissions()) {
+                if (perm.getName().equals(permission.toString())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
+        // No implementado para este caso
+        return false;
+    }
+}
+```
+
+---
+
+## **3. Registra el PermissionEvaluator en tu Configuración de Seguridad**
+
+En tu clase de configuración de Spring Security, indica que usarás tu implementación personalizada del evaluador de permisos.
+
+```java
+@Configuration
+@EnableMethodSecurity
+public class WebSecurityConfig {
+
+    @Bean
+    public MethodSecurityExpressionHandler expressionHandler(PermissionEvaluator permissionEvaluator) {
+        DefaultMethodSecurityExpressionHandler handler = new DefaultMethodSecurityExpressionHandler();
+        handler.setPermissionEvaluator(permissionEvaluator);
+        return handler;
+    }
+}
+```
+
+---
+
+## **4. Usa `@PreAuthorize` con `hasPermission`**
+
+Ahora puedes usar la anotación `@PreAuthorize` en tus controladores y servicios para verificar permisos.
+
+### Ejemplo:
+
+```java
+@RestController
+@RequestMapping("/api")
+public class MyController {
+
+    @GetMapping("/admin")
+    @PreAuthorize("hasPermission(null, 'READ_PRIVILEGES')")
+    public ResponseEntity<String> adminAccess() {
+        return ResponseEntity.ok("Acceso permitido con permisos de lectura");
+    }
+
+    @PostMapping("/admin")
+    @PreAuthorize("hasPermission(null, 'WRITE_PRIVILEGES')")
+    public ResponseEntity<String> adminWriteAccess() {
+        return ResponseEntity.ok("Acceso permitido con permisos de escritura");
+    }
+}
+```
+
+---
+
+## **5. Inicializa Roles y Permisos**
+
+Utiliza un `CommandLineRunner` o alguna migración para cargar datos iniciales en tu base de datos.
+
+```java
+@Component
+public class DataInitializer implements CommandLineRunner {
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
+    private PermissionRepository permissionRepository;
+
+    @Override
+    public void run(String... args) throws Exception {
+        Permission readPermission = new Permission();
+        readPermission.setName("READ_PRIVILEGES");
+        permissionRepository.save(readPermission);
+
+        Permission writePermission = new Permission();
+        writePermission.setName("WRITE_PRIVILEGES");
+        permissionRepository.save(writePermission);
+
+        Role adminRole = new Role();
+        adminRole.setName("ROLE_ADMIN");
+        adminRole.getPermissions().add(readPermission);
+        adminRole.getPermissions().add(writePermission);
+        roleRepository.save(adminRole);
+
+        Role userRole = new Role();
+        userRole.setName("ROLE_USER");
+        userRole.getPermissions().add(readPermission);
+        roleRepository.save(userRole);
+    }
+}
+```
+
+---
+
+## **6. Carga los Roles y Permisos en `UserDetails`**
+
+Tu implementación de `UserDetails` debe cargar los roles y sus permisos. Por ejemplo:
+
+```java
+@Override
+public Collection<? extends GrantedAuthority> getAuthorities() {
+    Set<GrantedAuthority> authorities = new HashSet<>();
+    for (Role role : user.getRoles()) {
+        authorities.add(new SimpleGrantedAuthority(role.getName()));
+        for (Permission perm : role.getPermissions()) {
+            authorities.add(new SimpleGrantedAuthority(perm.getName()));
+        }
+    }
+    return authorities;
+}
+```
+
+---
+
+## **Resumen**
+
+1. Crea la relación entre roles y permisos.
+2. Implementa un `PermissionEvaluator` personalizado.
+3. Registra el evaluador en la configuración de seguridad.
+4. Usa `@PreAuthorize("hasPermission(...)")` para proteger rutas según permisos.
+5. Inicializa roles y permisos en tu base de datos.
+6. Carga los permisos en los roles al inicializar el contexto de seguridad.
+
+Esto te permitirá manejar roles y permisos en tu aplicación con Spring Security de forma granular y flexible.
+
+---
+
+¡Sí, tienes toda la razón! Si los permisos ya están incluidos en el método **`getAuthorities()`** dentro de tu implementación de `UserDetails`, **no es necesario implementar un `PermissionEvaluator` personalizado**. Puedes aprovechar Spring Security para verificar directamente los permisos utilizando `@PreAuthorize` con `hasAuthority`.
+
+---
+
+### **1. Modificar `getAuthorities` para incluir los permisos**
+Puedes hacer que **`getAuthorities()`** incluya tanto los roles como los permisos asociados a cada usuario. Así, Spring Security podrá verificar tanto roles (con `hasRole`) como permisos (con `hasAuthority`).
+
+```java
+@Override
+public Collection<? extends GrantedAuthority> getAuthorities() {
+    Set<GrantedAuthority> authorities = new HashSet<>();
+
+    // Agregar los roles
+    for (Role role : user.getRoles()) {
+        authorities.add(new SimpleGrantedAuthority(role.getName())); // Ejemplo: "ROLE_ADMIN"
+        
+        // Agregar los permisos asociados al rol
+        for (Permission permission : role.getPermissions()) {
+            authorities.add(new SimpleGrantedAuthority(permission.getName())); // Ejemplo: "READ_PRIVILEGES"
+        }
+    }
+
+    return authorities;
+}
+```
+
+En este caso, todos los permisos asociados a los roles se añadirán como **`GrantedAuthority`**, lo cual es suficiente para que Spring Security los reconozca en las expresiones de autorización.
+
+---
+
+### **2. Usar `hasAuthority` en lugar de `hasPermission`**
+Con los permisos ya disponibles en el contexto de seguridad a través de `getAuthorities()`, puedes usar `@PreAuthorize` con **`hasAuthority`** para verificar permisos específicos.
+
+#### Ejemplo:
+```java
+@RestController
+@RequestMapping("/api")
+public class MyController {
+
+    @GetMapping("/admin")
+    @PreAuthorize("hasAuthority('READ_PRIVILEGES')")
+    public ResponseEntity<String> adminAccess() {
+        return ResponseEntity.ok("Acceso permitido con permisos de lectura");
+    }
+
+    @PostMapping("/admin")
+    @PreAuthorize("hasAuthority('WRITE_PRIVILEGES')")
+    public ResponseEntity<String> adminWriteAccess() {
+        return ResponseEntity.ok("Acceso permitido con permisos de escritura");
+    }
+}
+```
+
+---
+
+### **3. Diferencia entre `hasAuthority` y `hasRole`**
+
+- **`hasRole('ROLE_ADMIN')`**:
+  Busca un `GrantedAuthority` que comience con el prefijo `ROLE_` (por convención en Spring Security). 
+  - Si tienes un rol como `"ROLE_ADMIN"`, lo usarías con `hasRole('ADMIN')`.
+
+- **`hasAuthority('WRITE_PRIVILEGES')`**:
+  Busca un `GrantedAuthority` exactamente igual al string que proporcionas. Esto es ideal para manejar permisos más granulares.
+
+---
+
+### **4. Inicializar Roles y Permisos**
+Al inicializar roles y permisos, asegúrate de incluir tanto los permisos como los roles al usuario. Este es un ejemplo usando un `CommandLineRunner`:
+
+```java
+@Component
+public class DataInitializer implements CommandLineRunner {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
+    private PermissionRepository permissionRepository;
+
+    @Override
+    public void run(String... args) throws Exception {
+        // Crear permisos
+        Permission readPermission = new Permission();
+        readPermission.setName("READ_PRIVILEGES");
+        permissionRepository.save(readPermission);
+
+        Permission writePermission = new Permission();
+        writePermission.setName("WRITE_PRIVILEGES");
+        permissionRepository.save(writePermission);
+
+        // Crear roles con permisos
+        Role adminRole = new Role();
+        adminRole.setName("ROLE_ADMIN");
+        adminRole.getPermissions().add(readPermission);
+        adminRole.getPermissions().add(writePermission);
+        roleRepository.save(adminRole);
+
+        Role userRole = new Role();
+        userRole.setName("ROLE_USER");
+        userRole.getPermissions().add(readPermission);
+        roleRepository.save(userRole);
+
+        // Crear usuario admin
+        User adminUser = new User();
+        adminUser.setUsername("admin");
+        adminUser.setPassword(new BCryptPasswordEncoder().encode("password"));
+        adminUser.getRoles().add(adminRole);
+        userRepository.save(adminUser);
+    }
+}
+```
+
+---
+
+### **5. Verificar el Contexto del Usuario Actual**
+Si deseas obtener el usuario actual con sus roles y permisos en cualquier punto de tu aplicación, puedes usar el contexto de seguridad:
+
+#### Desde el `SecurityContextHolder`:
+```java
+Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+Set<Role> roles = userDetails.getRoles(); // Roles del usuario
+Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities(); // Roles y permisos
+```
+
+#### Inyectando directamente con `@AuthenticationPrincipal`:
+```java
+@GetMapping("/current-user")
+public ResponseEntity<?> getCurrentUser(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    return ResponseEntity.ok(userDetails);
+}
+```
+
+---
+
+### **6. Ventajas de este Enfoque**
+1. **Simplifica la configuración**:
+   - No necesitas implementar un `PermissionEvaluator` personalizado.
+   - Aprovechas la funcionalidad nativa de `GrantedAuthority`.
+
+2. **Reutilizable**:
+   - Los permisos y roles están disponibles para cualquier expresión de seguridad (`@PreAuthorize`, `@PostAuthorize`, etc.).
+
+3. **Granularidad**:
+   - Puedes combinar roles (`hasRole`) y permisos (`hasAuthority`) para un control más detallado.
+
+---
+
+### **Resumen**
+- Sí, es suficiente enviar los permisos en `getAuthorities()` para usar `hasAuthority`.
+- Esto elimina la necesidad de un `PermissionEvaluator` personalizado.
+- Puedes usar tanto `hasRole` como `hasAuthority` para verificar roles y permisos respectivamente.
+- Asegúrate de cargar correctamente roles y permisos en los usuarios durante el inicio o la persistencia en la base de datos.
+
+
+# Authentication Manager:
+
+## **Guía Completa sobre `AuthenticationManager` y `AuthenticationProvider` en Spring Security**
+
+Spring Security utiliza un sistema basado en **`AuthenticationManager`** y **`AuthenticationProvider`** para autenticar usuarios en aplicaciones. Este mecanismo es central en la configuración de seguridad y proporciona una arquitectura flexible que permite soportar diversos métodos de autenticación, como contraseñas, tokens, OAuth2, etc.
+
+---
+
+### **1. ¿Qué es `AuthenticationManager`?**
+El **`AuthenticationManager`** es el componente principal en Spring Security responsable de procesar las solicitudes de autenticación. Su tarea es verificar si las credenciales proporcionadas por un usuario son válidas. Si son válidas, devuelve un objeto **`Authentication`** completo (autenticado). Si no, lanza una excepción de autenticación.
+
+#### **Método clave:**
+```java
+Authentication authenticate(Authentication authentication) throws AuthenticationException;
+```
+
+- **Entrada:** Un objeto `Authentication` con las credenciales (por ejemplo, nombre de usuario y contraseña).
+- **Salida:** Un objeto `Authentication` completamente autenticado.
+- **Excepción:** Lanza una `AuthenticationException` si las credenciales no son válidas.
+
+---
+
+### **2. ¿Qué es `AuthenticationProvider`?**
+El **`AuthenticationProvider`** es una interfaz que proporciona una lógica concreta para autenticar usuarios. El `AuthenticationManager` delega el proceso de autenticación a uno o más `AuthenticationProvider`. Esto permite agregar diferentes estrategias de autenticación (por ejemplo, contraseñas, JWT, OAuth, etc.).
+
+#### **Métodos clave:**
+```java
+Authentication authenticate(Authentication authentication) throws AuthenticationException;
+boolean supports(Class<?> authentication);
+```
+
+- **`authenticate`**: Procesa la autenticación.
+- **`supports`**: Verifica si este proveedor soporta el tipo de autenticación que se le pasa.
+
+---
+
+### **3. Arquitectura General**
+1. El cliente (usuario) envía credenciales al servidor.
+2. El filtro de seguridad de Spring Security crea un objeto `Authentication` inicial con las credenciales.
+3. Este objeto se pasa al **`AuthenticationManager`**.
+4. El `AuthenticationManager` delega la autenticación a uno o más **`AuthenticationProvider`**.
+5. Si el proceso tiene éxito, el `Authentication` se completa y se almacena en el contexto de seguridad.
+
+---
+
+### **4. Implementación Paso a Paso**
+
+#### **4.1 Configurar un `AuthenticationManager` Personalizado**
+El `AuthenticationManager` puede configurarse con múltiples `AuthenticationProvider`.
+
+```java
+@Configuration
+public class SecurityConfig {
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationProvider customAuthenticationProvider) {
+        return new ProviderManager(customAuthenticationProvider);
+    }
+}
+```
+
+---
+
+#### **4.2 Implementar un `AuthenticationProvider` Personalizado**
+Puedes crear tu propio `AuthenticationProvider` para autenticar usuarios según tu lógica.
+
+```java
+@Component
+public class CustomAuthenticationProvider implements AuthenticationProvider {
+
+    @Autowired
+    private CustomUserDetailsService userDetailsService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Override
+    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+        // Obtener el nombre de usuario y contraseña
+        String username = authentication.getName();
+        String password = authentication.getCredentials().toString();
+
+        // Cargar el usuario desde la base de datos
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+        // Verificar la contraseña
+        if (!passwordEncoder.matches(password, userDetails.getPassword())) {
+            throw new BadCredentialsException("Credenciales inválidas");
+        }
+
+        // Retornar un objeto Authentication autenticado
+        return new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
+    }
+
+    @Override
+    public boolean supports(Class<?> authentication) {
+        // Este proveedor soporta UsernamePasswordAuthenticationToken
+        return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
+    }
+}
+```
+
+---
+
+#### **4.3 Configurar un `AuthenticationManager` con Varios `AuthenticationProvider`**
+Si tienes múltiples métodos de autenticación (por ejemplo, contraseñas y tokens JWT), puedes agregar varios `AuthenticationProvider` al `AuthenticationManager`.
+
+```java
+@Configuration
+public class SecurityConfig {
+
+    @Bean
+    public AuthenticationManager authenticationManager(List<AuthenticationProvider> providers) {
+        return new ProviderManager(providers);
+    }
+}
+```
+
+---
+
+### **5. Usar `AuthenticationManager` en un Controller**
+Puedes usar el `AuthenticationManager` directamente en un controlador para autenticar usuarios.
+
+#### Ejemplo:
+```java
+@RestController
+@RequestMapping("/auth")
+public class AuthController {
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
+        try {
+            // Crear un objeto Authentication inicial
+            Authentication authentication = new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword());
+
+            // Autenticar al usuario
+            Authentication authenticated = authenticationManager.authenticate(authentication);
+
+            // Devolver un JWT o respuesta de éxito
+            return ResponseEntity.ok("Usuario autenticado correctamente");
+        } catch (AuthenticationException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas");
+        }
+    }
+}
+
+class AuthRequest {
+    private String username;
+    private String password;
+    // Getters y setters
+}
+```
+
+---
+
+### **6. Usar `AuthenticationManager` en un Filtro**
+El `AuthenticationManager` se usa comúnmente en filtros de seguridad, como en el caso de la autenticación basada en JWT.
+
+#### Ejemplo de un Filtro con JWT:
+```java
+@Component
+public class JWTAuthenticationFilter extends OncePerRequestFilter {
+
+    @Autowired
+    private JWTUtility jwtUtility;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String authorizationHeader = request.getHeader("Authorization");
+
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String token = authorizationHeader.substring(7);
+
+            // Validar el token y crear un objeto Authentication
+            String username = jwtUtility.extractUsername(token);
+            Authentication authentication = new UsernamePasswordAuthenticationToken(username, null);
+
+            // Autenticar el usuario
+            Authentication authenticated = authenticationManager.authenticate(authentication);
+
+            // Guardar el usuario autenticado en el contexto de seguridad
+            SecurityContextHolder.getContext().setAuthentication(authenticated);
+        }
+
+        filterChain.doFilter(request, response);
+    }
+}
+```
+
+---
+
+### **7. Implementar un Proveedor para JWT**
+Puedes implementar un `AuthenticationProvider` para manejar autenticación basada en JWT.
+
+```java
+@Component
+public class JWTAuthenticationProvider implements AuthenticationProvider {
+
+    @Autowired
+    private JWTUtility jwtUtility;
+
+    @Override
+    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+        String token = authentication.getCredentials().toString();
+
+        if (!jwtUtility.validateToken(token)) {
+            throw new BadCredentialsException("Token inválido");
+        }
+
+        String username = jwtUtility.extractUsername(token);
+
+        return new UsernamePasswordAuthenticationToken(username, null, List.of());
+    }
+
+    @Override
+    public boolean supports(Class<?> authentication) {
+        return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
+    }
+}
+```
+
+---
+
+### **8. Buenas Prácticas**
+1. **Separa responsabilidades:**
+   - Usa un `AuthenticationProvider` para cada estrategia de autenticación (contraseñas, tokens, OAuth2, etc.).
+
+2. **Usa un `PasswordEncoder`:**
+   - Nunca almacenes contraseñas en texto plano; usa un `PasswordEncoder` como BCrypt.
+
+3. **Registra múltiples `AuthenticationProvider`:**
+   - Permite agregar soporte para múltiples métodos de autenticación.
+
+4. **Maneja las excepciones de autenticación:**
+   - Personaliza los mensajes de error para mejorar la experiencia del usuario.
+
+---
+
+### **Resumen**
+- **`AuthenticationManager`** es el punto de entrada principal para autenticar usuarios.
+- **`AuthenticationProvider`** contiene la lógica de autenticación específica.
+- Puedes usar múltiples proveedores de autenticación dentro de un `AuthenticationManager`.
+- `AuthenticationManager` se puede usar directamente en controladores o filtros para autenticar usuarios.
+
+Con esta arquitectura, puedes implementar cualquier estrategia de autenticación de forma modular y flexible.
