@@ -69,7 +69,7 @@ public class UserController {
 
 ## guia:
 
-# Guía para generar claves privadas y públicas con OpenSSL y usarlas en Spring Security
+## Guía para generar claves privadas y públicas con OpenSSL y usarlas en Spring Security
 
 En esta guía, aprenderás cómo generar claves privadas y públicas utilizando OpenSSL, configurarlas en una aplicación Spring Security y utilizarlas para tareas como la autenticación JWT.
 
@@ -299,34 +299,8 @@ public void verificarToken(String token) throws Exception {
 
 Con esta configuración, puedes usar claves privadas y públicas generadas con OpenSSL para firmar y verificar JWT en una aplicación Spring Security. Esto proporciona una manera segura y flexible de autenticar usuarios en tus aplicaciones.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Guía completa: Configuración de roles en Spring Security con JWT
+--- 
+## Guía completa: Configuración de roles en Spring Security con JWT
 
 Esta guía te llevará paso a paso para configurar roles y autorizaciones utilizando Spring Security y autenticación basada en JWT. También incluye ejemplos prácticos y las mejores prácticas.
 
