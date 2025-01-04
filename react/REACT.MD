@@ -251,3 +251,4 @@ Y luego cuando lo referenciamos en el html dentro de react hacemos por ejemplo:
 >className = {classes.nombreClase}
 
 NOTA: Para esto lo mejor es usar camelCase
+
