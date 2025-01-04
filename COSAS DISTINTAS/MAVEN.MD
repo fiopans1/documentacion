@@ -3205,3 +3205,136 @@ En proyectos multi-módulo, el uso de estas secciones **es mucho más relevante*
 
 - **Proyectos simples:** Estas secciones no son imprescindibles, pero pueden ser útiles para mantener configuraciones centralizadas o prepararse para escalar el proyecto en el futuro.
 - **Proyectos multi-módulo:** Son prácticamente esenciales, ya que permiten gestionar versiones, configuraciones y distribuciones de forma centralizada para todos los módulos.
+
+
+## Proyecto padre para heredar configuraciones como spring-boot-starter-parent:
+
+En el caso de tu proyecto, el **padre (`spring-boot-starter-parent`)** no te incluye como módulo porque el propósito del `spring-boot-starter-parent` **no es actuar como un contenedor de módulos**, sino servir como una base estándar que define configuraciones comunes para proyectos Spring Boot. Este padre no está diseñado para ser un proyecto multi-módulo que gestione sus propios submódulos.
+
+### **¿Cómo funciona esto sin estar en los `modules`?**
+1. **Proyectos padres genéricos como `spring-boot-starter-parent`:**
+   - El `spring-boot-starter-parent` es un POM especial que no necesita "saber" acerca de tus proyectos. Simplemente define configuraciones, versiones de dependencias y configuraciones de plugins comunes.
+   - No incluye una sección `<modules>` porque no está diseñado para ser un contenedor de submódulos. En este caso, tú lo utilizas como referencia (herencia) sin que tu proyecto sea un "módulo" explícito de este padre.
+
+2. **El flujo de Maven:**
+   - Cuando declaras un `<parent>` en tu `pom.xml`, Maven simplemente hereda todas las configuraciones del proyecto padre sin importar si estás listado como módulo.
+   - Esto se debe a que el padre actúa como una **plantilla o base para tu proyecto**, no como un controlador de múltiples módulos.
+
+3. **Diferencia entre un proyecto multi-módulo y un proyecto con `parent`:**
+   - En un **proyecto multi-módulo**, el POM principal tiene una sección `<modules>` que lista todos los submódulos para gestionarlos como un solo proyecto.
+   - En tu caso, estás usando un padre **externo** (`spring-boot-starter-parent`) que solo actúa como proveedor de configuraciones estándar y no como contenedor de módulos.
+
+---
+
+### **Entonces, ¿cuándo un padre usa `modules`?**
+Un proyecto padre utiliza la sección `<modules>` solo si es el controlador de un proyecto **multi-módulo**, es decir, cuando tiene varios módulos secundarios que forman parte del mismo proyecto. Por ejemplo:
+
+#### **Estructura típica de un proyecto multi-módulo:**
+```
+project-root/
+│
+├── pom.xml (Padre, contiene la sección <modules>)
+├── module-a/
+│   └── pom.xml
+├── module-b/
+│   └── pom.xml
+```
+
+- **`pom.xml` del padre (controlador):**
+  ```xml
+  <project xmlns="http://maven.apache.org/POM/4.0.0">
+      <modelVersion>4.0.0</modelVersion>
+      <groupId>com.example</groupId>
+      <artifactId>project-root</artifactId>
+      <version>1.0.0</version>
+      <packaging>pom</packaging>
+
+      <modules>
+          <module>module-a</module>
+          <module>module-b</module>
+      </modules>
+  </project>
+  ```
+
+- **Módulo A (hijo):**
+  ```xml
+  <project xmlns="http://maven.apache.org/POM/4.0.0">
+      <modelVersion>4.0.0</modelVersion>
+      <parent>
+          <groupId>com.example</groupId>
+          <artifactId>project-root</artifactId>
+          <version>1.0.0</version>
+      </parent>
+      <artifactId>module-a</artifactId>
+  </project>
+  ```
+
+---
+
+### **En tu caso con `spring-boot-starter-parent`:**
+El `spring-boot-starter-parent` **no tiene submódulos ni necesita gestionarlos**. Es simplemente una base común con configuraciones generales que heredas para simplificar tu proyecto.
+
+Esto significa que:
+- Tu proyecto no tiene que ser listado en los `modules` del padre.
+- Tu proyecto hereda configuraciones de manera "independiente". Si tuvieras otro proyecto con el mismo padre, este también heredaría esas configuraciones, pero no estarían relacionados entre sí.
+
+---
+
+### **¿Qué pasaría si necesitas un proyecto multi-módulo?**
+Si quisieras trabajar con un proyecto multi-módulo usando Spring Boot, deberías crear tu propio **proyecto padre** que actúe como contenedor y defina las configuraciones comunes, incluyendo al `spring-boot-starter-parent` como **padre de tu proyecto padre**.
+
+Ejemplo:
+
+#### **Proyecto multi-módulo con Spring Boot**
+- Estructura:
+  ```
+  my-project/
+  │
+  ├── pom.xml (Proyecto padre, usa spring-boot-starter-parent)
+  ├── module-a/
+  │   └── pom.xml
+  ├── module-b/
+      └── pom.xml
+  ```
+
+- **POM del proyecto padre:**
+  ```xml
+  <project xmlns="http://maven.apache.org/POM/4.0.0">
+      <modelVersion>4.0.0</modelVersion>
+      <parent>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-parent</artifactId>
+          <version>3.4.1</version>
+      </parent>
+      <groupId>com.example</groupId>
+      <artifactId>my-project</artifactId>
+      <version>1.0.0</version>
+      <packaging>pom</packaging>
+
+      <modules>
+          <module>module-a</module>
+          <module>module-b</module>
+      </modules>
+  </project>
+  ```
+
+- **POM de un módulo (`module-a`):**
+  ```xml
+  <project xmlns="http://maven.apache.org/POM/4.0.0">
+      <modelVersion>4.0.0</modelVersion>
+      <parent>
+          <groupId>com.example</groupId>
+          <artifactId>my-project</artifactId>
+          <version>1.0.0</version>
+      </parent>
+      <artifactId>module-a</artifactId>
+  </project>
+  ```
+
+En este caso, el padre principal (`my-project`) puede centralizar configuraciones para todos los módulos.
+
+---
+
+### **Conclusión**
+- El `spring-boot-starter-parent` no necesita tener una sección `<modules>` porque no es un proyecto controlador de módulos, sino un **padre genérico** que proporciona configuraciones comunes.
+- Si quisieras usar módulos, deberías crear tu propio proyecto padre que gestione los módulos y, si es necesario, usar `spring-boot-starter-parent` como su propio padre.
