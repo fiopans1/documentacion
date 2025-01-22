@@ -5150,6 +5150,10 @@ export default function ECommerce() {
 
 Estos proyectos cubren desde conceptos básicos hasta funcionalidades más avanzadas, brindándote una base sólida para enfrentar proyectos más complejos. Recuerda personalizar y ampliar cada uno según tus necesidades para aprender aún más sobre React.
 
+---
+---
+---
+
 # MINIGUIAS:
 
 
