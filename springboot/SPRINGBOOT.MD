@@ -8,9 +8,8 @@ Spring es un ecosistema de proyectos que hace que programar en Java sea más rá
 
 Con Sping Boot ganamos un montor de ventajas como no tener muchas configuraciones XML, uso de dependencias iniciales que facilitan en gran medida la administración de dependencias, aplicaciones independientes con servidor incorporado y que el tiempo de configuración de los proyectos es super rápido
 
-
-
 ## Spring vs Spring Boot: Conclusión
+
 • Spring es un marco enorme que consta de muchos proyectos.
 • Spring Boot es un proyecto de Spring
 • Spring Boot proporciona un conjunto de bibliotecas que simplifica enormemente el desarrollo de
@@ -20,6 +19,7 @@ aplicaciones basadas en Spring.
 • Spring Boot es la forma estándar de desarrollar aplicaciones basadas en Sprint
 
 ## STARTER
+
 Un starter sería un mecanismo para simplificar el desarrollo de aplicaciones, es un mecanismo que ya viene con varias dependencias preconfiguradas.
 
 Cada starter está destinada a distintos objetivos, y por ejemplo yo si quiero agregar seguridad a mi programa, añado el starter de seguridad y ya se añaden dependencias para ese starter
@@ -53,13 +53,17 @@ Básicamente springboot funciona con notaciones, es la principal característica
 @ComponentScan Se encarga de buscar el resto de anotaciones, por ejemplo Repository, Service, Controller, etc
 
 @SpringConfiguration indica que la clase anotada es una fuente de definiciones de Beans (que una clase tiene cierta cantidad de Beans)
+
 ## Creación proyecto spring:
+
 Se inicializa desde: [Inicializar proyecto spring-boot](https://start.spring.io)
 
 ## BEANS:
 
 Spring va a estar formada por varios Beans, y eso van a estar por toda la aplicación, van a ser ciertas funcionalidades que se van a usar en toda la aplicación como una única instancia.
+
 ### Definición Beans:
+
 - ¿Qué es un Bean? En Spring Boot, un bean es un objeto gestionado por el contenedor de Spring. Spring se encarga de crear, inicializar, configurar y destruir estos objetos según sea necesario, facilitando la inyección de dependencias y la gestión automática de configuraciones en la aplicación. Los beans son componentes básicos en Spring, y permiten construir aplicaciones de manera modular y eficiente.
 
 - Declaración de Beans: Para que Spring gestione una clase como un bean, es necesario registrarla en el contenedor. Esto se hace con anotaciones como @Component, @Service, @Repository, @Controller, o definiéndola en una clase de configuración con @Bean. Esto le dice a Spring que debe crear y mantener una instancia de esa clase en su contenedor.
@@ -71,11 +75,12 @@ Spring va a estar formada por varios Beans, y eso van a estar por toda la aplica
 En resumen, los beans en Spring permiten una gestión centralizada y automática de los objetos, facilitando la modularidad y la eficiencia de la aplicación.
 
 ## Carpeta recursos:
+
 Cuando autogeneramos un proyecto con springboot tenemos distintas carpetas, vamos a tener la carpeta de resources que va a tener varios elementos:
+
 - Carpeta static: En esta carpeta guardamos elementos estáticos como imágenes,etc.
 - En template irían los archivos HTML
 - application.properties: Es un archivo de propiedades, por ejemplo el puerto, info base de datos, etc.
-
 
 ## Diferencia RestController y Controller a secas:
 
@@ -88,15 +93,16 @@ En Spring Framework, las anotaciones `@Controller` y `@RestController` se utiliz
 - **Uso de `@ResponseBody`**: Si deseas que el método de un controlador con `@Controller` devuelva datos en formato JSON o XML (sin procesar una vista), puedes agregar la anotación `@ResponseBody` sobre cada método específico, lo que indica que el cuerpo de la respuesta debe serializarse directamente en JSON o XML.
 
 **Ejemplo**:
+
 ```java
 @Controller
 public class HomeController {
-    
+
     @GetMapping("/home")
     public String home() {
         return "home"; // Retorna el nombre de una vista, no JSON.
     }
-    
+
     @GetMapping("/data")
     @ResponseBody // Esto indica que queremos JSON en lugar de una vista.
     public Map<String, String> getData() {
@@ -114,10 +120,11 @@ public class HomeController {
 - **Uso simplificado**: No es necesario especificar `@ResponseBody` en cada método, ya que se aplica de forma implícita a todos ellos.
 
 **Ejemplo**:
+
 ```java
 @RestController
 public class ApiController {
-    
+
     @GetMapping("/api/data")
     public Map<String, String> getData() {
         Map<String, String> data = new HashMap<>();
@@ -129,20 +136,21 @@ public class ApiController {
 
 ### Resumen de diferencias
 
-| Característica                | `@Controller`                      | `@RestController`                 |
-|-------------------------------|------------------------------------|-----------------------------------|
-| Tipo de respuesta por defecto | Vista (HTML, JSP)                 | JSON o XML                        |
-| Serialización automática      | No, requiere `@ResponseBody`      | Sí, todo se convierte a JSON/XML  |
-| Uso común                     | Aplicaciones web tradicionales     | APIs REST                         |
+| Característica                | `@Controller`                  | `@RestController`                |
+| ----------------------------- | ------------------------------ | -------------------------------- |
+| Tipo de respuesta por defecto | Vista (HTML, JSP)              | JSON o XML                       |
+| Serialización automática      | No, requiere `@ResponseBody`   | Sí, todo se convierte a JSON/XML |
+| Uso común                     | Aplicaciones web tradicionales | APIs REST                        |
 
 ### ¿Cuándo usar cada uno?
+
 - Usa `@Controller` si tu aplicación requiere una interfaz de usuario y necesita generar vistas como HTML o JSP.
 - Usa `@RestController` cuando desarrolles APIs RESTful y quieras que tus métodos devuelvan datos en formato JSON o XML de manera predeterminada.
-
 
 Cuando tienes un Controller indica que tiene que devolver un HTML.
 
 ## SPRING MVC:
+
 Spring MVC es un framework de Java que ayuda a construir aplicaciones web usando el patrón Modelo-Vista-Controlador (MVC), que separa la lógica de negocio, la interfaz de usuario, y el flujo de la aplicación.
 
 - Modelo: maneja los datos y la lógica de negocio.
@@ -150,6 +158,7 @@ Spring MVC es un framework de Java que ayuda a construir aplicaciones web usando
 - Controlador: recibe las solicitudes del usuario, interactúa con el modelo y elige la vista adecuada.
 
 ¿Cómo funciona?
+
 - El usuario hace una solicitud (por ejemplo, abre una página web).
 - Spring MVC dirige esta solicitud a un controlador específico.
 - El controlador obtiene los datos del modelo, los pasa a la vista y envía la respuesta al usuario.
@@ -157,20 +166,21 @@ Spring MVC es un framework de Java que ayuda a construir aplicaciones web usando
 En resumen, Spring MVC organiza el código de una aplicación web para que sea fácil de mantener y escalar.
 
 Principales características de Spring MVC
+
 - Inyección de dependencias: Usa el core de Spring para manejar dependencias.
 - Configuración flexible: Aunque admite XML, se puede configurar casi todo mediante anotaciones.
 - Soporte de RESTful: Spring MVC facilita la creación de servicios RESTful.
 - Motor de plantillas flexible: Compatible con múltiples motores de plantillas para la capa de presentación.
 - Internacionalización y validación: Proporciona mecanismos para gestionar la internacionalización y validar datos de entrada.
 
-
 ### CAPAS SPRING MVC:
-Tenemos la capa de presentación, que es la capa de 
+
+Tenemos la capa de presentación, que es la capa de
 @Controller, la capa de negocio, que es la capa de @Service
 y la capa de acceso a Datos que es el @Repository
 
-
 ## ESTEREOTIPOS:
+
 Los estereotipos son componentes que extienden de la clase @Component. Spring define un conjunto de anotaciones core que categorizan cada uno de los componentes asociandoles una responsabilidad concreta.
 
 Todo lo que tenga @Component te va a permitir usar esa clase en el contenedor de spring, sino no, luego vas a tener otras notaciones como @Service, etc, pero esas son para categorizar, pero si solo usas @Component ya lo vas a poder usar en el contenedor de Spring
@@ -184,16 +194,18 @@ Un Bean es un componente o un elemento de Spring, una instancia de un componente
 @Controller es el que realiza las tareas de controlador y gestión de la comunicación entre el usuario y el aplicativo. Para ello se apoya habitualmente en algún motor de plantillas o librería de etiquetas que facilitan la creación de páginas.
 
 ## Métodos HTTP:
+
 En Spring tenemos las notaciones para los métodos HTTP, tenemos @RequestMapping(donde tenemos que especificar luego la operación), @GetMapping, @PostMapping, @PutMapping, @DeleteMapping
 
 ## INYECCION DE DEPENDENCIAS:
+
 La **inyección de dependencias** en Spring Boot es una técnica de diseño de software que permite gestionar las dependencias entre objetos de manera automática y controlada. En lugar de que un objeto cree o gestione directamente sus dependencias, el framework de Spring las proporciona cuando el objeto las necesita. Esto ayuda a reducir el acoplamiento y facilita el mantenimiento, las pruebas, y la reutilización del código.
 
 ### Conceptos clave:
 
 1. **Inversión de Control (IoC)**: En lugar de que una clase sea responsable de instanciar sus dependencias, Spring Boot toma el control de esta tarea. Esto se conoce como Inversión de Control, ya que el flujo de la dependencia se invierte y se maneja externamente.
-  
-2. **Contenedor de Spring**: Spring Boot utiliza un contenedor IoC que crea y administra los objetos, llamados *beans*, a lo largo del ciclo de vida de la aplicación. Cuando se necesita un bean, el contenedor se encarga de proporcionarlo.
+
+2. **Contenedor de Spring**: Spring Boot utiliza un contenedor IoC que crea y administra los objetos, llamados _beans_, a lo largo del ciclo de vida de la aplicación. Cuando se necesita un bean, el contenedor se encarga de proporcionarlo.
 
 3. **Anotaciones comunes**:
    - `@Autowired`: Se usa para marcar una dependencia en una clase. Spring Boot busca automáticamente un bean compatible en el contenedor y lo inyecta en la clase.
@@ -202,23 +214,23 @@ La **inyección de dependencias** en Spring Boot es una técnica de diseño de s
 ### Tipos de inyección:
 
 - **Inyección por constructor**: La inyección se realiza a través del constructor de la clase. Es el método recomendado ya que garantiza que el objeto esté completamente inicializado al crearse.
-  
-- **Inyección por setter**: Usa métodos *setter* para inyectar dependencias. Este método se usa menos, pero permite la inyección de dependencias opcionales.
+- **Inyección por setter**: Usa métodos _setter_ para inyectar dependencias. Este método se usa menos, pero permite la inyección de dependencias opcionales.
 
 ### Ejemplo básico:
+
 Supongamos que tenemos una clase `CarService` que depende de `EngineService`:
 
 ```java
 @Service
 public class CarService {
-    
+
     private final EngineService engineService;
 
     @Autowired
-    public CarService(EngineService engineService) { 
-        this.engineService = engineService; 
+    public CarService(EngineService engineService) {
+        this.engineService = engineService;
     }
-    
+
     public void startCar() {
         engineService.startEngine();
     }
@@ -228,17 +240,18 @@ public class CarService {
 Aquí, Spring Boot se encarga de crear y gestionar la instancia de `EngineService` y la inyecta en `CarService` a través del constructor, gracias a la anotación `@Autowired`.
 
 ### Ventajas:
+
 - **Desacoplamiento**: Las clases dependen de interfaces, no de implementaciones específicas.
 - **Facilidad de pruebas**: Las dependencias se pueden cambiar o simular fácilmente, lo cual facilita las pruebas unitarias.
 - **Mantenimiento y escalabilidad**: Los cambios en una dependencia no afectan directamente a otras clases, lo cual simplifica la gestión y el crecimiento del proyecto.
 
 En resumen, la inyección de dependencias en Spring Boot permite que el contenedor IoC de Spring gestione automáticamente las dependencias entre objetos, promoviendo un diseño de código modular, mantenible y fácilmente testable.
 
-Spring tiene la notación @Autowired, que es una de las anotaciones más habituales cuanod trabajamos con Spring Framework ya que se trata de la anotación que permite inyectar unas dependencias con otras dentro de Spring. 
+Spring tiene la notación @Autowired, que es una de las anotaciones más habituales cuanod trabajamos con Spring Framework ya que se trata de la anotación que permite inyectar unas dependencias con otras dentro de Spring.
 
 Otra forma de hacerlo es con:
 
-Por supuesto, en Spring Boot, también se puede usar `@Autowired` directamente en la declaración del atributo. En este caso, no es necesario un constructor o método *setter* para la inyección de dependencias. Spring Boot automáticamente inyectará la dependencia en el atributo marcado con `@Autowired`.
+Por supuesto, en Spring Boot, también se puede usar `@Autowired` directamente en la declaración del atributo. En este caso, no es necesario un constructor o método _setter_ para la inyección de dependencias. Spring Boot automáticamente inyectará la dependencia en el atributo marcado con `@Autowired`.
 
 ### Ejemplo básico:
 
@@ -260,11 +273,12 @@ public class CarService {
 ### Explicación:
 
 - La anotación `@Autowired` en la declaración del atributo `engineService` indica a Spring que debe inyectar automáticamente un bean de tipo `EngineService` cuando se crea una instancia de `CarService`.
-- El contenedor de Spring busca un bean de tipo `EngineService` y lo inyecta en `CarService` sin necesidad de un constructor o un método *setter*.
+- El contenedor de Spring busca un bean de tipo `EngineService` y lo inyecta en `CarService` sin necesidad de un constructor o un método _setter_.
 
 ### Consideraciones:
 
 Aunque esta forma es válida y sencilla, la **inyección por constructor** suele ser preferida porque:
+
 1. Facilita el diseño de clases inmutables.
 2. Permite que las dependencias se verifiquen en el momento de la creación del objeto.
 3. Es más adecuada para las pruebas unitarias, ya que permite inyectar dependencias en el constructor al crear instancias en pruebas.
@@ -275,68 +289,72 @@ Ambas formas son válidas, aunque el primer ejemplo es más estricto.
 Para que una clase se pueda instanciar y usar con `@Autowired` en Spring Boot, es necesario que la clase cumpla con algunos requisitos básicos. Aquí están los elementos que necesita:
 
 ### 1. Ser un **bean gestionado por el contenedor de Spring**
-   La clase debe estar marcada con una anotación que indique al contenedor de Spring que debe gestionarla como un *bean*. Las anotaciones más comunes son:
 
-   - `@Component`: Para clases genéricas.
-   - `@Service`: Para clases que implementan lógica de negocio.
-   - `@Repository`: Para clases de acceso a datos (DAO).
-   - `@Controller` o `@RestController`: Para clases que actúan como controladores en aplicaciones web.
+La clase debe estar marcada con una anotación que indique al contenedor de Spring que debe gestionarla como un _bean_. Las anotaciones más comunes son:
 
-   Estas anotaciones hacen que Spring detecte automáticamente la clase y la registre en su contenedor IoC (Inversión de Control).
+- `@Component`: Para clases genéricas.
+- `@Service`: Para clases que implementan lógica de negocio.
+- `@Repository`: Para clases de acceso a datos (DAO).
+- `@Controller` o `@RestController`: Para clases que actúan como controladores en aplicaciones web.
 
-   ```java
-   @Service
-   public class EngineService {
-       public void startEngine() {
-           System.out.println("Engine started!");
-       }
-   }
-   ```
+Estas anotaciones hacen que Spring detecte automáticamente la clase y la registre en su contenedor IoC (Inversión de Control).
+
+```java
+@Service
+public class EngineService {
+    public void startEngine() {
+        System.out.println("Engine started!");
+    }
+}
+```
 
 ### 2. **Estar dentro de un paquete escaneado por Spring Boot**
-   Spring Boot escanea por defecto el paquete donde está la clase principal (aquella con `@SpringBootApplication`) y todos los subpaquetes de esta. Por lo tanto, la clase con `@Component`, `@Service`, etc., debe estar en el mismo paquete o en uno de los subpaquetes de la clase principal.
 
-   Si la clase está en un paquete distinto, se puede usar `@ComponentScan` en la clase principal para que Spring busque beans en otros paquetes.
+Spring Boot escanea por defecto el paquete donde está la clase principal (aquella con `@SpringBootApplication`) y todos los subpaquetes de esta. Por lo tanto, la clase con `@Component`, `@Service`, etc., debe estar en el mismo paquete o en uno de los subpaquetes de la clase principal.
 
-   ```java
-   @SpringBootApplication
-   @ComponentScan(basePackages = "com.example.otherpackage") // Si está en otro paquete
-   public class MySpringBootApplication {
-       public static void main(String[] args) {
-           SpringApplication.run(MySpringBootApplication.class, args);
-       }
-   }
-   ```
+Si la clase está en un paquete distinto, se puede usar `@ComponentScan` en la clase principal para que Spring busque beans en otros paquetes.
+
+```java
+@SpringBootApplication
+@ComponentScan(basePackages = "com.example.otherpackage") // Si está en otro paquete
+public class MySpringBootApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(MySpringBootApplication.class, args);
+    }
+}
+```
 
 ### 3. Tener un **constructor público** (o el constructor predeterminado si no hay uno definido)
-   Spring necesita acceso a un constructor para instanciar la clase. Aunque en la mayoría de los casos, Spring usará el constructor sin parámetros, también puede usar un constructor con parámetros para inyección de dependencias (inyección por constructor).
 
-   ```java
-   @Service
-   public class CarService {
+Spring necesita acceso a un constructor para instanciar la clase. Aunque en la mayoría de los casos, Spring usará el constructor sin parámetros, también puede usar un constructor con parámetros para inyección de dependencias (inyección por constructor).
 
-       private final EngineService engineService;
+```java
+@Service
+public class CarService {
 
-       // Inyección de dependencia por constructor
-       @Autowired
-       public CarService(EngineService engineService) {
-           this.engineService = engineService;
-       }
+    private final EngineService engineService;
 
-       public void startCar() {
-           engineService.startEngine();
-       }
-   }
-   ```
+    // Inyección de dependencia por constructor
+    @Autowired
+    public CarService(EngineService engineService) {
+        this.engineService = engineService;
+    }
+
+    public void startCar() {
+        engineService.startEngine();
+    }
+}
+```
 
 ### 4. Tener una dependencia compatible disponible en el contenedor de Spring
-   La clase que deseas inyectar (por ejemplo, `EngineService`) también debe ser un bean gestionado por Spring. Esto significa que `EngineService` también debe estar anotada con `@Component`, `@Service`, o una anotación similar, para que el contenedor IoC pueda instanciarla y gestionarla.
 
-En resumen, para que una clase se pueda inyectar con `@Autowired`, debe ser un *bean* de Spring (anotado con `@Component`, `@Service`, etc.), estar en un paquete escaneado y tener un constructor público accesible.
+La clase que deseas inyectar (por ejemplo, `EngineService`) también debe ser un bean gestionado por Spring. Esto significa que `EngineService` también debe estar anotada con `@Component`, `@Service`, o una anotación similar, para que el contenedor IoC pueda instanciarla y gestionarla.
+
+En resumen, para que una clase se pueda inyectar con `@Autowired`, debe ser un _bean_ de Spring (anotado con `@Component`, `@Service`, etc.), estar en un paquete escaneado y tener un constructor público accesible.
 
 ## PERSISTENCIA DE DATOS:
 
-**ORM*: Un ORM es una técnica de programación utilizada en el desarrollo de aplicaciones para mapear objetos en lenguajes de programación orientados a objetos, como Java, a tablas en una base de datos relacional. En esencia permite que las aplicaciones interactúen con la base de datos utilizando objetos y métodos en lugar de escribir consultas SQL directamente. JPA es una interfaz de esto, que nos permite mapear objetos a base de datos. Una implementación de esto por ejemplo es Hibernate, que se encarga de convertir los objetos java a la base de datos.
+\*_ORM_: Un ORM es una técnica de programación utilizada en el desarrollo de aplicaciones para mapear objetos en lenguajes de programación orientados a objetos, como Java, a tablas en una base de datos relacional. En esencia permite que las aplicaciones interactúen con la base de datos utilizando objetos y métodos en lugar de escribir consultas SQL directamente. JPA es una interfaz de esto, que nos permite mapear objetos a base de datos. Una implementación de esto por ejemplo es Hibernate, que se encarga de convertir los objetos java a la base de datos.
 
 Spring Data es un proyecto dentro del ecosistema Spring que simplifica aún más el acceso a bases de datos y la persistencia en general. No es una implementación de JPA, sino una capa de abstracción adicional que trabaja en conjunto con JPA y otras tecnologías de persistencia. Spring Data proporciona repositorios CRUD predefinidos y facilidades para definir consultas personalizadas utilizando métodos de repositorio. Además, Spring Data ofrece soporte para múltiples tecnologías de almacenamiento, como JPA, MongoDB, Redis y más.
 Spring Data JPA es una subparte de Spring Data que se centra en facilitar el uso de JPA. En resumen, Spring Data es una implementación para acceder a base de datos, y que me permite trabajar con distintas tecnlogías, y Spring Data JPA es la que me permite trabajar con JPA.
@@ -350,6 +368,7 @@ Cuando creamos un proyecto lo primero es configurar la base de datos y el JPA (s
 ## REPOSITORIOS:
 
 Los repositorios **siempre** tienen que ser interfaces, siempre, y heredan haciendo extends de otras interfaces de spring
+
 ### **¿Qué es `@Repository` en Spring?**
 
 `@Repository` es una anotación de **Spring Framework** que marca una clase como un **componente de acceso a datos**. Indica que la clase es responsable de interactuar con la base de datos o cualquier otra fuente de datos. Es una de las tres anotaciones especializadas de estereotipos en Spring, junto con `@Controller` y `@Service`.
@@ -357,11 +376,14 @@ Los repositorios **siempre** tienen que ser interfaces, siempre, y heredan hacie
 ---
 
 ### **Características principales de `@Repository`:**
+
 1. **Detección automática de componentes:**
+
    - Al usar la anotación `@Repository`, Spring puede detectar y registrar automáticamente la clase en el contexto de aplicación durante el escaneo de componentes.
    - Esto significa que puedes inyectar esta clase en otras partes de tu aplicación.
 
 2. **Manejo de excepciones:**
+
    - Spring traduce automáticamente las excepciones específicas de la base de datos (como `SQLException`) a excepciones genéricas de Spring (`DataAccessException`) cuando se usa `@Repository`.
 
 3. **Facilita el desacoplamiento:**
@@ -372,6 +394,7 @@ Los repositorios **siempre** tienen que ser interfaces, siempre, y heredan hacie
 ### **Cómo usar `@Repository`**
 
 #### **1. Uso con clases personalizadas**
+
 Puedes usar `@Repository` para marcar una clase donde implementes manualmente la lógica de acceso a datos:
 
 ```java
@@ -388,6 +411,7 @@ public class UserRepository {
 ```
 
 #### **2. Uso con interfaces y Spring Data JPA**
+
 Cuando utilizas Spring Data JPA, los repositorios suelen ser **interfaces** que extienden las interfaces de Spring Data (`JpaRepository`, `CrudRepository`, etc.). No necesitas implementar nada manualmente; Spring genera automáticamente la implementación:
 
 ```java
@@ -402,6 +426,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 ```
 
 #### **3. Inyección del repositorio**
+
 Puedes inyectar el repositorio en tus servicios o controladores usando `@Autowired` o constructor injection:
 
 ```java
@@ -423,6 +448,7 @@ public class UserService {
 ---
 
 ### **Buenas prácticas**
+
 1. **Mantén la lógica de acceso a datos en el repositorio:**
    - Evita escribir lógica de negocio en las clases marcadas con `@Repository`.
 2. **Usa interfaces cuando sea posible:**
@@ -435,14 +461,12 @@ public class UserService {
 ---
 
 ### **Resumen**
+
 - **`@Repository`** marca una clase como un componente de acceso a datos.
 - Puede ser usada con clases personalizadas o interfaces.
 - En Spring Data JPA, no necesitas implementaciones manuales gracias a las interfaces como `JpaRepository`.
 - Es fundamental para separar la lógica de acceso a datos de otras capas como servicios o controladores.
 - Proporciona la mayoría de métodos que vas a necesitar para interactuar con la base de datos
-
-
-
 
 ## COMMANDLINERUNNER:
 
@@ -451,6 +475,7 @@ La clase **`CommandLineRunner`** en Spring Boot se utiliza para ejecutar lógica
 ---
 
 ### **Definición**
+
 La interfaz `CommandLineRunner` tiene un único método:
 
 ```java
@@ -465,9 +490,11 @@ El método `run` recibe como parámetro un arreglo de `String` con los argumento
 ---
 
 ### **Uso principal**
+
 El principal propósito de **`CommandLineRunner`** es ejecutar lógica personalizada inmediatamente después de que el contexto de la aplicación esté completamente inicializado.
 
 #### **Ejemplo básico**
+
 ```java
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -489,8 +516,10 @@ public class StartupRunner implements CommandLineRunner {
 ---
 
 ### **Usos comunes**
+
 1. **Inicialización de datos:**
    Puedes cargar datos en la base de datos o inicializar estructuras necesarias para la ejecución de la aplicación.
+
    ```java
    @Component
    public class DataInitializer implements CommandLineRunner {
@@ -511,6 +540,7 @@ public class StartupRunner implements CommandLineRunner {
 
 2. **Ejecución de tareas al inicio:**
    Por ejemplo, verificar la conectividad con servicios externos.
+
    ```java
    @Component
    public class ConnectivityChecker implements CommandLineRunner {
@@ -525,6 +555,7 @@ public class StartupRunner implements CommandLineRunner {
 
 3. **Procesar argumentos de línea de comando:**
    Puedes trabajar directamente con los argumentos pasados al iniciar la aplicación.
+
    ```java
    @Component
    public class ArgsProcessor implements CommandLineRunner {
@@ -541,6 +572,7 @@ public class StartupRunner implements CommandLineRunner {
 ---
 
 ### **Diferencia entre `CommandLineRunner` y `ApplicationRunner`**
+
 Spring Boot también proporciona otra interfaz llamada **`ApplicationRunner`**, que es muy similar pero usa un enfoque más estructurado al manejar los argumentos de la aplicación:
 
 - `CommandLineRunner`: Los argumentos se reciben como un arreglo de `String`.
@@ -564,6 +596,7 @@ public class ApplicationStartup implements ApplicationRunner {
 ---
 
 ### **¿Cuándo usar `CommandLineRunner`?**
+
 - **Inicialización ligera:** Para cargar datos o realizar tareas sencillas al inicio.
 - **Depuración rápida:** Para probar funciones o realizar comprobaciones rápidas.
 - **Tareas únicas:** Cuando necesitas ejecutar código solo una vez al arrancar la aplicación.
@@ -585,10 +618,12 @@ La anotación no tiene un impacto técnico distinto al de `@Component` (ambas in
 ### **Características principales de `@Service`:**
 
 1. **Detección automática de componentes:**
+
    - Al usar `@Service`, Spring detecta automáticamente la clase durante el escaneo de componentes y la registra como un bean en el contenedor.
    - Esto significa que puedes inyectar esta clase en otras partes de tu aplicación.
 
 2. **Separación de responsabilidades:**
+
    - Se utiliza para centralizar la lógica de negocio, separándola de otras capas como los controladores (`@Controller`) o los repositorios (`@Repository`).
 
 3. **Soporte para transacciones:**
@@ -613,6 +648,7 @@ public class UserService {
 ```
 
 En este caso:
+
 - La clase `UserService` está marcada como un servicio con `@Service`.
 - Spring registrará automáticamente esta clase como un bean, permitiendo su inyección en otras partes de la aplicación.
 
@@ -648,6 +684,7 @@ public class UserController {
 ### **Usos comunes de `@Service`**
 
 1. **Centralizar la lógica de negocio:**
+
    - Coloca toda la lógica de negocio en servicios, no en controladores ni repositorios.
 
    ```java
@@ -661,6 +698,7 @@ public class UserController {
    ```
 
 2. **Coordinación entre capas:**
+
    - Los servicios suelen coordinar llamadas entre la capa de repositorio y otras partes de la aplicación.
 
    ```java
@@ -681,6 +719,7 @@ public class UserController {
    ```
 
 3. **Soporte para transacciones:**
+
    - Puedes usar `@Transactional` en los métodos de servicio para manejar transacciones de base de datos de forma automática.
 
    ```java
@@ -716,12 +755,15 @@ public class UserController {
 ### **Buenas prácticas para servicios**
 
 1. **Evitar dependencias circulares:**
+
    - Asegúrate de que los servicios no dependan unos de otros en un ciclo infinito. Si necesitas resolver un caso complejo, usa eventos o servicios más generales.
 
 2. **Mantén la lógica de negocio en los servicios:**
+
    - No pongas lógica de negocio en controladores ni repositorios.
 
 3. **Divide responsabilidades:**
+
    - Si un servicio crece demasiado, divídelo en varios servicios más pequeños.
 
 4. **Combina con patrones de diseño:**
@@ -730,6 +772,7 @@ public class UserController {
 ---
 
 ### **Resumen**
+
 - **`@Service`** indica que una clase pertenece a la capa de servicios y contiene la lógica de negocio.
 - Se detecta automáticamente como un bean y puede ser inyectada en otras capas.
 - Centraliza la lógica de negocio, coordina capas y maneja transacciones.
@@ -744,9 +787,11 @@ El `@RestController` es una anotación en Spring que simplifica el desarrollo de
 ---
 
 ### **1. ¿Qué es `@RestController`?**
+
 La anotación `@RestController` se utiliza para crear controladores que devuelven datos directamente a través de HTTP, usualmente en formato JSON o XML. Está optimizada para APIs RESTful, donde el objetivo principal es enviar y recibir datos estructurados en lugar de vistas HTML.
 
 **Características clave**:
+
 - Combina `@Controller` y `@ResponseBody`.
 - Convierte automáticamente los objetos retornados a formato JSON o XML.
 - Simplifica la creación de servicios backend para aplicaciones front-end como Angular, React, o clientes móviles.
@@ -754,9 +799,11 @@ La anotación `@RestController` se utiliza para crear controladores que devuelve
 ---
 
 ### **2. ¿Cómo funciona?**
+
 Spring convierte el objeto retornado por los métodos de un `@RestController` en una respuesta HTTP adecuada utilizando la biblioteca **Jackson** (predeterminada para JSON) o JAXB (para XML si se configura).
 
 **Flujo típico**:
+
 1. El cliente envía una solicitud HTTP a un endpoint definido en el controlador.
 2. El controlador procesa la solicitud y devuelve un objeto.
 3. Spring traduce el objeto a un formato de respuesta como JSON y lo envía al cliente.
@@ -764,16 +811,20 @@ Spring convierte el objeto retornado por los métodos de un `@RestController` en
 ---
 
 ### **3. Configuración básica**
+
 Para utilizar `@RestController` en una aplicación Spring Boot:
+
 1. Asegúrate de tener el starter `spring-boot-starter-web` en tu archivo `pom.xml` o `build.gradle`.
 2. Declara tus controladores con `@RestController`.
 
 ---
 
 ### **4. Ejemplo básico**
+
 Un ejemplo típico de uso de `@RestController` es un servicio que devuelve un mensaje en formato JSON.
 
 #### Código:
+
 ```java
 @RestController
 @RequestMapping("/api")
@@ -789,6 +840,7 @@ public class HelloController {
 ```
 
 #### Respuesta JSON:
+
 ```json
 {
   "message": "Hola, bienvenido a la API RESTful!"
@@ -798,9 +850,11 @@ public class HelloController {
 ---
 
 ### **5. Ejemplo avanzado**
+
 Supongamos que queremos construir una API para gestionar usuarios.
 
 #### Modelo:
+
 ```java
 public class User {
     private Long id;
@@ -812,6 +866,7 @@ public class User {
 ```
 
 #### Controlador:
+
 ```java
 @RestController
 @RequestMapping("/api/users")
@@ -846,11 +901,13 @@ public class UserController {
 ```
 
 #### Explicación:
+
 1. **`@GetMapping`**: Obtiene todos los usuarios o uno específico basado en el ID.
 2. **`@PostMapping`**: Agrega un nuevo usuario a la lista (simulación de base de datos).
 3. **`@RequestBody`**: Convierte un cuerpo JSON enviado por el cliente en un objeto Java.
 
 #### Prueba con una herramienta como Postman:
+
 - **GET**: `/api/users` -> Devuelve todos los usuarios.
 - **POST**: `/api/users` con cuerpo JSON:
   ```json
@@ -871,15 +928,17 @@ public class UserController {
 ---
 
 ### **6. Comparación con `@Controller`**
-| Característica            | `@Controller`                      | `@RestController`                   |
-|---------------------------|-------------------------------------|-------------------------------------|
-| **Tipo de respuesta**      | Vistas renderizadas (HTML, JSP)     | Datos (JSON, XML)                   |
-| **Uso principal**          | Aplicaciones web tradicionales      | APIs RESTful                        |
-| **Necesidad de `@ResponseBody`** | Sí                            | No, ya está implícito                |
+
+| Característica                   | `@Controller`                   | `@RestController`     |
+| -------------------------------- | ------------------------------- | --------------------- |
+| **Tipo de respuesta**            | Vistas renderizadas (HTML, JSP) | Datos (JSON, XML)     |
+| **Uso principal**                | Aplicaciones web tradicionales  | APIs RESTful          |
+| **Necesidad de `@ResponseBody`** | Sí                              | No, ya está implícito |
 
 ---
 
 ### **7. Casos de uso comunes**
+
 - Construcción de **APIs REST** para frontends modernos (React, Angular).
 - Exposición de microservicios para integraciones.
 - Creación de backends para aplicaciones móviles.
@@ -887,6 +946,7 @@ public class UserController {
 ---
 
 ### **8. Ventajas**
+
 - **Menos código**: Combina dos anotaciones (`@Controller` y `@ResponseBody`).
 - **Compatibilidad JSON/XML**: Soporte predeterminado para formatos estructurados.
 - **Escalabilidad**: Fácil integración en arquitecturas basadas en microservicios.
@@ -894,6 +954,7 @@ public class UserController {
 ---
 
 ### **Conclusión**
+
 `@RestController` es ideal para construir APIs RESTful en aplicaciones Spring. Es simple, eficiente y se adapta perfectamente a los estándares modernos de desarrollo web y móvil. ¡Empieza a usarlo para facilitar la creación de servicios backend robustos y escalables!
 
 ## DIFERENCIA ENTRE CONTROLLER Y REST CONTROLLER:
@@ -903,18 +964,21 @@ En el ecosistema de Spring Framework, los controladores son componentes fundamen
 ---
 
 ### **1. `@Controller`**
+
 La anotación `@Controller` es utilizada para definir un controlador en aplicaciones web basadas en Spring. Está orientada principalmente a devolver vistas (por ejemplo, HTML) a través de un motor de plantillas como **Thymeleaf** o **JSP**.
 
 #### Características principales:
+
 - **Retorno de vistas**: Por defecto, espera que los métodos retornen nombres de vistas (como plantillas HTML o JSP) que serán renderizadas.
 - **Uso con `ModelAndView` o `Model`**: Los datos se pasan a la vista utilizando el objeto `Model` o `ModelAndView`.
 - **No convierte automáticamente a JSON**: Si necesitas devolver datos en formato JSON o XML, debes usar la anotación adicional `@ResponseBody` en los métodos.
 
 #### Ejemplo:
+
 ```java
 @Controller
 public class HomeController {
-    
+
     @GetMapping("/home")
     public String showHomePage(Model model) {
         model.addAttribute("message", "Bienvenido a la página de inicio");
@@ -926,18 +990,21 @@ public class HomeController {
 ---
 
 ### **2. `@RestController`**
+
 La anotación `@RestController` es una combinación de `@Controller` y `@ResponseBody`. Está diseñada para construir APIs RESTful y devolver directamente los datos en formato **JSON** o **XML**, sin necesidad de vistas.
 
 #### Características principales:
+
 - **Retorno de datos**: Por defecto, convierte los objetos devueltos en la respuesta HTTP a formato JSON (usando la librería Jackson, que es predeterminada en Spring).
 - **Orientado a APIs RESTful**: Ideal para aplicaciones backend que exponen servicios a través de endpoints HTTP.
 - **No necesita `@ResponseBody`**: Los métodos no requieren esta anotación adicional, ya que `@RestController` la incluye implícitamente.
 
 #### Ejemplo:
+
 ```java
 @RestController
 public class ApiController {
-    
+
     @GetMapping("/api/message")
     public Map<String, String> getMessage() {
         Map<String, String> response = new HashMap<>();
@@ -950,21 +1017,22 @@ public class ApiController {
 ---
 
 ### **Diferencias clave**
-| Característica            | `@Controller`                              | `@RestController`                           |
-|---------------------------|--------------------------------------------|--------------------------------------------|
-| **Tipo de respuesta**      | Renderiza vistas (HTML, JSP, etc.)         | Devuelve datos en formato JSON o XML       |
-| **Uso de `@ResponseBody`** | Necesario para datos (sin vistas)          | Implícito, no se requiere                  |
-| **Orientación**            | Aplicaciones web tradicionales             | APIs RESTful                                |
-| **Motores de plantillas**  | Compatible con motores como Thymeleaf      | No requiere motores de plantillas          |
+
+| Característica             | `@Controller`                         | `@RestController`                    |
+| -------------------------- | ------------------------------------- | ------------------------------------ |
+| **Tipo de respuesta**      | Renderiza vistas (HTML, JSP, etc.)    | Devuelve datos en formato JSON o XML |
+| **Uso de `@ResponseBody`** | Necesario para datos (sin vistas)     | Implícito, no se requiere            |
+| **Orientación**            | Aplicaciones web tradicionales        | APIs RESTful                         |
+| **Motores de plantillas**  | Compatible con motores como Thymeleaf | No requiere motores de plantillas    |
 
 ---
 
 ### **Cuándo usar cada uno**
+
 - Usa **`@Controller`** si estás construyendo una aplicación web tradicional donde necesitas renderizar vistas en el navegador.
 - Usa **`@RestController`** si estás desarrollando una API REST que sirve datos a clientes como aplicaciones móviles o frontends basados en JavaScript (por ejemplo, Angular, React, o Vue.js).
 
 Con esta distinción clara, puedes elegir la anotación adecuada según los requisitos de tu proyecto.
-
 
 ---
 
@@ -996,6 +1064,7 @@ Spring proporciona varias formas de manejar excepciones, desde estrategias espec
 El decorador `@ExceptionHandler` permite manejar excepciones de manera local en un controlador. Es útil para manejar excepciones específicas lanzadas en el mismo controlador.
 
 ##### Ejemplo:
+
 ```java
 @RestController
 @RequestMapping("/api")
@@ -1014,10 +1083,12 @@ public class MiControlador {
 ```
 
 **Ventajas:**
+
 - Fácil de implementar.
 - ÚTil para manejar errores específicos en controladores individuales.
 
 **Desventajas:**
+
 - No centraliza el manejo de errores.
 
 ---
@@ -1027,6 +1098,7 @@ public class MiControlador {
 Para manejar excepciones en toda la aplicación de manera centralizada, se utiliza `@ControllerAdvice`. Esto permite un enfoque uniforme para gestionar errores.
 
 ##### Ejemplo:
+
 ```java
 @ControllerAdvice
 public class ManejadorGlobalExcepciones {
@@ -1044,10 +1116,12 @@ public class ManejadorGlobalExcepciones {
 ```
 
 **Ventajas:**
+
 - Centraliza el manejo de excepciones.
 - Reduce la repetición de código.
 
 **Desventajas:**
+
 - Puede complicarse si se manejan muchas excepciones diferentes.
 
 ---
@@ -1057,6 +1131,7 @@ public class ManejadorGlobalExcepciones {
 La clase `ResponseStatusException` permite lanzar excepciones con códigos de estado HTTP específicos.
 
 ##### Ejemplo:
+
 ```java
 @GetMapping("/recurso")
 public String obtenerRecurso() {
@@ -1065,9 +1140,11 @@ public String obtenerRecurso() {
 ```
 
 **Ventajas:**
+
 - Simplicidad y claridad en la implementación.
 
 **Desventajas:**
+
 - Menos flexible en comparación con `@ExceptionHandler`.
 
 ---
@@ -1077,6 +1154,7 @@ public String obtenerRecurso() {
 Es una buena práctica devolver errores en un formato consistente, por ejemplo, en formato JSON. Esto es especialmente útil en APIs REST.
 
 ##### Ejemplo:
+
 ```java
 public class ErrorResponse {
     private String mensaje;
@@ -1108,6 +1186,7 @@ public class ManejadorGlobalExcepciones {
 ```
 
 **Ventajas:**
+
 - Consistencia en las respuestas.
 - Mejora la experiencia del cliente.
 
@@ -1118,6 +1197,7 @@ public class ManejadorGlobalExcepciones {
 Cuando utilizas validaciones con anotaciones como `@Valid`, puedes capturar excepciones como `MethodArgumentNotValidException` para devolver mensajes claros.
 
 ##### Ejemplo:
+
 ```java
 @ExceptionHandler(MethodArgumentNotValidException.class)
 public ResponseEntity<Map<String, String>> manejarErroresDeValidacion(MethodArgumentNotValidException ex) {
@@ -1130,6 +1210,7 @@ public ResponseEntity<Map<String, String>> manejarErroresDeValidacion(MethodArgu
 ```
 
 **Ventajas:**
+
 - Proporciona mensajes detallados para errores de validación.
 
 ---
@@ -1139,6 +1220,7 @@ public ResponseEntity<Map<String, String>> manejarErroresDeValidacion(MethodArgu
 Puedes definir tus propias clases de excepciones para representar errores específicos de tu negocio.
 
 #### Ejemplo:
+
 ```java
 public class MiExcepcionPersonalizada extends RuntimeException {
     public MiExcepcionPersonalizada(String mensaje) {
@@ -1153,6 +1235,7 @@ public ResponseEntity<String> manejarMiExcepcionPersonalizada(MiExcepcionPersona
 ```
 
 **Ventajas:**
+
 - Mejora la semántica del código.
 - Facilita la gestión de errores específicos.
 
@@ -1171,7 +1254,6 @@ public ResponseEntity<String> manejarMiExcepcionPersonalizada(MiExcepcionPersona
 
 Con estas técnicas y buenas prácticas, puedes manejar excepciones en Spring de forma efectiva, garantizando una mejor experiencia para los usuarios y un código más limpio y mantenible.
 
-
 ## THYMELEAF:
 
 Nació para hacer aplicaciones monolíticas y poder hacer el frontend con Springboot también. Thymeleaf es un motor de plantillas
@@ -1189,6 +1271,7 @@ A continuación, se explican sus conceptos principales y se ofrecen ejemplos det
 Cuando generas un proyecto Spring Boot usando **Spring Initializr**, puedes agregar Thymeleaf como dependencia seleccionando `Spring Web` y `Thymeleaf`.
 
 #### **Dependencia Maven**
+
 En caso de que necesites agregarlo manualmente, incluye la dependencia en tu archivo `pom.xml`:
 
 ```xml
@@ -1199,6 +1282,7 @@ En caso de que necesites agregarlo manualmente, incluye la dependencia en tu arc
 ```
 
 Para Gradle, agrega esto al archivo `build.gradle`:
+
 ```groovy
 implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 ```
@@ -1230,6 +1314,7 @@ src
 ```
 
 #### **Configuración predeterminada**
+
 Spring Boot buscará los archivos Thymeleaf en el directorio `src/main/resources/templates`. Si necesitas cambiar este comportamiento, agrega lo siguiente a tu `application.properties`:
 
 ```properties
@@ -1242,6 +1327,7 @@ spring.thymeleaf.suffix=.html
 ### **4. Ejemplo Básico: Renderizar una Página HTML**
 
 #### **4.1. Controlador Simple**
+
 Crea un controlador en Java para manejar solicitudes HTTP y devolver vistas Thymeleaf.
 
 ```java
@@ -1269,16 +1355,17 @@ Guarda este archivo en `src/main/resources/templates/home.html`:
 ```html
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
+  <head>
     <title>Home Page</title>
-</head>
-<body>
+  </head>
+  <body>
     <h1 th:text="${message}">Texto predeterminado</h1>
-</body>
+  </body>
 </html>
 ```
 
 #### **¿Qué hace el atributo `th:text`?**
+
 - **`${message}`**: Es una expresión que Thymeleaf evalúa para reemplazar el contenido con el valor del modelo enviado desde el controlador.
 
 Cuando visitas `http://localhost:8080/`, Thymeleaf renderiza el contenido con el mensaje enviado desde el controlador.
@@ -1288,6 +1375,7 @@ Cuando visitas `http://localhost:8080/`, Thymeleaf renderiza el contenido con el
 ### **5. Atributos Thymeleaf Comunes**
 
 #### **5.1. Mostrar Contenido**
+
 - **`th:text`**: Reemplaza el texto dentro de un elemento.
 - **Ejemplo:**
 
@@ -1296,6 +1384,7 @@ Cuando visitas `http://localhost:8080/`, Thymeleaf renderiza el contenido con el
 ```
 
 Si `nombre = "Juan"`, el resultado será:
+
 ```html
 <p>Hola, Juan!</p>
 ```
@@ -1303,15 +1392,18 @@ Si `nombre = "Juan"`, el resultado será:
 ---
 
 #### **5.2. Enlaces y Recursos**
+
 - **`th:href`**: Genera enlaces dinámicos.
 - **`th:src`**: Configura rutas de imágenes o recursos.
 
 ##### Ejemplo de `th:href`
+
 ```html
 <a th:href="@{/contacto}">Ir a Contacto</a>
 ```
 
 Si tu controlador tiene:
+
 ```java
 @GetMapping("/contacto")
 public String contacto() {
@@ -1320,6 +1412,7 @@ public String contacto() {
 ```
 
 El HTML resultante será:
+
 ```html
 <a href="/contacto">Ir a Contacto</a>
 ```
@@ -1327,10 +1420,13 @@ El HTML resultante será:
 ---
 
 #### **5.3. Listas y Bucles**
+
 - **`th:each`**: Itera sobre colecciones para generar contenido dinámico.
 
 ##### Ejemplo
+
 Controlador:
+
 ```java
 @GetMapping("/productos")
 public String productos(Model model) {
@@ -1341,28 +1437,33 @@ public String productos(Model model) {
 ```
 
 Plantilla HTML:
+
 ```html
 <ul>
-    <li th:each="producto : ${productos}" th:text="${producto}"></li>
+  <li th:each="producto : ${productos}" th:text="${producto}"></li>
 </ul>
 ```
 
 Resultado:
+
 ```html
 <ul>
-    <li>Laptop</li>
-    <li>Mouse</li>
-    <li>Teclado</li>
+  <li>Laptop</li>
+  <li>Mouse</li>
+  <li>Teclado</li>
 </ul>
 ```
 
 ---
 
 #### **5.4. Formularios**
+
 Thymeleaf facilita la creación de formularios dinámicos.
 
 ##### Ejemplo: Crear un formulario y manejar datos
+
 Controlador:
+
 ```java
 @PostMapping("/submit")
 public String submit(@RequestParam String nombre, Model model) {
@@ -1372,15 +1473,17 @@ public String submit(@RequestParam String nombre, Model model) {
 ```
 
 Formulario HTML:
+
 ```html
 <form action="/submit" method="post">
-    <label for="nombre">Nombre:</label>
-    <input type="text" id="nombre" name="nombre">
-    <button type="submit">Enviar</button>
+  <label for="nombre">Nombre:</label>
+  <input type="text" id="nombre" name="nombre" />
+  <button type="submit">Enviar</button>
 </form>
 ```
 
 Resultado (después de enviar):
+
 ```html
 <h1>Hola, Juan!</h1>
 ```
@@ -1388,10 +1491,13 @@ Resultado (después de enviar):
 ---
 
 ### **6. Internacionalización**
+
 Thymeleaf soporta archivos de mensajes para traducción.
 
 #### Configuración de mensajes
+
 1. Crea archivos de propiedades, por ejemplo:
+
    - `messages_en.properties`:
      ```properties
      saludo=Hello!
@@ -1413,29 +1519,34 @@ El texto se traducirá automáticamente según la configuración de idioma de Sp
 ### **7. Extensiones y Avanzado**
 
 #### **Fragmentos Reutilizables**
+
 Thymeleaf permite reutilizar fragmentos de HTML como cabeceras o pies de página.
 
 ##### Ejemplo
+
 Archivo de fragmento (`header.html`):
+
 ```html
 <div th:fragment="header">
-    <h1>Mi Sitio Web</h1>
+  <h1>Mi Sitio Web</h1>
 </div>
 ```
 
 Archivo principal (`home.html`):
+
 ```html
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<body>
+  <body>
     <div th:include="header :: header"></div>
-</body>
+  </body>
 </html>
 ```
 
 ---
 
 #### **Condicionales**
+
 - **`th:if`**: Muestra un elemento si se cumple una condición.
 - **Ejemplo**:
 
@@ -1449,6 +1560,7 @@ Archivo principal (`home.html`):
 ### **Conclusión**
 
 Thymeleaf es una herramienta poderosa para crear aplicaciones web con Spring Boot. Proporciona:
+
 - Un lenguaje intuitivo para renderizar contenido dinámico.
 - Soporte completo para formularios, listas, internacionalización y fragmentos reutilizables.
 - Una integración perfecta con Spring MVC, haciendo que sea ideal para proyectos Java.
@@ -1472,11 +1584,13 @@ En el marco de trabajo Spring, las anotaciones `@Controller` y el objeto **Model
 La anotación **`@Controller`** en Spring se utiliza para marcar una clase como un controlador que maneja solicitudes web. Es una parte fundamental del patrón **MVC (Model-View-Controller)**, donde el controlador actúa como un intermediario entre la vista y el modelo.
 
 #### **Principales características:**
+
 - **Dirige las solicitudes HTTP**: Mapear rutas específicas usando anotaciones como `@GetMapping`, `@PostMapping`, etc.
 - **Devuelve vistas**: Por defecto, los métodos en un controlador marcado con `@Controller` retornan el nombre de una vista (como un archivo HTML).
 - **Colabora con el modelo**: Utiliza el objeto `Model` para enviar datos desde el backend a la vista.
 
 #### **Ejemplo de uso:**
+
 ```java
 @Controller
 public class HomeController {
@@ -1490,6 +1604,7 @@ public class HomeController {
 ```
 
 En este ejemplo:
+
 1. Se define una ruta `/home` que, al ser llamada, ejecuta el método `showHomePage`.
 2. El objeto `Model` pasa datos a la vista.
 3. Se devuelve el nombre de la vista (`home`), que será renderizada usando un motor como Thymeleaf.
@@ -1501,11 +1616,13 @@ En este ejemplo:
 El objeto **Model** en Spring actúa como un contenedor para almacenar y transferir datos desde el controlador hacia la vista. Es una abstracción que simplifica el intercambio de datos entre estas dos capas.
 
 #### **Principales características:**
+
 - **Almacén de datos**: Permite agregar atributos (como variables) que estarán disponibles en la vista.
 - **Clave-Valor**: Los datos se almacenan en pares clave-valor, donde la clave será el identificador en la vista.
 - **Colaboración con motores de plantillas**: Los datos del modelo son utilizados por motores como Thymeleaf o JSP para renderizar el contenido dinámico.
 
 #### **Ejemplo de uso:**
+
 ```java
 @GetMapping("/greeting")
 public String greeting(Model model) {
@@ -1516,19 +1633,21 @@ public String greeting(Model model) {
 ```
 
 #### **En la vista (Thymeleaf):**
+
 ```html
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title th:text="${title}">Default Title</title>
-</head>
-<body>
+  </head>
+  <body>
     <p th:text="${content}">Default Content</p>
-</body>
+  </body>
 </html>
 ```
 
 En este ejemplo:
+
 - El controlador pasa dos atributos (`title` y `content`) al modelo.
 - La vista utiliza esos atributos para renderizar el contenido dinámicamente.
 
@@ -1536,11 +1655,11 @@ En este ejemplo:
 
 ### **3. Diferencia entre `@Controller` y `@RestController`**
 
-| Característica            | `@Controller`                              | `@RestController`                           |
-|---------------------------|--------------------------------------------|--------------------------------------------|
-| **Propósito principal**   | Renderizar vistas (HTML, JSP)              | Devolver datos (JSON, XML)                 |
-| **Uso de `Model`**        | Necesario para pasar datos a la vista      | No se utiliza, ya que se devuelven datos directamente |
-| **Anotación combinada**   | No combina `@ResponseBody`                 | Combina `@Controller` + `@ResponseBody`    |
+| Característica          | `@Controller`                         | `@RestController`                                     |
+| ----------------------- | ------------------------------------- | ----------------------------------------------------- |
+| **Propósito principal** | Renderizar vistas (HTML, JSP)         | Devolver datos (JSON, XML)                            |
+| **Uso de `Model`**      | Necesario para pasar datos a la vista | No se utiliza, ya que se devuelven datos directamente |
+| **Anotación combinada** | No combina `@ResponseBody`            | Combina `@Controller` + `@ResponseBody`               |
 
 ---
 
@@ -1552,6 +1671,7 @@ En este ejemplo:
 ---
 
 ### **Conclusión**
+
 - **`@Controller`** es ideal para aplicaciones web tradicionales que necesitan renderizar vistas HTML dinámicas.
 - **Model** es el puente que permite a los controladores compartir datos con las vistas, haciéndolas interactivas y personalizadas para cada usuario.
 
@@ -1561,14 +1681,14 @@ Estas herramientas combinadas son esenciales para aplicaciones basadas en el pat
 
 - Todas las vistas de thymeleaf se guardar en la carpeta templates
 
-
 ---
-  
+
 Para enviar datos de un formulario desde el front-end al back-end usando **Thymeleaf** y **Spring Boot**, puedes seguir estos pasos detallados:
 
 ---
 
 ### **1. Crear la clase del modelo (Entidad o DTO):**
+
 Define una clase en el backend que represente los datos del formulario.
 
 ```java
@@ -1607,6 +1727,7 @@ public class FormData {
 ---
 
 ### **2. Crear el controlador en el back-end:**
+
 Crea un controlador que procese el formulario.
 
 ```java
@@ -1643,53 +1764,60 @@ public class FormController {
 ---
 
 ### **3. Crear la vista del formulario (HTML Thymeleaf):**
+
 El archivo `formulario.html` mostrará el formulario y enviará los datos al backend.
 
 ```html
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
+  <head>
     <title>Formulario</title>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Formulario de ejemplo</h1>
-    <form th:action="@{/procesarFormulario}" th:object="${formData}" method="post">
-        <label for="nombre">Nombre:</label>
-        <input type="text" id="nombre" th:field="*{nombre}" /><br/>
+    <form
+      th:action="@{/procesarFormulario}"
+      th:object="${formData}"
+      method="post"
+    >
+      <label for="nombre">Nombre:</label>
+      <input type="text" id="nombre" th:field="*{nombre}" /><br />
 
-        <label for="email">Email:</label>
-        <input type="email" id="email" th:field="*{email}" /><br/>
+      <label for="email">Email:</label>
+      <input type="email" id="email" th:field="*{email}" /><br />
 
-        <label for="edad">Edad:</label>
-        <input type="number" id="edad" th:field="*{edad}" /><br/>
+      <label for="edad">Edad:</label>
+      <input type="number" id="edad" th:field="*{edad}" /><br />
 
-        <button type="submit">Enviar</button>
+      <button type="submit">Enviar</button>
     </form>
-</body>
+  </body>
 </html>
 ```
 
 ---
 
 ### **4. Crear la vista para mostrar el resultado:**
+
 El archivo `resultado.html` mostrará el mensaje o la respuesta.
 
 ```html
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
+  <head>
     <title>Resultado</title>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Resultado del Formulario</h1>
     <p th:text="${mensaje}"></p>
-</body>
+  </body>
 </html>
 ```
 
 ---
 
 ### **5. Ejecutar la aplicación:**
+
 1. Corre tu aplicación Spring Boot.
 2. Abre el navegador y visita `http://localhost:8080/formulario`.
 3. Llena el formulario y envíalo. Los datos se procesarán en el backend, y la página de resultado mostrará el mensaje de confirmación.
@@ -1697,6 +1825,7 @@ El archivo `resultado.html` mostrará el mensaje o la respuesta.
 ---
 
 ### **Notas adicionales:**
+
 - **Validación de datos:** Puedes agregar validaciones usando anotaciones de Java como `@NotNull`, `@Size`, o `@Email` en la clase del modelo y manejar errores en el controlador.
 - **Estilo y diseño:** Puedes usar CSS o frameworks como Bootstrap para darle un mejor aspecto al formulario.
 
@@ -1713,6 +1842,7 @@ En **Thymeleaf**, el **Model** y el **@ModelAttribute** son conceptos fundamenta
 El **`Model`** es una interfaz que Spring proporciona para pasar datos desde el controlador a la vista (en este caso, una plantilla Thymeleaf). Es un contenedor de datos que permite añadir atributos que luego serán accesibles en la vista.
 
 #### Uso del `Model`:
+
 Cuando añades datos al objeto **`Model`**, estos estarán disponibles en la vista con los nombres que les hayas asignado.
 
 **Ejemplo de uso en un controlador:**
@@ -1736,12 +1866,12 @@ En el archivo **`saludo.html`** puedes acceder a los atributos del modelo usando
 ```html
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
+  <head>
     <title>Saludo</title>
-</head>
-<body>
+  </head>
+  <body>
     <h1 th:text="${mensaje}">Mensaje por defecto</h1>
-</body>
+  </body>
 </html>
 ```
 
@@ -1754,6 +1884,7 @@ En el archivo **`saludo.html`** puedes acceder a los atributos del modelo usando
 La anotación **`@ModelAttribute`** tiene dos principales usos en Spring:
 
 #### **a. Para agregar atributos al modelo globalmente**
+
 Si anotas un método con `@ModelAttribute`, el valor devuelto por ese método se agregará automáticamente al modelo **para todas las vistas**. Esto es útil para datos comunes que deben estar disponibles en muchas vistas.
 
 **Ejemplo:**
@@ -1783,6 +1914,7 @@ En la vista **`pagina.html`**, puedes acceder tanto a `mensaje` como a `nombreAp
 ```
 
 #### **b. Para vincular datos a un objeto del modelo**
+
 Cuando usas **`@ModelAttribute`** como parámetro de un método controlador, le dices a Spring que vincule los datos de una solicitud HTTP (como datos enviados desde un formulario) a un objeto específico.
 
 **Ejemplo de un formulario:**
@@ -1809,31 +1941,35 @@ En este caso:
 
 1. El controlador crea un objeto vacío de la clase `Usuario` y lo añade al modelo.
 2. En la vista **`formulario.html`**, puedes usar Thymeleaf para llenar los datos del objeto `Usuario`:
-    ```html
-    <form action="#" th:action="@{/formulario}" th:object="${usuario}" method="post">
-        <label>Nombre:</label>
-        <input type="text" th:field="*{nombre}" />
-        <br/>
-        <label>Email:</label>
-        <input type="email" th:field="*{email}" />
-        <br/>
-        <button type="submit">Enviar</button>
-    </form>
-    ```
+
+   ```html
+   <form
+     action="#"
+     th:action="@{/formulario}"
+     th:object="${usuario}"
+     method="post"
+   >
+     <label>Nombre:</label>
+     <input type="text" th:field="*{nombre}" />
+     <br />
+     <label>Email:</label>
+     <input type="email" th:field="*{email}" />
+     <br />
+     <button type="submit">Enviar</button>
+   </form>
+   ```
 
 3. Cuando se envía el formulario, Spring automáticamente llena el objeto `Usuario` con los datos enviados y lo pasa al controlador como parámetro.
 
 ---
 
 ### Resumen:
+
 - **`Model`**: Contenedor para pasar datos desde el controlador a la vista.
   - Ejemplo: `model.addAttribute("clave", valor)`.
 - **`@ModelAttribute`**:
   - **Método**: Agrega datos al modelo de forma global.
   - **Parámetro**: Vincula datos de entrada (como formularios) a un objeto del modelo.
-
-
-
 
 # COSAS A MAYORES SOBRE SPRINGBOOT:
 
@@ -1848,6 +1984,7 @@ Aquí tienes una guía breve y clara sobre el uso de la anotación `@Embeddable`
 `@Embeddable` es una anotación en JPA que se utiliza para declarar una clase cuyos atributos **formarán parte de otra entidad** y no tendrán una tabla independiente en la base de datos. Los campos de la clase `@Embeddable` se almacenan como columnas en la tabla de la entidad que la contiene.
 
 ### **Cuándo usar `@Embeddable`**
+
 - Cuando necesitas representar un conjunto lógico de atributos que no tienen sentido como una entidad independiente.
 - Ejemplo típico: direcciones, coordenadas geográficas, información de contacto, etc.
 
@@ -1861,6 +1998,7 @@ Aquí tienes una guía breve y clara sobre el uso de la anotación `@Embeddable`
 - Define los atributos que se incluirán en la clase principal.
 
 **Ejemplo: Clase `Direccion`**
+
 ```java
 import jakarta.persistence.Embeddable;
 
@@ -1902,6 +2040,7 @@ public class Direccion {
 - Usa la anotación `@Embedded` en la entidad que contiene la clase embebida.
 
 **Ejemplo: Clase `Usuario`**
+
 ```java
 import jakarta.persistence.*;
 
@@ -1948,6 +2087,7 @@ public class Usuario {
 Si quieres personalizar los nombres de las columnas de la clase embebida, usa `@AttributeOverrides` y `@AttributeOverride`.
 
 **Ejemplo: Renombrar columnas de `Direccion`**
+
 ```java
 @Entity
 public class Usuario {
@@ -1976,12 +2116,13 @@ public class Usuario {
 En el ejemplo anterior, la tabla `Usuario` incluirá las columnas:
 
 | id  | nombre | direccion_calle | direccion_ciudad | direccion_codigo_postal |
-|-----|--------|-----------------|------------------|--------------------------|
+| --- | ------ | --------------- | ---------------- | ----------------------- |
 | 1   | Juan   | Calle Falsa 123 | Springfield      | 12345                   |
 
 ---
 
 ### **Ventajas de usar `@Embeddable`**
+
 1. **Modelo más limpio**: Agrupas atributos relacionados en una clase lógica.
 2. **No crea una tabla adicional**: Reduce la complejidad de la base de datos.
 3. **Reutilización**: Puedes usar la misma clase embebida en varias entidades.
@@ -1989,13 +2130,15 @@ En el ejemplo anterior, la tabla `Usuario` incluirá las columnas:
 ---
 
 ### **Casos de uso comunes**
+
 - Direcciones (como el ejemplo).
 - Información de contacto (teléfono, correo, etc.).
 - Coordenadas (latitud, longitud).
 - Valores compuestos (por ejemplo, dimensiones: alto, ancho, profundidad).
 
 ---
---- 
+
+---
 
 ## Si tengo una interfaz exampleService, y luego una implementacion exampleServiceImpl, en springboot que debo marcar como @Service, y cuando ponga @Autowired que debo hacer, y si tengo dos implementaciones?
 
@@ -2008,6 +2151,7 @@ private ExampleService service;
 ```
 
 ---
+
 ---
 
 ## Guía completa sobre cómo usar `ResponseEntity` en Spring Framework
@@ -2027,11 +2171,13 @@ Proporciona un control total sobre cómo se formatea y entrega la respuesta al c
 ### ¿Cuándo usar `ResponseEntity`?
 
 1. **Cuando necesitas personalizar la respuesta**:
+
    - Configurar el estado HTTP.
    - Añadir cabeceras personalizadas.
    - Controlar el cuerpo de la respuesta.
 
 2. **Para manejar errores y excepciones**:
+
    - Enviar mensajes de error personalizados junto con códigos de estado HTTP adecuados (404, 500, etc.).
 
 3. **Para mejorar la seguridad y flexibilidad**:
@@ -2090,6 +2236,7 @@ Proporciona un control total sobre cómo se formatea y entrega la respuesta al c
 ### Ejemplos prácticos de uso
 
 #### 1. **Devolver una respuesta simple con un objeto**
+
 ```java
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -2107,6 +2254,7 @@ public class MiControlador {
 ```
 
 - **Respuesta HTTP**:
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: text/plain;charset=UTF-8
@@ -2117,6 +2265,7 @@ Hola, este es un mensaje!
 ---
 
 #### 2. **Devolver un objeto JSON con estado personalizado**
+
 ```java
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -2150,6 +2299,7 @@ public class MiControlador {
 ```
 
 - **Respuesta HTTP**:
+
 ```http
 HTTP/1.1 201 Created
 Content-Type: application/json
@@ -2164,6 +2314,7 @@ Content-Type: application/json
 ---
 
 #### 3. **Devolver un error personalizado**
+
 ```java
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -2182,6 +2333,7 @@ public class MiControlador {
 ```
 
 - **Respuesta HTTP**:
+
 ```http
 HTTP/1.1 404 Not Found
 Content-Type: text/plain;charset=UTF-8
@@ -2192,6 +2344,7 @@ El recurso solicitado no existe.
 ---
 
 #### 4. **Agregar cabeceras personalizadas**
+
 ```java
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -2214,6 +2367,7 @@ public class MiControlador {
 ```
 
 - **Respuesta HTTP**:
+
 ```http
 HTTP/1.1 200 OK
 Custom-Header: ValorPersonalizado
@@ -2225,6 +2379,7 @@ Respuesta con cabeceras personalizadas
 ---
 
 #### 5. **Devolver una respuesta vacía**
+
 ```java
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -2242,6 +2397,7 @@ public class MiControlador {
 ```
 
 - **Respuesta HTTP**:
+
 ```http
 HTTP/1.1 204 No Content
 ```
@@ -2253,6 +2409,7 @@ HTTP/1.1 204 No Content
 Puedes usar `ResponseEntity` junto con una clase global para manejar excepciones de forma centralizada.
 
 #### Ejemplo:
+
 ```java
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -2273,17 +2430,206 @@ public class ManejoExcepciones {
 
 ### Resumen de métodos útiles de `ResponseEntity`
 
-| Método                             | Descripción                                     |
-|------------------------------------|-------------------------------------------------|
-| `ResponseEntity.ok()`              | Devuelve una respuesta con estado HTTP 200 OK. |
-| `ResponseEntity.status(HttpStatus)`| Permite especificar un estado HTTP personalizado. |
-| `ResponseEntity.badRequest()`      | Devuelve una respuesta con estado HTTP 400.    |
-| `ResponseEntity.notFound()`        | Devuelve una respuesta con estado HTTP 404.    |
-| `ResponseEntity.noContent()`       | Devuelve una respuesta con estado HTTP 204.    |
-| `ResponseEntity.headers()`         | Configura cabeceras personalizadas.            |
+| Método                              | Descripción                                       |
+| ----------------------------------- | ------------------------------------------------- |
+| `ResponseEntity.ok()`               | Devuelve una respuesta con estado HTTP 200 OK.    |
+| `ResponseEntity.status(HttpStatus)` | Permite especificar un estado HTTP personalizado. |
+| `ResponseEntity.badRequest()`       | Devuelve una respuesta con estado HTTP 400.       |
+| `ResponseEntity.notFound()`         | Devuelve una respuesta con estado HTTP 404.       |
+| `ResponseEntity.noContent()`        | Devuelve una respuesta con estado HTTP 204.       |
+| `ResponseEntity.headers()`          | Configura cabeceras personalizadas.               |
 
 ---
 
 ### Conclusión
 
 `ResponseEntity` es una herramienta clave en el desarrollo de APIs RESTful con Spring. Proporciona flexibilidad para controlar el cuerpo, estado y cabeceras de las respuestas HTTP, mejorando la experiencia del cliente y facilitando la gestión de errores y personalizaciones.
+
+---
+
+Aquí tienes tu respuesta en formato Markdown:  
+
+## Respuesta sobre @Transactional en Spring
+
+Vamos a abordar tus preguntas paso a paso para que quede todo claro respecto al uso de `@Transactional` en Spring.
+
+## 1. ¿Puede un método privado llevar @Transactional?
+
+Sí, técnicamente un método privado puede llevar la anotación `@Transactional`, y Spring lo aceptará sin problemas. Sin embargo, hay un detalle importante: **Spring no aplicará la gestión transaccional a métodos privados**. Esto se debe a cómo funciona el mecanismo de proxies en Spring:
+
+- Spring usa **proxies** (generalmente basados en AOP) para interceptar las llamadas a métodos anotados con `@Transactional` y gestionar las transacciones.
+- **Los proxies solo pueden interceptar métodos públicos** (o protegidos/paquete en algunos casos avanzados), porque los métodos privados no son accesibles desde fuera de la clase y, por lo tanto, no pueden ser "envueltos" por el proxy.
+
+### ¿Qué pasa si pones `@Transactional` en un método privado?
+
+- El código **compilará y ejecutará sin errores**.
+- Pero la anotación **será ignorada**: no se creará ninguna transacción ni se aplicarán las reglas de propagación, aislamiento o rollback.
+
+### Ejemplo:
+
+```java
+@Service
+public class MiServicio {
+
+    private final MiRepositorio repositorio;
+
+    public MiServicio(MiRepositorio repositorio) {
+        this.repositorio = repositorio;
+    }
+
+    @Transactional // Esto funciona
+    public void metodoPublico() {
+        metodoPrivado();
+    }
+
+    @Transactional // Esto NO tiene efecto
+    private void metodoPrivado() {
+        repositorio.save(new Entidad());
+    }
+}
+```
+
+- Si llamas a `metodoPublico()`, la transacción **se aplicará** porque es público.
+- Si intentas que `metodoPrivado()` gestione su propia transacción, **no funcionará**.
+
+### **Recomendación**
+Solo usa `@Transactional` en **métodos públicos** (o protegidos si es necesario). Si necesitas que un método privado esté dentro de una transacción, asegúrate de que **sea invocado desde un método público anotado con `@Transactional`**.
+
+---
+
+## 2. ¿Qué pasa si un método se usa en un `@RestController` y también en otro método? ¿Y si se anidan dos métodos con `@Transactional`?
+
+Aquí hay dos escenarios distintos que podemos analizar:
+
+### **a) Un método usado tanto en un `@RestController` como en otro método**
+No hay ningún problema intrínseco en que un método de un servicio anotado con `@Transactional` **sea llamado desde un `@RestController` y también desde otro método en el mismo servicio o en otra clase**. Lo importante es cómo se comporta la transacción según el contexto de la llamada.
+
+- **Desde el `@RestController`**: Si el método tiene `@Transactional`, **Spring creará una transacción** al invocarlo (asumiendo `Propagation.REQUIRED`, que es el valor por defecto).
+- **Desde otro método**: Si ese otro método también tiene `@Transactional`, entrará en juego **la propagación de la transacción**.
+
+---
+
+### **b) Anidamiento de dos métodos con `@Transactional`**
+Cuando anidas dos métodos con `@Transactional`, lo que sucede depende de la **configuración de propagación (`propagation`)** de las transacciones. Por defecto, Spring usa `Propagation.REQUIRED`, lo que significa:
+
+- **Si no hay una transacción activa**, se crea una nueva.
+- **Si ya hay una transacción activa**, el método anidado **se ejecuta dentro de la misma transacción**.
+
+Esto implica que anidar métodos con `@Transactional` **no crea múltiples transacciones separadas**, sino que ambas operaciones se ejecutan en **una sola transacción** (a menos que configures una propagación diferente, como `REQUIRES_NEW`).
+
+### **Ejemplo:**
+
+```java
+@Service
+public class MiServicio {
+
+    private final MiRepositorio repositorio;
+
+    public MiServicio(MiRepositorio repositorio) {
+        this.repositorio = repositorio;
+    }
+
+    @Transactional
+    public void metodoExterno() {
+        repositorio.save(new Entidad());
+        metodoInterno();
+    }
+
+    @Transactional
+    public void metodoInterno() {
+        repositorio.save(new Entidad());
+    }
+}
+
+@RestController
+public class MiControlador {
+
+    private final MiServicio servicio;
+
+    public MiControlador(MiServicio servicio) {
+        this.servicio = servicio;
+    }
+
+    @GetMapping("/ejecutar")
+    public void ejecutar() {
+        servicio.metodoExterno(); // Llama al método externo
+        servicio.metodoInterno(); // Llama directamente al método interno
+    }
+}
+```
+
+- **Llamada a `metodoExterno()`**:  
+  - Se **crea una transacción**.  
+  - Cuando llama a `metodoInterno()`, **este se une a la transacción existente** (debido a `Propagation.REQUIRED`).  
+  - Si hay un error en cualquiera de los dos, **se hace rollback de toda la transacción**.
+
+- **Llamada directa a `metodoInterno()`**:  
+  - **Se crea una nueva transacción independiente**, porque no hay una transacción activa previa.
+
+---
+
+### **¿Pasa algo malo por anidarlos?**
+No, **no pasa nada malo** siempre que entiendas cómo se comporta la propagación:
+
+✅ **Ventaja**: Todo queda dentro de **una sola transacción** (con `Propagation.REQUIRED`), lo que asegura consistencia.  
+
+⚠️ **Posible problema**: Si querías que `metodoInterno()` tuviera **su propia transacción independiente** (por ejemplo, para que un fallo en él no afecte a `metodoExterno()`), necesitarías usar `@Transactional(propagation = Propagation.REQUIRES_NEW)`.  
+Pero esto puede complicar las cosas si no lo manejas con cuidado (como suspensiones de transacciones).
+
+---
+
+## **Nota importante: Llamadas internas en la misma clase**
+Si `metodoExterno()` llama a `metodoInterno()` dentro de la misma clase, **la anotación `@Transactional` de `metodoInterno()` no se aplicará** porque **las invocaciones internas no pasan por el proxy de Spring**.  
+
+Para que ambas anotaciones tengan efecto, tendrías que:
+
+- **Mover `metodoInterno()` a otra clase.**
+- O usar **autoconexión** (`@Autowired MiServicio this`) y llamarlo como `this.metodoInterno()` (aunque esto no es común ni recomendado).
+
+### **Ejemplo corregido:**
+
+```java
+@Service
+public class MiServicio {
+
+    private final MiRepositorio repositorio;
+    private final OtroServicio otroServicio;
+
+    public MiServicio(MiRepositorio repositorio, OtroServicio otroServicio) {
+        this.repositorio = repositorio;
+        this.otroServicio = otroServicio;
+    }
+
+    @Transactional
+    public void metodoExterno() {
+        repositorio.save(new Entidad());
+        otroServicio.metodoInterno(); // Llamada a otra clase
+    }
+}
+
+@Service
+public class OtroServicio {
+
+    private final MiRepositorio repositorio;
+
+    public OtroServicio(MiRepositorio repositorio) {
+        this.repositorio = repositorio;
+    }
+
+    @Transactional
+    public void metodoInterno() {
+        repositorio.save(new Entidad());
+    }
+}
+```
+
+Aquí **ambas transacciones se respetan** y se unen en una sola (con `Propagation.REQUIRED`).
+
+---
+
+## **Resumen**
+✅ **Métodos privados**: Puedes poner `@Transactional`, **pero no tendrá efecto**. Usa métodos públicos.  
+✅ **Método usado en `@RestController` y otros lugares**: **No hay problema**, funciona igual en ambos casos.  
+✅ **Anidamiento de `@Transactional`**: **No pasa nada malo**, se unen en una sola transacción por defecto. Si necesitas transacciones separadas, usa `Propagation.REQUIRES_NEW`.  
+
+---
