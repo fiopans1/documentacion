@@ -2633,3 +2633,196 @@ Aquí **ambas transacciones se respetan** y se unen en una sola (con `Propagatio
 ✅ **Anidamiento de `@Transactional`**: **No pasa nada malo**, se unen en una sola transacción por defecto. Si necesitas transacciones separadas, usa `Propagation.REQUIRES_NEW`.  
 
 ---
+
+
+---
+
+## 1. Introducción a las Relaciones en Spring Boot con JPA  
+Spring Boot utiliza JPA (Java Persistence API) junto con Hibernate como ORM (Object-Relational Mapping) para manejar la persistencia de datos. En bases de datos relacionales, las entidades pueden relacionarse entre sí de diferentes maneras.  
+
+#### Tipos de relaciones principales:
+- **@OneToOne**: Una entidad está relacionada con otra única entidad.
+- **@OneToMany**: Una entidad está relacionada con muchas otras.
+- **@ManyToOne**: Muchas entidades están relacionadas con una sola entidad.
+- **@ManyToMany**: Muchas entidades pueden estar relacionadas con muchas otras.
+
+Cada una de estas relaciones puede configurarse con atributos adicionales como `cascade`, `fetch`, `mappedBy`, y personalizarse mediante `@JoinColumn`, `@JoinTable`, etc.  
+
+---
+
+### 2. Relación `@OneToOne`  
+La relación **Uno a Uno** significa que una fila de una tabla está asociada exactamente con una fila de otra tabla.  
+
+**Ejemplo:**  
+```java
+@Entity
+public class Usuario {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "perfil_id", referencedColumnName = "id")
+    private Perfil perfil;
+}
+```
+```java
+@Entity
+public class Perfil {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    private String biografia;
+}
+```
+#### Explicación:
+- `@OneToOne(cascade = CascadeType.ALL)`: Si se elimina un `Usuario`, también se eliminará su `Perfil`.
+- `@JoinColumn(name = "perfil_id", referencedColumnName = "id")`: Define la clave foránea en la tabla `Usuario`.
+
+---
+
+### 3. Relación `@OneToMany` y `@ManyToOne`  
+La relación **Uno a Muchos** significa que una entidad puede estar relacionada con muchas otras, mientras que **Muchos a Uno** es la inversa.  
+
+**Ejemplo:**
+```java
+@Entity
+public class Cliente {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Pedido> pedidos;
+}
+```
+```java
+@Entity
+public class Pedido {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @ManyToOne
+    @JoinColumn(name = "cliente_id", nullable = false)
+    private Cliente cliente;
+}
+```
+#### Explicación:
+- `@OneToMany(mappedBy = "cliente")`: Indica que la relación está mapeada en `Pedido` mediante su atributo `cliente`.
+- `cascade = CascadeType.ALL`: Si se elimina un `Cliente`, también se eliminan sus `Pedido`.
+- `fetch = FetchType.LAZY`: La colección se carga bajo demanda para optimizar el rendimiento.
+- `@ManyToOne`: Cada `Pedido` pertenece a un solo `Cliente`.
+- `@JoinColumn(name = "cliente_id")`: Clave foránea en `Pedido` apuntando a `Cliente`.
+
+---
+
+### 4. Relación `@ManyToMany`  
+Cuando muchas entidades de una tabla pueden estar relacionadas con muchas entidades de otra tabla, se requiere una tabla intermedia.  
+
+**Ejemplo:**
+```java
+@Entity
+public class Estudiante {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @ManyToMany
+    @JoinTable(
+        name = "estudiante_curso",
+        joinColumns = @JoinColumn(name = "estudiante_id"),
+        inverseJoinColumns = @JoinColumn(name = "curso_id")
+    )
+    private List<Curso> cursos;
+}
+```
+```java
+@Entity
+public class Curso {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @ManyToMany(mappedBy = "cursos")
+    private List<Estudiante> estudiantes;
+}
+```
+#### Explicación:
+- `@ManyToMany`: Establece la relación de muchos a muchos.
+- `@JoinTable`: Define la tabla intermedia `estudiante_curso`.
+- `joinColumns`: Especifica la clave foránea de `Estudiante`.
+- `inverseJoinColumns`: Especifica la clave foránea de `Curso`.
+- `mappedBy = "cursos"`: Indica que `Curso` no maneja la relación directamente.
+
+---
+
+### 5. `cascade` y `fetch` en Relaciones  
+Los atributos `cascade` y `fetch` son fundamentales en las relaciones:  
+
+#### **CascadeType**
+- `ALL`: Propaga todas las operaciones (persist, merge, remove, refresh, detach).
+- `PERSIST`: Guarda automáticamente la entidad relacionada.
+- `MERGE`: Si la entidad relacionada cambia, también se actualiza.
+- `REMOVE`: Si se elimina la entidad principal, también se eliminan las relacionadas.
+- `REFRESH`: Si se actualiza la entidad principal, también se actualizan las relacionadas.
+- `DETACH`: Separa la entidad relacionada del contexto de persistencia.
+
+#### **FetchType**
+- `EAGER`: Carga la relación inmediatamente.
+- `LAZY`: Carga la relación solo cuando es necesaria (recomendado para listas grandes).
+
+Ejemplo de `cascade` y `fetch`:
+```java
+@OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+private List<Pedido> pedidos;
+```
+
+---
+
+### 6. `@JoinColumn` y `@JoinTable`  
+- **`@JoinColumn`** se usa en relaciones `@ManyToOne` y `@OneToOne` para definir la clave foránea.
+- **`@JoinTable`** se usa en `@ManyToMany` para definir una tabla intermedia.
+
+Ejemplo con `@JoinColumn`:
+```java
+@ManyToOne
+@JoinColumn(name = "cliente_id", nullable = false)
+private Cliente cliente;
+```
+
+Ejemplo con `@JoinTable`:
+```java
+@ManyToMany
+@JoinTable(
+    name = "estudiante_curso",
+    joinColumns = @JoinColumn(name = "estudiante_id"),
+    inverseJoinColumns = @JoinColumn(name = "curso_id")
+)
+private List<Curso> cursos;
+```
+
+---
+
+### 7. Relaciones Bidireccionales vs Unidireccionales  
+- **Unidireccional**: Solo una entidad tiene referencia a la otra.
+- **Bidireccional**: Ambas entidades se refieren mutuamente.  
+Ejemplo bidireccional:
+```java
+@OneToMany(mappedBy = "cliente")
+private List<Pedido> pedidos;
+```
+```java
+@ManyToOne
+@JoinColumn(name = "cliente_id")
+private Cliente cliente;
+```
+La relación se define en ambas entidades.
+
+---
+
+### 8. Conclusión  
+Spring Boot y JPA proporcionan múltiples formas de modelar relaciones en bases de datos. Saber cómo configurarlas correctamente con `cascade`, `fetch`, `@JoinColumn` y `@JoinTable` permite optimizar rendimiento y evitar problemas como el `LazyInitializationException`.
+
+---
