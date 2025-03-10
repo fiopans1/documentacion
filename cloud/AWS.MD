@@ -1,7 +1,3 @@
-¡Claro! Aquí tienes una guía completa para comenzar con AWS (Amazon Web Services). AWS es una plataforma de servicios en la nube que ofrece una amplia gama de funcionalidades que incluyen almacenamiento, bases de datos, cómputo, redes, aprendizaje automático y mucho más.
-
----
-
 # **Guía Completa de AWS**
 
 ### **1. Introducción a AWS**

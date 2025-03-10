@@ -1,12 +1,9 @@
-Aquí tienes una **guía completa sobre Maven** para proyectos en Java. Maven es una herramienta de construcción y gestión de dependencias ampliamente utilizada en el ecosistema Java.
-
----
-
 ## **1. ¿Qué es Maven?**
 
 Maven es una herramienta de automatización y gestión de proyectos que facilita la construcción, reporte y documentación de proyectos Java (y otros lenguajes). Su característica principal es la gestión de dependencias y la estandarización de proyectos mediante un formato XML llamado `pom.xml`.
 
 ### **Ventajas de Maven:**
+
 - Gestión automática de dependencias.
 - Estandarización de la estructura del proyecto.
 - Facilidad para construir, probar y empaquetar proyectos.
@@ -17,10 +14,12 @@ Maven es una herramienta de automatización y gestión de proyectos que facilita
 ## **2. Instalación de Maven**
 
 ### **Requisitos previos:**
+
 - **Java JDK** (al menos versión 8 o superior). Configura la variable `JAVA_HOME`.
 - **Maven**. Descárgalo desde [https://maven.apache.org/download.cgi](https://maven.apache.org/download.cgi).
 
 ### **Pasos de instalación:**
+
 1. Descarga el archivo comprimido de Maven y extráelo en una carpeta.
 2. Configura la variable de entorno `MAVEN_HOME` apuntando al directorio donde descomprimiste Maven.
 3. Agrega `MAVEN_HOME/bin` al `PATH` de tu sistema.
@@ -56,7 +55,9 @@ my-app/
 ## **4. Creación de un proyecto Maven**
 
 ### **Crear un proyecto desde cero**
+
 Usa el siguiente comando para crear un nuevo proyecto:
+
 ```bash
 mvn archetype:generate -DgroupId=com.miempresa.app -DartifactId=my-app -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
 ```
@@ -66,7 +67,9 @@ mvn archetype:generate -DgroupId=com.miempresa.app -DartifactId=my-app -Darchety
 - **`archetypeArtifactId`**: Tipo de plantilla para el proyecto.
 
 ### **Generar un proyecto basado en una plantilla específica**
-Maven incluye varios *arquetipos* (plantillas). Para listar los disponibles:
+
+Maven incluye varios _arquetipos_ (plantillas). Para listar los disponibles:
+
 ```bash
 mvn archetype:generate
 ```
@@ -76,12 +79,14 @@ mvn archetype:generate
 ## **5. Archivo POM (`pom.xml`)**
 
 El `pom.xml` es el corazón de Maven. Contiene:
+
 - Información del proyecto.
 - Dependencias.
 - Configuraciones de complementos.
 - Perfiles de construcción.
 
 ### **Ejemplo básico de `pom.xml`:**
+
 ```xml
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -110,9 +115,11 @@ El `pom.xml` es el corazón de Maven. Contiene:
 Maven usa el repositorio de dependencias **Maven Central** por defecto, pero puedes configurar otros repositorios.
 
 ### **Agregar una dependencia:**
+
 Busca las dependencias en [Maven Central Repository](https://mvnrepository.com/) e inclúyelas en el bloque `<dependencies>`.
 
 Ejemplo:
+
 ```xml
 <dependency>
     <groupId>com.google.guava</groupId>
@@ -122,6 +129,7 @@ Ejemplo:
 ```
 
 ### **Tipos de alcance (`scope`):**
+
 - `compile` (por defecto): Disponible para compilar y ejecutar.
 - `provided`: Disponible para compilar, pero no se empaqueta.
 - `runtime`: Necesaria solo para ejecutar.
@@ -132,32 +140,39 @@ Ejemplo:
 ## **7. Comandos básicos de Maven**
 
 ### **Compilar:**
+
 ```bash
 mvn compile
 ```
 
 ### **Ejecutar pruebas:**
+
 ```bash
 mvn test
 ```
 
 ### **Construir (empaquetar en un JAR o WAR):**
+
 ```bash
 mvn package
 ```
 
 ### **Limpiar (eliminar la carpeta `target/`):**
+
 ```bash
 mvn clean
 ```
 
 ### **Ejecutar el proyecto:**
+
 Si usas el complemento de ejecución:
+
 ```bash
 mvn exec:java -Dexec.mainClass="com.miempresa.app.Main"
 ```
 
 ### **Instalar en el repositorio local (`.m2/repository`):**
+
 ```bash
 mvn install
 ```
@@ -169,6 +184,7 @@ mvn install
 Los perfiles permiten configurar diferentes entornos (desarrollo, producción, etc.).
 
 Ejemplo en `pom.xml`:
+
 ```xml
 <profiles>
     <profile>
@@ -187,6 +203,7 @@ Ejemplo en `pom.xml`:
 ```
 
 Ejecutar un perfil:
+
 ```bash
 mvn clean install -Pdev
 ```
@@ -196,7 +213,9 @@ mvn clean install -Pdev
 ## **9. Complementos útiles de Maven**
 
 ### **Maven Compiler Plugin:**
+
 Configura la versión de Java:
+
 ```xml
 <build>
     <plugins>
@@ -214,7 +233,9 @@ Configura la versión de Java:
 ```
 
 ### **Maven Shade Plugin:**
+
 Empaqueta dependencias en un JAR ejecutable:
+
 ```xml
 <build>
     <plugins>
@@ -240,6 +261,7 @@ Empaqueta dependencias en un JAR ejecutable:
 ## **10. Configuración de Repositorios**
 
 ### **Repositorios adicionales:**
+
 ```xml
 <repositories>
     <repository>
@@ -250,6 +272,7 @@ Empaqueta dependencias en un JAR ejecutable:
 ```
 
 ### **Repositorios locales:**
+
 Configúralos en `~/.m2/settings.xml`.
 
 ---
@@ -257,12 +280,15 @@ Configúralos en `~/.m2/settings.xml`.
 ## **11. Problemas comunes**
 
 ### **Error al descargar dependencias:**
+
 Solución: Forzar la actualización:
+
 ```bash
 mvn clean install -U
 ```
 
 ### **Versión de Java incompatible:**
+
 Verifica las versiones configuradas en `pom.xml` y el entorno.
 
 ---
@@ -278,9 +304,11 @@ Con esta guía, tienes todo lo necesario para usar Maven con confianza en tus pr
 ## **Comandos básicos de Maven**
 
 ### **1. Compilar el proyecto**
+
 ```bash
 mvn compile
 ```
+
 - **¿Qué hace?** Compila el código fuente del proyecto (archivos `.java`) y los convierte en archivos `.class`.
 - **¿Para qué sirve?** Asegura que tu código no tiene errores de compilación y lo prepara para ejecutarse.
 - El comando mvn compile compila el código fuente de tu proyecto, no solo las dependencias. Aquí está el desglose:
@@ -297,72 +325,88 @@ Por ejemplo, si tienes una clase com.ejemplo.MiClase, el archivo compilado se gu
 ---
 
 ### **2. Limpiar el proyecto**
+
 ```bash
 mvn clean
 ```
+
 - **¿Qué hace?** Borra todos los archivos generados por Maven (como la carpeta `target/`).
 - **¿Para qué sirve?** Limpia tu proyecto para empezar desde cero. Útil cuando hay problemas y necesitas "borrar y reiniciar".
 
 ---
 
 ### **3. Empaquetar el proyecto**
+
 ```bash
 mvn package
 ```
+
 - **¿Qué hace?** Compila tu proyecto y lo empaqueta en un archivo **JAR** (Java ARchive) o **WAR** (Web ARchive), según el tipo de proyecto.
 - **¿Para qué sirve?** Te da un archivo listo para ejecutar o desplegar en un servidor.
 
 ---
 
 ### **4. Instalar el proyecto**
+
 ```bash
 mvn install
 ```
+
 - **¿Qué hace?** Instala el archivo generado (JAR o WAR) en tu repositorio local (`~/.m2/repository`).
 - **¿Para qué sirve?** Te permite usar este proyecto como una dependencia en otros proyectos Maven de tu máquina.
 
 ---
 
 ### **5. Ejecutar las pruebas**
+
 ```bash
 mvn test
 ```
+
 - **¿Qué hace?** Ejecuta las pruebas unitarias de tu proyecto (archivos en `src/test/java`).
 - **¿Para qué sirve?** Asegura que el código funciona correctamente y pasa todas las pruebas configuradas.
 
 ---
 
 ### **6. Ejecutar la aplicación**
+
 ```bash
 mvn exec:java -Dexec.mainClass="com.miempresa.Main"
 ```
+
 - **¿Qué hace?** Ejecuta directamente tu aplicación Java desde Maven.
 - **¿Para qué sirve?** Te permite probar tu aplicación sin complicarte creando comandos manuales para Java.
 
 ---
 
 ### **7. Forzar la actualización de dependencias**
+
 ```bash
 mvn clean install -U
 ```
+
 - **¿Qué hace?** Descarga las dependencias más recientes de los repositorios remotos, incluso si ya las tienes en tu repositorio local.
 - **¿Para qué sirve?** Útil cuando tus dependencias están corruptas o han cambiado en el servidor.
 
 ---
 
 ### **8. Resolver dependencias**
+
 ```bash
 mvn dependency:resolve
 ```
+
 - **¿Qué hace?** Descarga todas las dependencias de tu archivo `pom.xml`.
 - **¿Para qué sirve?** Te asegura que todo lo que tu proyecto necesita esté listo, sin compilar nada.
 
 ---
 
 ### **9. Generar un proyecto nuevo**
+
 ```bash
 mvn archetype:generate -DgroupId=com.miempresa -DartifactId=my-app -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
 ```
+
 - **¿Qué hace?** Crea una estructura básica de proyecto Maven.
 - **¿Para qué sirve?** Para empezar un nuevo proyecto con todo lo necesario ya configurado.
 
@@ -371,91 +415,108 @@ mvn archetype:generate -DgroupId=com.miempresa -DartifactId=my-app -DarchetypeAr
 ## **Comandos avanzados de Maven**
 
 ### **10. Construir el proyecto**
+
 ```bash
 mvn install
 ```
+
 - **¿Qué hace?** Es un paso completo: limpia, compila, ejecuta pruebas, empaqueta y lo guarda en el repositorio local.
 - **¿Para qué sirve?** Es como hacer todo el proceso de desarrollo de una sola vez.
 
 ---
 
 ### **11. Ejecutar Maven en modo offline**
+
 ```bash
 mvn install -o
 ```
+
 - **¿Qué hace?** Usa solo las dependencias locales (sin conexión a Internet).
 - **¿Para qué sirve?** Si no tienes Internet pero ya descargaste las dependencias, puedes seguir trabajando.
 
 ---
 
 ### **12. Ver el árbol de dependencias**
+
 ```bash
 mvn dependency:tree
 ```
+
 - **¿Qué hace?** Muestra todas las dependencias de tu proyecto en forma de árbol, incluidas las dependencias transitivas.
 - **¿Para qué sirve?** Útil para ver qué bibliotecas usa tu proyecto y resolver conflictos entre versiones.
 
 ---
 
 ### **13. Descargar dependencias y copiarlas a una carpeta**
+
 ```bash
 mvn dependency:copy-dependencies -DoutputDirectory=./lib
 ```
+
 - **¿Qué hace?** Copia todas las dependencias a una carpeta específica.
 - **¿Para qué sirve?** Ideal si necesitas las dependencias para ejecutarlas manualmente o compartirlas con alguien.
 
 ---
 
 ### **14. Crear un sitio web con documentación del proyecto**
+
 ```bash
 mvn site
 ```
+
 - **¿Qué hace?** Genera una página web con información del proyecto, como dependencias, informes de pruebas, etc.
 - **¿Para qué sirve?** Crear reportes profesionales para tu proyecto.
 
 ---
 
 ### **15. Saltar las pruebas**
+
 ```bash
 mvn install -DskipTests
 ```
+
 - **¿Qué hace?** Salta las pruebas unitarias al construir el proyecto.
 - **¿Para qué sirve?** Acelera el proceso si sabes que las pruebas no son necesarias (¡pero no abuses de esto!).
 
 ---
 
 ## **Cómo recordar los comandos**
+
 Piensa en Maven como una máquina con pasos lógicos:
+
 1. **Primero limpia:** `mvn clean`
 2. **Después compila:** `mvn compile`
 3. **Prueba tu código:** `mvn test`
 4. **Empaqueta el proyecto:** `mvn package`
 5. **Guárdalo para usar en otros proyectos:** `mvn install`
 
-
-
 ## DIFERENCIA MVN INSTALL Y MVN CLEAN INSTALL
+
 La diferencia principal entre `mvn install` y `mvn clean install` radica en la inclusión de la fase **`clean`** en el ciclo de vida de Maven cuando se utiliza el comando `mvn clean install`. Veamos en detalle:
 
 ### 1. **`mvn install`**
-- Este comando ejecuta el ciclo de vida de Maven desde la fase inicial hasta la fase **`install`**. 
+
+- Este comando ejecuta el ciclo de vida de Maven desde la fase inicial hasta la fase **`install`**.
 - **Fase `install`**: En esta fase, Maven compila el código fuente, ejecuta las pruebas, empaqueta el proyecto (en JAR, WAR, etc.) y copia el artefacto generado (junto con las dependencias necesarias) en el repositorio local de Maven (generalmente en `~/.m2/repository`).
 - **No elimina archivos previos**: Si ya tienes artefactos generados (como JARs o WARs) y carpetas de compilación en el directorio `target`, Maven los reutilizará, lo que puede resultar en inconsistencias si los artefactos o clases generadas previamente están desactualizados.
 
 ### 2. **`mvn clean install`**
+
 - Este comando **incluye la fase `clean` antes de la fase `install`**.
 - **Fase `clean`**: Borra la carpeta `target` y cualquier archivo generado anteriormente, asegurando un entorno limpio para la compilación.
 - Después de limpiar, Maven ejecuta el ciclo de vida completo desde el principio hasta la fase `install`, compilando el código, ejecutando pruebas, empaquetando y colocando los artefactos en el repositorio local.
 
 ### Diferencias clave:
-| Aspecto                     | `mvn install`                       | `mvn clean install`                  |
-|-----------------------------|--------------------------------------|--------------------------------------|
-| **Limpieza previa**         | No elimina archivos previos.        | Limpia los archivos y directorios generados antes de la ejecución. |
-| **Reutilización**           | Puede reutilizar archivos obsoletos.| Asegura que el proceso se ejecute desde cero. |
-| **Tiempo de ejecución**     | Generalmente más rápido.             | Puede tomar más tiempo debido al paso adicional de limpieza. |
-| **Consistencia**            | Puede generar resultados inconsistentes si hay cambios previos. | Garantiza un entorno limpio y resultados confiables. |
+
+| Aspecto                 | `mvn install`                                                   | `mvn clean install`                                                |
+| ----------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------ |
+| **Limpieza previa**     | No elimina archivos previos.                                    | Limpia los archivos y directorios generados antes de la ejecución. |
+| **Reutilización**       | Puede reutilizar archivos obsoletos.                            | Asegura que el proceso se ejecute desde cero.                      |
+| **Tiempo de ejecución** | Generalmente más rápido.                                        | Puede tomar más tiempo debido al paso adicional de limpieza.       |
+| **Consistencia**        | Puede generar resultados inconsistentes si hay cambios previos. | Garantiza un entorno limpio y resultados confiables.               |
 
 ### ¿Cuándo usar cada uno?
+
 - **`mvn install`**: Cuando estás trabajando iterativamente y no necesitas realizar una limpieza completa, por ejemplo, si no ha habido cambios en archivos generados previamente o dependencias.
 - **`mvn clean install`**: Es preferible cuando:
   - Haces cambios significativos en el código o dependencias.
@@ -465,55 +526,66 @@ La diferencia principal entre `mvn install` y `mvn clean install` radica en la i
 En resumen, **`mvn clean install`** es una opción más segura pero un poco más lenta, mientras que **`mvn install`** es más rápido pero puede resultar en inconsistencias si no se tiene cuidado.
 
 # GUIA SOBRE EL POM.XML:
-¡Perfecto! Aquí tienes un índice completo para una guía sobre el uso del `pom.xml` en Maven. 
+
+¡Perfecto! Aquí tienes un índice completo para una guía sobre el uso del `pom.xml` en Maven.
 
 ## Índice de la Guía sobre `pom.xml` de Maven
 
 1. **Introducción a Maven y el `pom.xml`**
+
    - ¿Qué es Maven?
    - Rol del archivo `pom.xml` en un proyecto Maven
 
 2. **Estructura Básica del `pom.xml`**
+
    - Elementos esenciales: `project`, `modelVersion`, `groupId`, `artifactId`, `version`
    - Formato XML y su validación
 
 3. **Gestión de Dependencias**
+
    - Declaración de dependencias
    - Uso de repositorios públicos y privados
    - Exclusiones y conflictos de versiones
    - Dependencias transitivas
 
 4. **Gestión de Plugins**
+
    - Declaración y configuración de plugins
    - Plugins obligatorios y comunes (como `maven-compiler-plugin`, `maven-surefire-plugin`)
    - Fases del ciclo de vida y su relación con los plugins
 
 5. **Perfiles de Construcción**
+
    - Creación y uso de perfiles
    - Activación de perfiles (por propiedades, sistema operativo, etc.)
    - Ejemplos prácticos
 
 6. **Propiedades y Variables en el `pom.xml`**
+
    - Uso de propiedades predefinidas y personalizadas
    - Referencias cruzadas en el archivo `pom.xml`
    - Variables de entorno y configuración externa
 
 7. **Herencia y Módulos (Multi-module Projects)**
+
    - Uso del padre (`parent`) en Maven
    - Estructura de proyectos multi-módulo
    - Compartir configuraciones entre módulos
 
 8. **Configuraciones Avanzadas**
+
    - Repositorios remotos y locales
    - Configuración de compiladores específicos (Java, Kotlin, etc.)
    - Gestión de perfiles avanzados para entornos (producción, desarrollo)
 
 9. **Extensiones y Personalización**
+
    - Extensiones de Maven
    - Archivos `settings.xml` y su interacción con `pom.xml`
    - Personalización de ciclos de vida con plugins
 
 10. **Ejemplos Completos y Casos Prácticos**
+
     - Proyecto simple: aplicación Java
     - Proyecto avanzado: Spring Boot con múltiples módulos
     - Gestión de librerías internas y privadas
@@ -523,22 +595,25 @@ En resumen, **`mvn clean install`** es una opción más segura pero un poco más
     - Problemas con plugins
     - Soluciones a errores de configuración del `pom.xml`
 
-
 ---
 
 ### 1. **Introducción a Maven y el `pom.xml`**
 
 #### 1.1 ¿Qué es Maven?
+
 Maven es una herramienta de construcción y gestión de proyectos basada en el concepto de un modelo de objeto de proyecto (POM, Project Object Model). Es ampliamente utilizada en el ecosistema Java para automatizar tareas como compilación, prueba, empaquetado, despliegue y gestión de dependencias.
 
 **Características principales de Maven:**
+
 - **Gestión de dependencias:** Resuelve automáticamente las dependencias de un proyecto, incluyendo las transitivas.
 - **Modelo estándar de construcción:** Define un ciclo de vida estándar con fases como `compile`, `test`, y `package`.
 - **Escalabilidad:** Soporta proyectos pequeños, grandes y multi-módulo.
 - **Extensibilidad:** Permite integrar plugins para personalizar y extender su funcionalidad.
 
 #### 1.2 Rol del archivo `pom.xml` en un proyecto Maven
+
 El archivo `pom.xml` es el corazón de un proyecto Maven. Define:
+
 - **La identidad del proyecto:** Incluye información como `groupId`, `artifactId` y `version`, que hacen único al proyecto.
 - **Dependencias:** Librerías externas necesarias para el proyecto.
 - **Plugins y configuraciones:** Herramientas adicionales para personalizar el proceso de construcción.
@@ -554,7 +629,7 @@ Un archivo `pom.xml` básico se ve así:
 ```xml
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -586,15 +661,15 @@ Un archivo `pom.xml` básico se ve así:
 4. **`<version>`**  
    Versión del proyecto. Maven sigue el formato de versiones estándar: `MAJOR.MINOR.PATCH` (por ejemplo, `1.0.0`).
 
-5. **`<packaging>`** *(opcional)*  
-   Tipo de artefacto generado:  
+5. **`<packaging>`** _(opcional)_  
+   Tipo de artefacto generado:
    - `jar`: Archivo Java ejecutable.
    - `war`: Aplicación web.
    - `pom`: Solo como contenedor (en proyectos multi-módulo).
 
 #### 2.2 Validación y formato XML
-El `pom.xml` usa XML estándar, y Maven verifica que sea válido antes de usarlo. Los atributos `xmlns` y `xsi:schemaLocation` aseguran que el archivo sea conforme al esquema XML definido por Maven.
 
+El `pom.xml` usa XML estándar, y Maven verifica que sea válido antes de usarlo. Los atributos `xmlns` y `xsi:schemaLocation` aseguran que el archivo sea conforme al esquema XML definido por Maven.
 
 ---
 
@@ -620,16 +695,18 @@ Las dependencias son librerías externas que un proyecto necesita para funcionar
 ```
 
 **Elementos importantes en una dependencia:**
+
 - **`<groupId>`:** Identifica al proveedor de la librería (por ejemplo, `org.springframework`).
 - **`<artifactId>`:** Nombre único del artefacto dentro del grupo (`spring-core`).
 - **`<version>`:** Versión específica de la librería (`5.3.29`).
-- **`<scope>`** *(opcional)*: Indica en qué fases del ciclo de vida de Maven se usará esta dependencia. (Ver más abajo).
+- **`<scope>`** _(opcional)_: Indica en qué fases del ciclo de vida de Maven se usará esta dependencia. (Ver más abajo).
 
 ---
 
 #### 3.2 Uso de repositorios públicos y privados
 
 ##### Repositorios públicos
+
 Maven descarga automáticamente las dependencias desde repositorios públicos como el **Maven Central Repository**. Este es el repositorio predeterminado en cualquier instalación de Maven.
 
 ```xml
@@ -642,6 +719,7 @@ Maven descarga automáticamente las dependencias desde repositorios públicos co
 ```
 
 ##### Repositorios privados
+
 En entornos empresariales, se pueden configurar repositorios privados (como Nexus o Artifactory) para gestionar dependencias internas:
 
 ```xml
@@ -769,8 +847,10 @@ Los plugins se declaran dentro del elemento `<build>` del `pom.xml`. Un ejemplo 
 Maven tiene algunos plugins esenciales que vienen integrados o son ampliamente utilizados en los proyectos.
 
 ##### **Plugins obligatorios (internos de Maven):**
+
 1. **`maven-compiler-plugin`**  
    Compila el código fuente.
+
    ```xml
    <plugin>
        <groupId>org.apache.maven.plugins</groupId>
@@ -785,6 +865,7 @@ Maven tiene algunos plugins esenciales que vienen integrados o son ampliamente u
 
 2. **`maven-surefire-plugin`**  
    Ejecuta las pruebas unitarias.
+
    ```xml
    <plugin>
        <groupId>org.apache.maven.plugins</groupId>
@@ -804,8 +885,10 @@ Maven tiene algunos plugins esenciales que vienen integrados o son ampliamente u
    ```
 
 ##### **Plugins comunes:**
+
 1. **`maven-jar-plugin`**  
    Empaqueta el código como un archivo JAR.
+
    ```xml
    <plugin>
        <groupId>org.apache.maven.plugins</groupId>
@@ -816,6 +899,7 @@ Maven tiene algunos plugins esenciales que vienen integrados o son ampliamente u
 
 2. **`maven-deploy-plugin`**  
    Sube el artefacto generado a un repositorio remoto.
+
    ```xml
    <plugin>
        <groupId>org.apache.maven.plugins</groupId>
@@ -856,6 +940,7 @@ Maven organiza su proceso de construcción en **fases del ciclo de vida**. Los p
 6. **`deploy`:** Publica el artefacto en un repositorio remoto.
 
 **Ejemplo:** Configurar un plugin para ejecutarse en la fase `package`:
+
 ```xml
 <build>
     <plugins>
@@ -883,6 +968,7 @@ Maven organiza su proceso de construcción en **fases del ciclo de vida**. Los p
 Los plugins también pueden aceptar configuraciones específicas según las necesidades del proyecto. Por ejemplo:
 
 **Configurar el plugin `maven-surefire-plugin` para usar un marco de pruebas específico:**
+
 ```xml
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
@@ -900,6 +986,7 @@ Los plugins también pueden aceptar configuraciones específicas según las nece
 ```
 
 **Personalizar el JAR con `maven-jar-plugin`:**
+
 ```xml
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
@@ -952,30 +1039,38 @@ Los plugins también pueden aceptar configuraciones específicas según las nece
 #### Guía sobre los Plugins de Maven y Configuración de Build
 
 ##### **¿Qué son los Plugins en Maven?**
+
 Los plugins en Maven son componentes que amplían la funcionalidad del proceso de construcción (build) de un proyecto. Estos plugins son ejecutados durante las fases del ciclo de vida de Maven y realizan tareas específicas, como compilar código, ejecutar tests, generar documentación o empaquetar el proyecto.
 
 ##### **Tipos de Plugins en Maven**
+
 1. **Plugins Integrados**: Maven ya incluye algunos plugins esenciales por defecto, como el `maven-compiler-plugin` para compilar código o el `maven-surefire-plugin` para ejecutar tests.
 2. **Plugins Personalizados**: Son plugins externos que puedes añadir en tu archivo `pom.xml` para tareas específicas, como generar reportes o manejar configuraciones avanzadas.
 
 ##### **¿Es necesario añadir todos los plugins al `pom.xml`?**
+
 No, **no es necesario añadir todos los plugins** al `pom.xml`. Maven viene con configuraciones predeterminadas para los plugins más comunes. Esto significa que si no especificas un plugin (como el `maven-compiler-plugin`), Maven usará su versión predeterminada.
 
 **Cuándo añadir plugins:**
+
 - Si necesitas cambiar la configuración predeterminada de un plugin.
 - Si necesitas ejecutar tareas específicas que no están incluidas en los plugins predeterminados.
 
 Por ejemplo:
+
 - Si quieres usar una versión específica de Java para compilar tu proyecto, puedes personalizar el `maven-compiler-plugin`.
 - Si necesitas generar un archivo JAR o WAR de forma específica, puedes configurar el `maven-jar-plugin`.
 
 ##### **¿Qué es la configuración de `build` en Maven?**
+
 La sección `<build>` en `pom.xml` es donde defines configuraciones relacionadas con el proceso de construcción de tu proyecto. Esto incluye:
+
 1. **Plugins**: Define y configura los plugins que deseas usar.
 2. **Directory Settings**: Configura directorios de salida como `target`.
 3. **Resources**: Define recursos que deben incluirse en el paquete del proyecto.
 
 ###### **Ejemplo básico de configuración de `<build>`**
+
 ```xml
 <build>
     <plugins>
@@ -1008,7 +1103,9 @@ La sección `<build>` en `pom.xml` es donde defines configuraciones relacionadas
 ```
 
 ##### **¿Por qué es importante la configuración en `build`?**
+
 La configuración en `<build>` te permite personalizar y controlar cómo se realiza el ciclo de vida del proyecto. Algunos beneficios son:
+
 - Personalizar el proceso de compilación y empaquetado.
 - Añadir tareas específicas para la fase de despliegue o desarrollo.
 - Optimizar los procesos automatizados en entornos de integración continua.
@@ -1016,12 +1113,12 @@ La configuración en `<build>` te permite personalizar y controlar cómo se real
 ---
 
 ##### **Consejos Prácticos**
+
 1. **Reutiliza configuraciones comunes**: Si tienes varios proyectos con configuraciones similares, considera usar un **parent POM** para centralizar los plugins y configuraciones.
 2. **No abuses de los plugins**: Añade solo los plugins necesarios. Una configuración innecesaria puede hacer tu proyecto más complejo.
 3. **Consulta la documentación de Maven**: Los plugins tienen configuraciones avanzadas; revisa siempre la documentación oficial para entender sus capacidades.
 
 ---
-
 
 ### 5. **Perfiles de Construcción**
 
@@ -1032,6 +1129,7 @@ Los **perfiles de construcción** en Maven permiten definir configuraciones espe
 #### 5.1 ¿Qué es un perfil?
 
 Un perfil es una sección dentro del `pom.xml` que permite personalizar:
+
 - Dependencias
 - Propiedades
 - Plugins
@@ -1057,6 +1155,7 @@ El perfil con `id="desarrollo"` puede activarse cuando se ejecute Maven, permiti
 #### 5.2 Creación y uso de perfiles
 
 ##### Ejemplo básico de perfiles:
+
 ```xml
 <profiles>
     <profile>
@@ -1076,6 +1175,7 @@ El perfil con `id="desarrollo"` puede activarse cuando se ejecute Maven, permiti
 ```
 
 ##### Activación de un perfil en línea de comandos:
+
 Puedes activar un perfil con el parámetro `-P` al ejecutar Maven:
 
 ```bash
@@ -1087,12 +1187,14 @@ mvn clean install -Pdesarrollo
 #### 5.3 Configuraciones comunes dentro de un perfil
 
 Un perfil puede incluir configuraciones específicas para:
+
 - Dependencias
 - Plugins
 - Repositorios
 - Propiedades
 
 ##### Ejemplo: Dependencias específicas por perfil
+
 ```xml
 <profiles>
     <profile>
@@ -1119,10 +1221,12 @@ Un perfil puede incluir configuraciones específicas para:
 ```
 
 En este caso:
+
 - En desarrollo, Maven usará una base de datos embebida (`hsqldb`).
 - En producción, usará MySQL.
 
 ##### Ejemplo: Configuración de plugins según el perfil
+
 ```xml
 <profiles>
     <profile>
@@ -1163,6 +1267,7 @@ En este caso:
 Los perfiles pueden activarse automáticamente con ciertas condiciones:
 
 ##### Por propiedades del sistema:
+
 ```xml
 <activation>
     <property>
@@ -1171,12 +1276,15 @@ Los perfiles pueden activarse automáticamente con ciertas condiciones:
     </property>
 </activation>
 ```
+
 Ejecutar Maven con la propiedad activa este perfil:
+
 ```bash
 mvn clean install -Dentorno=produccion
 ```
 
 ##### Por sistema operativo:
+
 ```xml
 <activation>
     <os>
@@ -1184,9 +1292,11 @@ mvn clean install -Dentorno=produccion
     </os>
 </activation>
 ```
+
 Este perfil se activa automáticamente en sistemas Linux.
 
 ##### Por existencia de un archivo:
+
 ```xml
 <activation>
     <file>
@@ -1194,10 +1304,13 @@ Este perfil se activa automáticamente en sistemas Linux.
     </file>
 </activation>
 ```
+
 El perfil se activa si el archivo `config/produccion.yml` existe.
 
 ##### Por un valor predeterminado:
+
 Se puede activar un perfil por defecto si no se especifica otro:
+
 ```xml
 <profiles>
     <profile>
@@ -1247,7 +1360,6 @@ Cuando se usa el perfil `desarrollo`, la base de datos será H2 en memoria. En `
 
 ---
 
-
 ### 6. **Gestión de Propiedades**
 
 Las **propiedades** en Maven son claves para parametrizar configuraciones y evitar la repetición de valores en el `pom.xml`. Esto permite que los proyectos sean más mantenibles, reutilizables y fáciles de personalizar en diferentes entornos.
@@ -1292,6 +1404,7 @@ Maven proporciona propiedades predefinidas que se pueden utilizar directamente:
 
 1. **Propiedades del proyecto**  
    Estas propiedades reflejan los valores configurados en el `pom.xml`:
+
    - `${project.groupId}`: El ID del grupo.
    - `${project.artifactId}`: El ID del artefacto.
    - `${project.version}`: La versión del proyecto.
@@ -1352,6 +1465,7 @@ Al activar el perfil correspondiente, las propiedades se actualizan dinámicamen
 Maven también permite cargar propiedades desde archivos externos usando el plugin `maven-antrun-plugin`:
 
 1. Crea un archivo `config.properties` con las propiedades necesarias:
+
    ```properties
    db.url=jdbc:mysql://localhost:3306/mydb
    db.username=root
@@ -1359,6 +1473,7 @@ Maven también permite cargar propiedades desde archivos externos usando el plug
    ```
 
 2. Configura el plugin en el `pom.xml`:
+
    ```xml
    <build>
        <plugins>
@@ -1395,6 +1510,7 @@ Maven también permite cargar propiedades desde archivos externos usando el plug
 #### 6.6 Ejemplo práctico de propiedades
 
 **Estructura del `pom.xml`:**
+
 ```xml
 <project>
     <modelVersion>4.0.0</modelVersion>
@@ -1462,6 +1578,7 @@ La **herencia** en Maven permite que un proyecto "hijo" herede configuraciones d
 ```
 
 ##### Configuraciones que se heredan:
+
 - Dependencias
 - Plugins
 - Propiedades
@@ -1469,7 +1586,9 @@ La **herencia** en Maven permite que un proyecto "hijo" herede configuraciones d
 - Configuraciones de compilación (`<build>`)
 
 ##### Ejemplo:
+
 **Proyecto Padre (`pom.xml`):**
+
 ```xml
 <project>
     <modelVersion>4.0.0</modelVersion>
@@ -1494,6 +1613,7 @@ La **herencia** en Maven permite que un proyecto "hijo" herede configuraciones d
 ```
 
 **Proyecto Hijo (`pom.xml`):**
+
 ```xml
 <project>
     <modelVersion>4.0.0</modelVersion>
@@ -1509,6 +1629,7 @@ La **herencia** en Maven permite que un proyecto "hijo" herede configuraciones d
 ```
 
 El proyecto hijo hereda:
+
 - Dependencia a `spring-core`
 - Propiedades comunes (`java.version`, `project.build.sourceEncoding`)
 
@@ -1519,6 +1640,7 @@ El proyecto hijo hereda:
 Un proyecto multi-módulo organiza varios subproyectos (módulos) bajo un único proyecto "agregador". El proyecto agregador es responsable de construir todos los módulos.
 
 ##### Estructura de un proyecto multi-módulo
+
 ```
 proyecto-raiz/
 ├── pom.xml           <-- Proyecto agregador
@@ -1531,6 +1653,7 @@ proyecto-raiz/
 ```
 
 ##### Proyecto agregador (`pom.xml`):
+
 El `pom.xml` del proyecto raíz debe tener un empaquetado de tipo `pom` y listar todos los módulos en el bloque `<modules>`:
 
 ```xml
@@ -1550,6 +1673,7 @@ El `pom.xml` del proyecto raíz debe tener un empaquetado de tipo `pom` y listar
 ```
 
 ##### Configuración de un módulo (`pom.xml`):
+
 Cada módulo tiene su propio `pom.xml` y puede heredar del proyecto raíz:
 
 ```xml
@@ -1592,6 +1716,7 @@ El orden de construcción de los módulos está determinado por sus dependencias
 #### 7.5 Ejemplo práctico de un proyecto multi-módulo
 
 **Estructura del proyecto:**
+
 ```
 proyecto-empresa/
 ├── pom.xml           <-- Proyecto agregador
@@ -1604,6 +1729,7 @@ proyecto-empresa/
 ```
 
 **Proyecto raíz (`pom.xml`):**
+
 ```xml
 <project>
     <modelVersion>4.0.0</modelVersion>
@@ -1621,6 +1747,7 @@ proyecto-empresa/
 ```
 
 **Módulo `servicio-cliente` (`pom.xml`):**
+
 ```xml
 <project>
     <modelVersion>4.0.0</modelVersion>
@@ -1651,6 +1778,7 @@ Aquí, el módulo `servicio-cliente` depende de `servicio-producto`.
 
 1. **Versión centralizada con `dependencyManagement`:**  
    Las versiones de dependencias se pueden centralizar en el proyecto raíz:
+
    ```xml
    <dependencyManagement>
        <dependencies>
@@ -1680,6 +1808,7 @@ Maven ofrece una variedad de configuraciones avanzadas que permiten personalizar
 #### 8.1 Configuración de Dependencias Avanzadas
 
 ##### Exclusión de dependencias transitivas
+
 A veces, las dependencias traen otras dependencias transitivas que no son necesarias o generan conflictos. Puedes excluirlas utilizando el bloque `<exclusions>`:
 
 ```xml
@@ -1697,13 +1826,16 @@ A veces, las dependencias traen otras dependencias transitivas que no son necesa
 ```
 
 ##### Dependencias con alcance (scope)
+
 El alcance de las dependencias define cuándo y cómo se usan durante el ciclo de vida de Maven:
+
 - **`compile` (predeterminado):** Disponible en todas las fases.
 - **`provided`:** Similar a `compile`, pero se espera que el entorno las proporcione (ej., `servlet-api` en servidores web).
 - **`runtime`:** Necesaria solo en tiempo de ejecución (ej., controladores JDBC).
 - **`test`:** Solo para la fase de pruebas.
 
 Ejemplo:
+
 ```xml
 <dependency>
     <groupId>javax.servlet</groupId>
@@ -1714,7 +1846,9 @@ Ejemplo:
 ```
 
 ##### Sistema de dependencias (system scope)
+
 Las dependencias del sistema deben proporcionarse explícitamente con una ruta local:
+
 ```xml
 <dependency>
     <groupId>com.example</groupId>
@@ -1730,6 +1864,7 @@ Las dependencias del sistema deben proporcionarse explícitamente con una ruta l
 #### 8.2 Configuración Avanzada de Plugins
 
 ##### Personalización de plugins
+
 Puedes configurar los plugins de Maven para adaptarlos a tus necesidades. Por ejemplo, configurando el plugin de compilación:
 
 ```xml
@@ -1750,7 +1885,9 @@ Puedes configurar los plugins de Maven para adaptarlos a tus necesidades. Por ej
 ```
 
 ##### Fase de ejecución personalizada
+
 Puedes configurar plugins para que se ejecuten en fases específicas del ciclo de vida:
+
 ```xml
 <execution>
     <id>etapa-personalizada</id>
@@ -1762,7 +1899,9 @@ Puedes configurar plugins para que se ejecuten en fases específicas del ciclo d
 ```
 
 ##### Plugins con múltiples configuraciones
+
 Puedes configurar el mismo plugin varias veces usando identificadores únicos:
+
 ```xml
 <build>
     <plugins>
@@ -1814,7 +1953,9 @@ Puedes configurar el mismo plugin varias veces usando identificadores únicos:
 Los **perfiles** permiten adaptar el comportamiento de Maven para diferentes entornos o configuraciones. Los perfiles avanzados pueden activarse automáticamente o mediante condiciones personalizadas.
 
 ##### Perfiles activados por propiedades
+
 Puedes activar un perfil basado en una propiedad pasada por línea de comandos:
+
 ```xml
 <profiles>
     <profile>
@@ -1833,12 +1974,15 @@ Puedes activar un perfil basado en una propiedad pasada por línea de comandos:
 ```
 
 Activación:
+
 ```bash
 mvn clean install -Dentorno=produccion
 ```
 
 ##### Perfiles activados por sistema operativo
+
 Puedes activar un perfil dependiendo del sistema operativo:
+
 ```xml
 <profiles>
     <profile>
@@ -1856,7 +2000,9 @@ Puedes activar un perfil dependiendo del sistema operativo:
 ```
 
 ##### Perfiles activados por JDK
+
 Puedes activar un perfil basado en la versión del JDK:
+
 ```xml
 <profiles>
     <profile>
@@ -1879,6 +2025,7 @@ mvn clean install -T 4
 ```
 
 El argumento `-T` indica el número de hilos (`4` en este caso). También puedes usar un porcentaje para asignar recursos relativos a los núcleos de CPU disponibles:
+
 ```bash
 mvn clean install -T 1C
 ```
@@ -1899,6 +2046,7 @@ Puedes configurar repositorios adicionales (internos o externos) para descargar 
 ```
 
 También puedes configurar repositorios específicos para snapshots:
+
 ```xml
 <snapshots>
     <enabled>true</enabled>
@@ -1910,6 +2058,7 @@ También puedes configurar repositorios específicos para snapshots:
 #### 8.6 Logs y Depuración
 
 Puedes ajustar el nivel de verbosidad de Maven para depurar problemas:
+
 ```bash
 mvn clean install -X  # Modo de depuración
 mvn clean install -q  # Modo silencioso
@@ -1974,10 +2123,12 @@ Maven se puede extender y personalizar de diversas maneras para adaptarse a las 
 Las extensiones de Maven son componentes que amplían las capacidades de Maven. Se definen en un archivo `pom.xml` y pueden modificar cómo funciona Maven en términos de construcción, manejo de dependencias o integración con herramientas externas.
 
 ##### ¿Qué son las extensiones?
+
 - Son bibliotecas o herramientas que modifican o extienden el comportamiento predeterminado de Maven.
 - Ejemplos comunes: controladores para repositorios privados, integración con sistemas CI/CD, herramientas de análisis como JaCoCo o SonarQube.
 
 ##### Cómo agregar una extensión
+
 Las extensiones se declaran en el bloque `<build>` dentro de `<extensions>`:
 
 ```xml
@@ -1995,7 +2146,9 @@ Las extensiones se declaran en el bloque `<build>` dentro de `<extensions>`:
 Este ejemplo agrega soporte para la transferencia de archivos mediante SSH.
 
 ##### Ejemplo práctico:
+
 Integración con **Takari Lifecycle**, que mejora el rendimiento del build:
+
 ```xml
 <build>
     <extensions>
@@ -2015,10 +2168,12 @@ Integración con **Takari Lifecycle**, que mejora el rendimiento del build:
 El archivo `settings.xml` proporciona configuraciones específicas del entorno del usuario, como credenciales, repositorios, proxies, y perfiles. Este archivo interactúa con el `pom.xml` para definir configuraciones globales o específicas del entorno.
 
 ##### Ubicación del archivo `settings.xml`
+
 - **Global:** `<MAVEN_HOME>/conf/settings.xml` (aplica a todos los usuarios).
 - **Usuario:** `~/.m2/settings.xml` (aplica al usuario actual).
 
 ##### Ejemplo de un archivo `settings.xml`:
+
 ```xml
 <settings>
     <mirrors>
@@ -2050,8 +2205,10 @@ El archivo `settings.xml` proporciona configuraciones específicas del entorno d
 ```
 
 ##### Interacción con el `pom.xml`
+
 1. **Repositorios personalizados:**  
    Los repositorios definidos en `settings.xml` se combinan con los del `pom.xml`.
+
    - Repositorio en `settings.xml`:
      ```xml
      <repositories>
@@ -2082,10 +2239,13 @@ El archivo `settings.xml` proporciona configuraciones específicas del entorno d
 Maven permite personalizar los ciclos de vida predeterminados mediante la configuración de plugins para añadir tareas específicas o reemplazar fases.
 
 ##### Fases del ciclo de vida
+
 Cada ciclo de vida en Maven tiene fases, y estas pueden ser personalizadas al asociarles plugins o metas específicas.
 
 ###### Ejemplo básico:
+
 Añadir una tarea de verificación estática en la fase `verify`:
+
 ```xml
 <build>
     <plugins>
@@ -2107,7 +2267,9 @@ Añadir una tarea de verificación estática en la fase `verify`:
 ```
 
 ###### Ejemplo con una tarea personalizada:
+
 Usando el **plugin `exec-maven-plugin`** para ejecutar un script en la fase `validate`:
+
 ```xml
 <build>
     <plugins>
@@ -2213,6 +2375,7 @@ Usando el **plugin `exec-maven-plugin`** para ejecutar un script en la fase `val
 ```
 
 ---
+
 ### Profundización en el archivo `settings.xml`
 
 El archivo `settings.xml` de Maven es un componente crucial para personalizar la configuración de Maven en entornos específicos. Se utiliza para definir configuraciones globales o específicas de un usuario sin modificar el `pom.xml` del proyecto. Aquí exploraremos más a fondo su estructura, casos de uso y su interacción con el `pom.xml`.
@@ -2222,6 +2385,7 @@ El archivo `settings.xml` de Maven es un componente crucial para personalizar la
 #### 1. **Ubicación y Prioridad del Archivo**
 
 - **Archivo global (`$MAVEN_HOME/conf/settings.xml`):**
+
   - Este archivo es compartido por todos los usuarios en una máquina.
   - Define configuraciones generales que afectan a todos los proyectos Maven ejecutados en ese entorno.
 
@@ -2242,7 +2406,7 @@ El `settings.xml` sigue una estructura XML similar al `pom.xml` pero con un prop
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
                               https://maven.apache.org/xsd/settings-1.0.0.xsd">
-    
+
     <mirrors>...</mirrors>
     <servers>...</servers>
     <profiles>...</profiles>
@@ -2258,6 +2422,7 @@ Cada sección tiene un propósito específico, que se describe a continuación.
 #### 3. **Secciones del Archivo `settings.xml`**
 
 ##### **3.1 Mirrors**
+
 Los mirrors se utilizan para redirigir las solicitudes de Maven a un repositorio alternativo, como un repositorio privado o una réplica de Maven Central.
 
 ```xml
@@ -2275,6 +2440,7 @@ Los mirrors se utilizan para redirigir las solicitudes de Maven a un repositorio
 - **`url`:** Dirección del mirror.
 
 ##### **3.2 Servers**
+
 Define credenciales para autenticar conexiones a repositorios, servidores de despliegue o cualquier otra herramienta que requiera autenticación.
 
 ```xml
@@ -2292,6 +2458,7 @@ Define credenciales para autenticar conexiones a repositorios, servidores de des
 - **`password`:** Contraseña correspondiente.
 
 **Ejemplo de uso con repositorios en el `pom.xml`:**
+
 ```xml
 <repositories>
     <repository>
@@ -2302,6 +2469,7 @@ Define credenciales para autenticar conexiones a repositorios, servidores de des
 ```
 
 ##### **3.3 Profiles**
+
 Los perfiles en el `settings.xml` funcionan igual que en el `pom.xml` pero están orientados al entorno del usuario. Estos perfiles permiten configurar propiedades, repositorios, y otras configuraciones específicas del entorno.
 
 ```xml
@@ -2322,6 +2490,7 @@ Los perfiles en el `settings.xml` funcionan igual que en el `pom.xml` pero está
 ```
 
 ##### **3.4 ActiveProfiles**
+
 Define qué perfiles deben estar activos por defecto.
 
 ```xml
@@ -2331,6 +2500,7 @@ Define qué perfiles deben estar activos por defecto.
 ```
 
 **Nota:** También puedes activar perfiles usando la línea de comandos:
+
 ```bash
 mvn clean install -P desarrollo
 ```
@@ -2340,6 +2510,7 @@ mvn clean install -P desarrollo
 #### 4. **Casos de Uso Común del `settings.xml`**
 
 ##### **4.1 Configuración de un repositorio corporativo**
+
 Muchas empresas utilizan repositorios privados (como Nexus o Artifactory) para gestionar dependencias internas.
 
 ```xml
@@ -2357,6 +2528,7 @@ Muchas empresas utilizan repositorios privados (como Nexus o Artifactory) para g
 Este mirror redirige todas las solicitudes (`*`) al repositorio corporativo.
 
 ##### **4.2 Configuración de credenciales de despliegue**
+
 Para publicar artefactos en un repositorio privado:
 
 ```xml
@@ -2370,6 +2542,7 @@ Para publicar artefactos en un repositorio privado:
 ```
 
 Configúralo en el `distributionManagement` del `pom.xml`:
+
 ```xml
 <distributionManagement>
     <repository>
@@ -2380,6 +2553,7 @@ Configúralo en el `distributionManagement` del `pom.xml`:
 ```
 
 ##### **4.3 Configuración de proxies**
+
 Si estás detrás de un proxy corporativo, puedes configurarlo en el `settings.xml`:
 
 ```xml
@@ -2401,16 +2575,19 @@ Si estás detrás de un proxy corporativo, puedes configurarlo en el `settings.x
 #### 5. **Buenas Prácticas con `settings.xml`**
 
 1. **Separación de responsabilidades:**
+
    - Usa el `settings.xml` para configuraciones específicas del usuario o del entorno (credenciales, proxies, etc.).
    - Mantén el `pom.xml` enfocado en la definición del proyecto y sus dependencias.
 
 2. **Seguridad:**
+
    - Evita almacenar contraseñas en texto plano. Usa herramientas como [Maven Password Encryption](https://maven.apache.org/guides/mini/guide-encryption.html) para cifrar contraseñas:
      ```bash
      mvn --encrypt-password
      ```
 
 3. **Uso de perfiles:**
+
    - Define perfiles en el `settings.xml` para configurar entornos como desarrollo, staging o producción.
 
 4. **Versionado:**
@@ -2429,6 +2606,7 @@ En esta sección se presentan ejemplos completos y prácticos de configuraciones
 Este ejemplo muestra cómo configurar un proyecto básico en Java con Maven, sin configuraciones avanzadas. La estructura del proyecto incluye dependencias, plugins esenciales y perfiles básicos.
 
 ##### **Estructura del Proyecto:**
+
 ```
 simple-java-app/
 ├── src/
@@ -2442,6 +2620,7 @@ simple-java-app/
 ```
 
 ##### **Archivo `pom.xml`:**
+
 ```xml
 <project>
     <modelVersion>4.0.0</modelVersion>
@@ -2484,6 +2663,7 @@ simple-java-app/
 ```
 
 ##### **Uso del Proyecto:**
+
 1. **Compilar:**
    ```bash
    mvn compile
@@ -2504,6 +2684,7 @@ simple-java-app/
 Este ejemplo utiliza un proyecto Spring Boot modularizado, en el que cada módulo tiene su propio propósito (por ejemplo, API, lógica de negocio, base de datos).
 
 ##### **Estructura del Proyecto:**
+
 ```
 spring-boot-multi-module/
 ├── pom.xml (pom principal)
@@ -2516,6 +2697,7 @@ spring-boot-multi-module/
 ```
 
 ##### **Archivo `pom.xml` Principal:**
+
 ```xml
 <project>
     <modelVersion>4.0.0</modelVersion>
@@ -2545,6 +2727,7 @@ spring-boot-multi-module/
 ```
 
 ##### **Archivo `pom.xml` del Módulo `api`:**
+
 ```xml
 <project>
     <modelVersion>4.0.0</modelVersion>
@@ -2570,6 +2753,7 @@ spring-boot-multi-module/
 ```
 
 ##### **Archivo `pom.xml` del Módulo `service`:**
+
 ```xml
 <project>
     <modelVersion>4.0.0</modelVersion>
@@ -2595,6 +2779,7 @@ spring-boot-multi-module/
 ```
 
 ##### **Archivo `pom.xml` del Módulo `data`:**
+
 ```xml
 <project>
     <modelVersion>4.0.0</modelVersion>
@@ -2627,6 +2812,7 @@ spring-boot-multi-module/
 En proyectos corporativos es común usar librerías internas almacenadas en un repositorio privado como Nexus o Artifactory.
 
 ##### **Ejemplo de Configuración para un Repositorio Privado:**
+
 ```xml
 <repositories>
     <repository>
@@ -2645,6 +2831,7 @@ En proyectos corporativos es común usar librerías internas almacenadas en un r
 ```
 
 ##### **Archivo `settings.xml` para Credenciales:**
+
 ```xml
 <servers>
     <server>
@@ -2668,6 +2855,7 @@ En esta sección abordaremos algunos de los problemas más comunes que pueden su
 Los conflictos de dependencias ocurren cuando diferentes versiones de la misma librería son requeridas por múltiples dependencias de un proyecto. Esto puede generar errores en tiempo de ejecución o compilación.
 
 ##### **Síntomas Comunes:**
+
 - Clases ausentes o métodos no encontrados (NoSuchMethodError).
 - Incompatibilidades de API.
 - El proyecto compila pero falla al ejecutarse.
@@ -2676,13 +2864,16 @@ Los conflictos de dependencias ocurren cuando diferentes versiones de la misma l
 
 1. **Usar el comando `mvn dependency:tree`:**
    Este comando permite visualizar las dependencias del proyecto y sus relaciones jerárquicas.
+
    ```bash
    mvn dependency:tree
    ```
+
    Esto ayuda a identificar qué dependencia está causando el conflicto.
 
 2. **Forzar una versión específica usando `<dependencyManagement>`:**
    Define una versión única de la dependencia conflictiva en la sección `<dependencyManagement>` del `pom.xml`.
+
    ```xml
    <dependencyManagement>
        <dependencies>
@@ -2697,6 +2888,7 @@ Los conflictos de dependencias ocurren cuando diferentes versiones de la misma l
 
 3. **Excluir dependencias transitivas conflictivas:**
    Si un módulo trae una versión no deseada de una librería, exclúyela explícitamente.
+
    ```xml
    <dependency>
        <groupId>org.springframework</groupId>
@@ -2745,6 +2937,7 @@ Los conflictos de dependencias ocurren cuando diferentes versiones de la misma l
 Los plugins son fundamentales en Maven, pero pueden generar problemas si no están configurados correctamente o si hay incompatibilidades con versiones de Maven o dependencias.
 
 ##### **Síntomas Comunes:**
+
 - Errores como `Plugin execution not covered by lifecycle configuration`.
 - Mensajes indicando que el plugin no se encuentra.
 - Problemas al ejecutar comandos como `mvn clean`, `mvn install`, etc.
@@ -2753,6 +2946,7 @@ Los plugins son fundamentales en Maven, pero pueden generar problemas si no est�
 
 1. **Verificar la configuración del plugin:**
    Revisa que el plugin esté correctamente configurado en el `pom.xml` con una versión específica.
+
    ```xml
    <build>
        <plugins>
@@ -2771,12 +2965,14 @@ Los plugins son fundamentales en Maven, pero pueden generar problemas si no est�
 
 2. **Actualizar el plugin:**
    Si hay un problema con la versión del plugin, actualiza a una versión compatible.
+
    ```bash
    mvn versions:display-plugin-updates
    ```
 
 3. **Forzar la descarga de plugins:**
    Si el plugin no se descarga correctamente, fuerza su actualización.
+
    ```bash
    mvn clean install -U
    ```
@@ -2804,6 +3000,7 @@ Los errores de configuración en el `pom.xml` suelen surgir debido a configuraci
 ##### **Errores Comunes y Soluciones:**
 
 1. **`Cannot resolve symbol` o `Dependency not found`:**
+
    - Verifica que la dependencia esté disponible en el repositorio (como Maven Central).
    - Usa el comando `mvn dependency:resolve` para confirmar.
    - Si se trata de un repositorio privado, asegúrate de configurarlo en el `pom.xml` o en el `settings.xml`.
@@ -2818,12 +3015,15 @@ Los errores de configuración en el `pom.xml` suelen surgir debido a configuraci
    ```
 
 2. **Error de Ciclo de Vida:**
+
    - Mensaje típico: `Failed to execute goal ...`.
    - Solución: Verifica que el plugin configurado sea compatible con tu versión de Maven. Actualiza Maven si es necesario.
 
 3. **Errores de Dependencias con Alcance Incorrecto:**
    Si una dependencia requerida no está disponible en tiempo de ejecución:
+
    - Cambia su `scope` a `compile` o `runtime` según corresponda.
+
    ```xml
    <dependency>
        <groupId>org.example</groupId>
@@ -2846,12 +3046,14 @@ Los errores de configuración en el `pom.xml` suelen surgir debido a configuraci
 
 1. **Logs Detallados:**
    Ejecuta Maven con mayor detalle para identificar problemas exactos:
+
    ```bash
    mvn clean install -X
    ```
 
 2. **Limpiar el Repositorio Local:**
    Si Maven usa artefactos corruptos, elimina el repositorio local:
+
    ```bash
    rm -rf ~/.m2/repository
    ```
@@ -2864,14 +3066,12 @@ Los errores de configuración en el `pom.xml` suelen surgir debido a configuraci
 
 ---
 
-
 # PREGUNTAS COMUNES:
-
-
 
 ## Cuando tienes un proyecto Maven que necesita obtener dependencias de un repositorio externo, puedes configurarlo tanto en el `pom.xml` como en el `settings.xml`. Sin embargo, cada archivo tiene un propósito específico:
 
 ### **1. Declaración del repositorio en el `pom.xml`**
+
 El archivo `pom.xml` debe contener la declaración del repositorio, ya que este define el repositorio donde Maven buscará las dependencias. Por ejemplo:
 
 ```xml
@@ -2888,6 +3088,7 @@ Esto es necesario para que Maven sepa dónde buscar las dependencias específica
 ---
 
 ### **2. Configuración de las credenciales en el `settings.xml`**
+
 El archivo `settings.xml` (ubicado en `${MAVEN_HOME}/conf/settings.xml` o en el directorio del usuario `~/.m2/settings.xml`) es el lugar adecuado para almacenar propiedades sensibles, como las credenciales de inicio de sesión, ya que no deberían estar presentes en el `pom.xml` por razones de seguridad.
 
 Aquí es donde configuras el `server` con las credenciales necesarias para acceder al repositorio:
@@ -2907,12 +3108,14 @@ El `<id>` aquí debe coincidir con el `<id>` del repositorio declarado en el `po
 ---
 
 ### **¿Por qué separar estas configuraciones?**
+
 1. **Seguridad:** El `settings.xml` no se incluye en el control de versiones, lo que evita que las credenciales sean expuestas.
 2. **Portabilidad:** Al declarar el repositorio en el `pom.xml`, todos los usuarios del proyecto podrán obtener las dependencias, pero cada usuario deberá configurar sus propias credenciales en su `settings.xml`.
 
 ---
 
 ### **Proceso Completo**
+
 1. **En el `pom.xml`:** Declaras el repositorio y su ID.
 2. **En el `settings.xml`:** Configuras las credenciales asociadas al ID del repositorio.
 
@@ -2929,14 +3132,18 @@ A continuación, explicamos cada una de estas secciones en detalle:
 ---
 
 ### **1. dependencyManagement**
+
 La sección `dependencyManagement` permite definir versiones y configuraciones comunes de dependencias que pueden ser heredadas o utilizadas por módulos secundarios en un proyecto multi-módulo. Esto ayuda a centralizar el control de las dependencias.
 
 #### **¿Cómo Funciona?**
+
 - No agrega automáticamente las dependencias a los módulos; solo define versiones y configuraciones que los módulos pueden usar.
 - Los módulos secundarios deben declarar explícitamente las dependencias, pero no necesitan especificar la versión si ya está definida en `dependencyManagement`.
 
 #### **Ejemplo:**
+
 Archivo `pom.xml` del módulo principal:
+
 ```xml
 <dependencyManagement>
     <dependencies>
@@ -2951,6 +3158,7 @@ Archivo `pom.xml` del módulo principal:
 ```
 
 Archivo `pom.xml` de un módulo secundario:
+
 ```xml
 <dependencies>
     <!-- Usamos la dependencia definida en dependencyManagement -->
@@ -2966,14 +3174,18 @@ Archivo `pom.xml` de un módulo secundario:
 ---
 
 ### **2. pluginManagement**
+
 La sección `pluginManagement` permite definir configuraciones y versiones predeterminadas para los plugins utilizados en el proyecto. Es similar a `dependencyManagement`, pero específicamente para plugins.
 
 #### **¿Cómo Funciona?**
+
 - No ejecuta ni configura automáticamente los plugins en los módulos secundarios.
 - Los módulos secundarios deben declarar explícitamente los plugins, pero heredan las configuraciones definidas en `pluginManagement`.
 
 #### **Ejemplo:**
+
 Archivo `pom.xml` del módulo principal:
+
 ```xml
 <build>
     <pluginManagement>
@@ -2994,6 +3206,7 @@ Archivo `pom.xml` del módulo principal:
 ```
 
 Archivo `pom.xml` de un módulo secundario:
+
 ```xml
 <build>
     <plugins>
@@ -3011,13 +3224,16 @@ Archivo `pom.xml` de un módulo secundario:
 ---
 
 ### **3. distributionManagement**
+
 La sección `distributionManagement` especifica cómo y dónde se distribuirán los artefactos de un proyecto, como repositorios remotos para snapshots y releases, además de configuraciones para la generación de sitios web de Maven.
 
 #### **¿Cómo Funciona?**
+
 - Define los repositorios donde se subirán las versiones `release` y `snapshot` del artefacto.
 - Se utiliza cuando ejecutas comandos como `mvn deploy`.
 
 #### **Ejemplo:**
+
 ```xml
 <distributionManagement>
     <repository>
@@ -3039,6 +3255,7 @@ La sección `distributionManagement` especifica cómo y dónde se distribuirán 
 ```
 
 #### **Cuándo Usarlo:**
+
 - **`repository`**: Para subir versiones finales (`release`) al repositorio remoto.
 - **`snapshotRepository`**: Para subir versiones de desarrollo (`snapshot`) al repositorio remoto.
 - **`site`**: Para generar y desplegar un sitio web con documentación del proyecto.
@@ -3049,17 +3266,17 @@ La sección `distributionManagement` especifica cómo y dónde se distribuirán 
 
 ### **Comparación de las Secciones**
 
-| Sección               | Propósito                                                                                      | Usado en...                   |
-|-----------------------|-----------------------------------------------------------------------------------------------|--------------------------------|
-| `dependencyManagement` | Centralizar versiones de dependencias para proyectos secundarios.                            | Proyectos multi-módulo         |
-| `pluginManagement`     | Centralizar versiones y configuraciones de plugins.                                          | Proyectos multi-módulo         |
-| `distributionManagement` | Especificar repositorios para distribuir artefactos y generar sitios web.                    | Deploy en repositorios remotos |
+| Sección                  | Propósito                                                                 | Usado en...                    |
+| ------------------------ | ------------------------------------------------------------------------- | ------------------------------ |
+| `dependencyManagement`   | Centralizar versiones de dependencias para proyectos secundarios.         | Proyectos multi-módulo         |
+| `pluginManagement`       | Centralizar versiones y configuraciones de plugins.                       | Proyectos multi-módulo         |
+| `distributionManagement` | Especificar repositorios para distribuir artefactos y generar sitios web. | Deploy en repositorios remotos |
 
 ---
 
 ### **Casos de Uso Combinados**
-Un proyecto multi-módulo puede usar `dependencyManagement` para unificar dependencias, `pluginManagement` para configurar plugins comunes y `distributionManagement` para distribuir artefactos al repositorio remoto. Esto simplifica la gestión del proyecto y evita redundancias.
 
+Un proyecto multi-módulo puede usar `dependencyManagement` para unificar dependencias, `pluginManagement` para configurar plugins comunes y `distributionManagement` para distribuir artefactos al repositorio remoto. Esto simplifica la gestión del proyecto y evita redundancias.
 
 El uso de las secciones `dependencyManagement`, `pluginManagement` y `distributionManagement` **no está limitado exclusivamente a proyectos multi-módulo**, pero suelen ser más útiles y comunes en esos entornos debido a la necesidad de centralizar configuraciones entre múltiples módulos. Sin embargo, dependiendo de las necesidades de tu proyecto, también pueden ser utilizados en un `pom.xml` de un proyecto simple.
 
@@ -3068,12 +3285,15 @@ Aquí te detallo cuándo y por qué usarlos en cada caso:
 ---
 
 ### **Proyectos Simples**
+
 En proyectos simples (es decir, aquellos con un único módulo y sin módulos secundarios), el uso de estas secciones es menos común pero **puede ser válido** en situaciones específicas:
 
 #### **1. dependencyManagement**
+
 No es particularmente necesario en proyectos simples porque las versiones de dependencias suelen definirse directamente en la sección `<dependencies>`. Sin embargo, puede ser útil si tienes dependencias transitivas complejas o deseas prepararte para escalar a un proyecto multi-módulo en el futuro.
 
 **Ejemplo de uso en un proyecto simple:**
+
 ```xml
 <dependencyManagement>
     <dependencies>
@@ -3095,14 +3315,17 @@ No es particularmente necesario en proyectos simples porque las versiones de dep
 ```
 
 **Ventaja en proyectos simples:**
+
 - Facilita mantener consistencia en versiones si decides añadir más dependencias relacionadas en el futuro.
 
 ---
 
 #### **2. pluginManagement**
+
 En proyectos simples, no es obligatorio utilizar `pluginManagement` porque los plugins generalmente se configuran directamente dentro de la sección `<plugins>`. Sin embargo, si quieres mantener centralizadas las configuraciones de plugins que podrían reutilizarse en un futuro (por ejemplo, al dividir el proyecto en múltiples módulos), puede ser útil.
 
 **Ejemplo de uso en un proyecto simple:**
+
 ```xml
 <build>
     <pluginManagement>
@@ -3125,15 +3348,18 @@ En proyectos simples, no es obligatorio utilizar `pluginManagement` porque los p
 ```
 
 **Ventaja en proyectos simples:**
+
 - Mantiene centralizadas las configuraciones de plugins para una mejor organización.
 - Puede servir como base si el proyecto se convierte en un proyecto multi-módulo en el futuro.
 
 ---
 
 #### **3. distributionManagement**
+
 `distributionManagement` es útil tanto en proyectos simples como multi-módulo si el proyecto necesita ser distribuido a un repositorio remoto o desplegar un sitio web de Maven. Por ejemplo, si trabajas en un entorno corporativo o necesitas subir artefactos a un repositorio como Nexus, Artifactory o un repositorio propio, esta sección es imprescindible.
 
 **Ejemplo en un proyecto simple:**
+
 ```xml
 <distributionManagement>
     <repository>
@@ -3148,20 +3374,25 @@ En proyectos simples, no es obligatorio utilizar `pluginManagement` porque los p
 ```
 
 **Ventaja en proyectos simples:**
+
 - Permite la distribución de artefactos (`deploy`) a repositorios remotos, incluso si el proyecto tiene un solo módulo.
 
 ---
 
 ### **Proyectos Multi-módulo**
+
 En proyectos multi-módulo, el uso de estas secciones **es mucho más relevante** porque permiten gestionar configuraciones y dependencias comunes para todos los módulos desde el `pom.xml` principal (padre). Esto evita redundancias y facilita la consistencia entre los módulos.
 
 #### **Ventajas en proyectos multi-módulo:**
+
 1. **`dependencyManagement`:** Centraliza las versiones de dependencias, evitando conflictos entre módulos.
 2. **`pluginManagement`:** Garantiza que todos los módulos usen las mismas versiones y configuraciones de plugins.
 3. **`distributionManagement`:** Permite distribuir todos los módulos a un repositorio remoto de forma centralizada.
 
 **Ejemplo en proyectos multi-módulo:**
+
 - **`pom.xml` principal (padre):**
+
   ```xml
   <dependencyManagement>
       <dependencies>
@@ -3206,17 +3437,19 @@ En proyectos multi-módulo, el uso de estas secciones **es mucho más relevante*
 - **Proyectos simples:** Estas secciones no son imprescindibles, pero pueden ser útiles para mantener configuraciones centralizadas o prepararse para escalar el proyecto en el futuro.
 - **Proyectos multi-módulo:** Son prácticamente esenciales, ya que permiten gestionar versiones, configuraciones y distribuciones de forma centralizada para todos los módulos.
 
-
 ## Proyecto padre para heredar configuraciones como spring-boot-starter-parent:
 
 En el caso de tu proyecto, el **padre (`spring-boot-starter-parent`)** no te incluye como módulo porque el propósito del `spring-boot-starter-parent` **no es actuar como un contenedor de módulos**, sino servir como una base estándar que define configuraciones comunes para proyectos Spring Boot. Este padre no está diseñado para ser un proyecto multi-módulo que gestione sus propios submódulos.
 
 ### **¿Cómo funciona esto sin estar en los `modules`?**
+
 1. **Proyectos padres genéricos como `spring-boot-starter-parent`:**
+
    - El `spring-boot-starter-parent` es un POM especial que no necesita "saber" acerca de tus proyectos. Simplemente define configuraciones, versiones de dependencias y configuraciones de plugins comunes.
    - No incluye una sección `<modules>` porque no está diseñado para ser un contenedor de submódulos. En este caso, tú lo utilizas como referencia (herencia) sin que tu proyecto sea un "módulo" explícito de este padre.
 
 2. **El flujo de Maven:**
+
    - Cuando declaras un `<parent>` en tu `pom.xml`, Maven simplemente hereda todas las configuraciones del proyecto padre sin importar si estás listado como módulo.
    - Esto se debe a que el padre actúa como una **plantilla o base para tu proyecto**, no como un controlador de múltiples módulos.
 
@@ -3227,9 +3460,11 @@ En el caso de tu proyecto, el **padre (`spring-boot-starter-parent`)** no te inc
 ---
 
 ### **Entonces, ¿cuándo un padre usa `modules`?**
+
 Un proyecto padre utiliza la sección `<modules>` solo si es el controlador de un proyecto **multi-módulo**, es decir, cuando tiene varios módulos secundarios que forman parte del mismo proyecto. Por ejemplo:
 
 #### **Estructura típica de un proyecto multi-módulo:**
+
 ```
 project-root/
 │
@@ -3241,6 +3476,7 @@ project-root/
 ```
 
 - **`pom.xml` del padre (controlador):**
+
   ```xml
   <project xmlns="http://maven.apache.org/POM/4.0.0">
       <modelVersion>4.0.0</modelVersion>
@@ -3272,21 +3508,26 @@ project-root/
 ---
 
 ### **En tu caso con `spring-boot-starter-parent`:**
+
 El `spring-boot-starter-parent` **no tiene submódulos ni necesita gestionarlos**. Es simplemente una base común con configuraciones generales que heredas para simplificar tu proyecto.
 
 Esto significa que:
+
 - Tu proyecto no tiene que ser listado en los `modules` del padre.
 - Tu proyecto hereda configuraciones de manera "independiente". Si tuvieras otro proyecto con el mismo padre, este también heredaría esas configuraciones, pero no estarían relacionados entre sí.
 
 ---
 
 ### **¿Qué pasaría si necesitas un proyecto multi-módulo?**
+
 Si quisieras trabajar con un proyecto multi-módulo usando Spring Boot, deberías crear tu propio **proyecto padre** que actúe como contenedor y defina las configuraciones comunes, incluyendo al `spring-boot-starter-parent` como **padre de tu proyecto padre**.
 
 Ejemplo:
 
 #### **Proyecto multi-módulo con Spring Boot**
+
 - Estructura:
+
   ```
   my-project/
   │
@@ -3298,6 +3539,7 @@ Ejemplo:
   ```
 
 - **POM del proyecto padre:**
+
   ```xml
   <project xmlns="http://maven.apache.org/POM/4.0.0">
       <modelVersion>4.0.0</modelVersion>
@@ -3336,5 +3578,6 @@ En este caso, el padre principal (`my-project`) puede centralizar configuracione
 ---
 
 ### **Conclusión**
+
 - El `spring-boot-starter-parent` no necesita tener una sección `<modules>` porque no es un proyecto controlador de módulos, sino un **padre genérico** que proporciona configuraciones comunes.
 - Si quisieras usar módulos, deberías crear tu propio proyecto padre que gestione los módulos y, si es necesario, usar `spring-boot-starter-parent` como su propio padre.
