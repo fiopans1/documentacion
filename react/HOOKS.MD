@@ -409,6 +409,37 @@ useEffect(() => {
 }, [dependencias]);
 ```
 
+## Uso de `await` en `useEffect`
+
+Para utilizar operaciones asíncronas con `await` dentro de `useEffect`, debes crear una función asíncrona interna y luego invocarla:
+
+```javascript
+useEffect(() => {
+  // Declaración de la función asíncrona
+  const fetchData = async () => {
+    try {
+      const response = await fetch('https://api.example.com/data');
+      const data = await response.json();
+      setData(data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  // Llamada inmediata a la función
+  fetchData();
+
+  // Si es necesario, puedes devolver una función de limpieza
+  return () => {
+    // Código de limpieza
+  };
+}, [dependencies]);
+```
+
+> Nota: No puedes usar `async` directamente en la función que pasas a `useEffect` porque las funciones async devuelven una Promise, y la función de limpieza de `useEffect` debe devolver una función o nada, no una Promise.
+
+---
+
 - **Efecto:** El código dentro de la función se ejecuta después de que el componente renderiza.
 - **Limpieza:** Si el efecto necesita limpiar recursos (por ejemplo, cancelar una suscripción), se puede devolver una función de limpieza.
 - **Dependencias:** Especifica cuándo debe ejecutarse el efecto. Si está vacío (`[]`), el efecto se ejecuta solo una vez al montar.
