@@ -1,14 +1,154 @@
-# Guía completa: Integrar OAuth2 (Google) en Spring Boot junto a login clásico
-
-## Introducción
+# Introducción OAUTH2:
 
 En un mundo donde la seguridad y la privacidad son fundamentales, permitir que las aplicaciones accedan a datos de los usuarios **sin exponer sus credenciales** se ha vuelto una necesidad. Aquí es donde entra en juego **OAuth 2.0**, un protocolo de autorización moderno, seguro y ampliamente adoptado que permite delegar el acceso a recursos protegidos de forma controlada y confiable.
 
 OAuth 2.0 no es un sistema de autenticación en sí, sino un **mecanismo que permite a los usuarios conceder acceso limitado a sus datos** almacenados en un servicio (como Google, Facebook o Authentik), sin necesidad de compartir sus contraseñas con las aplicaciones que solicitan ese acceso. Esto se consigue mediante el uso de **tokens de acceso temporales**, que actúan como llaves de acceso válidas por un tiempo definido.
 
-Esta guía te llevará paso a paso a entender cómo funciona OAuth 2.0, cuáles son sus componentes clave, sus distintos flujos (grant types) y cómo aplicarlo correctamente en tus propios proyectos, tanto en frontend como en backend.
+## Introducción a OAuth 2.0
 
-Perfecto. Voy a prepararte una guía paso a paso sobre cómo integrar OAuth2 con Google en una aplicación Spring Boot monolítica, utilizando la última versión de Spring Security.
+OAuth 2.0 es un **framework de autorización** que permite a aplicaciones (clientes) obtener acceso limitado a recursos protegidos en nombre de un usuario, sin necesidad de compartir sus credenciales (usuario/contraseña) con la aplicación. Fue desarrollado por la IETF (RFC 6749) y se utiliza ampliamente para habilitar “Login con Google/Facebook/GitHub”, APIs de terceros, y arquitecturas de microservicios.
+
+### Actores principales
+
+1. **Resource Owner (Usuario):** Titular de los datos o recursos protegidos.
+2. **Client (Cliente):** Aplicación que quiere acceder a los recursos.
+3. **Authorization Server (Servidor de autorización):** Emite tokens de acceso previo consentimiento del usuario.
+4. **Resource Server (Servidor de recursos):** Aloja los recursos protegidos y acepta tokens emitidos por el Authorization Server.
+
+### Flujo básico (Grant Types)
+
+1. **Authorization Code (Código de autorización):**
+
+   - Ideal para aplicaciones servidor‑a‑servidor o web.
+   - El cliente redirige al usuario al Authorization Server, este autentica y solicita consentimiento, luego devuelve un código que el cliente intercambia por un token de acceso.
+
+2. **Implicit (Explícito):**
+
+   - Para aplicaciones de una sola página (SPA).
+   - El token de acceso se entrega directamente al cliente sin pasar por código de autorización (menos seguro, ya no recomendado).
+
+3. **Resource Owner Password Credentials (Credenciales del usuario):**
+
+   - El usuario proporciona usuario y contraseña directamente al cliente, que los envía al Authorization Server.
+   - Solo para aplicaciones muy confiables (legacy).
+
+4. **Client Credentials (Credenciales del cliente):**
+
+   - Para acceso machine‑to‑machine: el cliente usa su propio ID y secreto para obtener un token, sin intervención de usuario.
+
+5. **Refresh Token (Token de actualización):**
+
+   - Permite renovar el token de acceso caducado sin autenticación del usuario.
+
+### ¿Para qué sirve OAuth 2.0?
+
+- **Seguridad y confinamiento de credenciales:** El usuario no expone sus credenciales al cliente.
+- **Delegación de acceso:** Permite al usuario controlar el nivel de acceso, pudiendo revocar tokens sin cambiar su contraseña.
+- **Integración sencilla con proveedores externos:** Google, Facebook, GitHub, Azure AD, etc.
+- **Escalabilidad en APIs y microservicios:** Los servicios confían en tokens JWT u otros formatos estándar.
+
+---
+
+## Configuración en Spring Boot
+
+Spring Boot ofrece soporte integral a OAuth 2.0 a través de **Spring Security OAuth 2.0 Client**. La configuración se realiza principalmente en el archivo `application.yml` o `application.properties`, bajo el prefijo:
+
+```yaml
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+        provider:
+```
+
+### `registration`
+
+Define **cada cliente o “aplicación”** que se integra como “relying party” frente al Authorization Server. Aquí declaras:
+
+- **`client-id` y `client-secret`**: Credenciales que la aplicación obtiene al registrarse en el proveedor (e.g., consola de Google).
+- **`authorization-grant-type`**: Tipo de flujo (authorization_code, client_credentials, password, refresh_token).
+- **`redirect-uri`**: URI donde el Authorization Server devolverá el código o token.
+- **`scope`**: Alcances de permisos solicitados (perfil, email, api.read, etc.).
+- **`client-name`**: Nombre identificativo para logs y mensajes.
+
+Ejemplo en YAML:
+
+```yaml
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: tu-google-client-id
+            client-secret: tu-google-secret
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope:
+              - openid
+              - profile
+              - email
+```
+
+> **Nota:** `{baseUrl}` suele resolver al dominio donde corre tu app, `{registrationId}` al nombre que le des (`google` en este caso).
+
+### `provider`
+
+Define **detalles del Authorization Server** al que apunta una o varias `registration`. Incluye:
+
+- **`authorization-uri`**: Endpoint para solicitar el código de autorización.
+- **`token-uri`**: Endpoint para intercambiar código por token de acceso.
+- **`user-info-uri`**: (Opcional) Endpoint para obtener información del usuario (profile).
+- **`jwk-set-uri`**: (Opcional) URI para obtener claves públicas en formato JWK, usado para verificar JWT.
+- **`user-name-attribute`**: (Opcional) Atributo JSON que identifica el nombre de usuario (e.g., `sub`, `id`).
+
+Ejemplo enlazando con el registration anterior:
+
+```yaml
+spring:
+  security:
+    oauth2:
+      client:
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://openidconnect.googleapis.com/v1/userinfo
+            user-name-attribute: sub
+            jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
+```
+
+### Relación Registration ↔ Provider
+
+- El **`registrationId`** (p. ej. `google`) en `registration` se usa para vincular a la sección `provider` del mismo nombre.
+- Puedes usar un mismo proveedor con varios clientes (p. ej. móvil y web), o múltiples proveedores con un mismo cliente.
+
+---
+
+## Flujo de ejemplo en Spring Boot
+
+1. Usuario accede a `/oauth2/authorization/google` (ruta automática que genera Spring).
+2. Spring Security redirige al usuario a `authorization-uri`.
+3. Usuario se autentica y consiente.
+4. Google redirige a tu `redirect-uri` con un código.
+5. Spring intercambia código por token en `token-uri`.
+6. Spring obtiene perfil en `user-info-uri` y llena el `Authentication` en el contexto de seguridad.
+7. Tu aplicación recibe al usuario autenticado con datos (nombre, email, roles, etc.).
+
+---
+
+## Conclusión
+
+- **OAuth 2.0** es el estándar de facto para delegar autorización sin exponer credenciales.
+- **Spring Boot** centraliza la configuración en `spring.security.oauth2.client.registration` (clientes) y `…provider` (servidores).
+- Definir correctamente ambos bloques en `application.yml`/`.properties` permite integrar cualquier proveedor (Google, Facebook, Okta, Auth0, etc.) de manera declarativa y segura.
+
+# Guía completa: Integrar OAuth2 (Google) en Spring Boot junto a login clásico
+
+## Introducción
+
+Esta guía te llevará paso a paso a entender cómo funciona OAuth 2.0, cuáles son sus componentes clave, sus distintos flujos (grant types) y cómo aplicarlo correctamente en tus propios proyectos, tanto en frontend como en backend.
 
 La guía incluirá:
 
@@ -546,3 +686,81 @@ De esta forma, tu filtro JWT en Spring Security seguirá reconociendo al usuario
 - **Frontend:** Captura el `token` de la URL, lo almacena (ej. localStorage) y lo usa para futuras llamadas API con Axios. Desde aquí, el flujo es idéntico a estar autenticado por login tradicional (Axios envía el JWT en cada petición).
 
 Con esta integración, tu aplicación mantiene el esquema **JWT + roles** que ya tenía, pero ofreciendo también login mediante un proveedor externo. Hemos abstraído el proveedor como "genérico"; en la práctica podrías configurarlo para Google, Facebook, GitHub u otro IdP siguiendo el mismo patrón. Recuerda ajustar detalles específicos (URLs de autorización, atributos como email/nombre según el proveedor, etc.).
+
+## DUDAS:
+
+### Cuál es la diferencia en las properties de springboot entre el registration y el provider?
+
+En Spring Boot, bajo `spring.security.oauth2.client`, existen dos secciones principales:
+
+1. **`registration`**
+   Define **tu aplicación cliente** frente al Authorization Server. Aquí configuras **qué** va a pedir tu aplicación y **cómo**:
+
+   - **`client-id` / `client-secret`**: credenciales que obtienes al registrar tu app en el proveedor.
+
+   - **`authorization-grant-type`**: flujo OAuth (por ejemplo `authorization_code`, `client_credentials`).
+
+   - **`redirect-uri`**: dónde recibes la respuesta (código o token).
+
+   - **`scope`**: permisos o ámbitos que solicitas (`openid`, `profile`, `email`, `api.read`, …).
+
+   - **`client-name`**: nombre legible para logs o IU interna.
+
+   > Básicamente, aquí defines **quién eres** (tu ID/secret) y **qué quieres** (scopes y flujo).
+
+2. **`provider`**
+   Describe **el Authorization Server** al que apuntas. Aquí indicas **dónde** están los endpoints y cómo resolver la información:
+
+   - **`authorization-uri`**: URL para iniciar el flujo y obtener el código de autorización.
+
+   - **`token-uri`**: URL para intercambiar el código por un access token.
+
+   - **`user-info-uri`**: (opcional) URL para recuperar datos del usuario autenticado.
+
+   - **`jwk-set-uri`**: (opcional) URL para descargar la clave pública y validar JWTs.
+
+   - **`user-name-attribute`**: parámetro JSON que identifica al usuario (por ejemplo `sub`, `id`).
+
+   > Aquí defines **dónde hablar** con el servicio de autorización y **cómo** extraer/validar los tokens y la información de usuario.
+
+---
+
+#### ¿Cómo se vinculan?
+
+- El **`registrationId`** (por ejemplo `"google"` o `"my-app"`) que usas en `registration` debe coincidir con el **nombre** bajo `provider`.
+- Spring Security lee primero tu `registration` (qué client-id/secret y scopes usar) y luego consulta el bloque `provider` con el mismo ID para saber **a qué URLs** llamar.
+
+```yaml
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google: # <-- registrationId = "google"
+            client-id: ...
+            client-secret: ...
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope:
+              - openid
+              - profile
+              - email
+
+        provider:
+          google: # <-- providerId = "google"
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://openidconnect.googleapis.com/v1/userinfo
+            user-name-attribute: sub
+            jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
+```
+
+- **Sin `provider`**, Spring usará valores por defecto **solo** para proveedores preconfigurados (Google, GitHub, Okta, Azure, …).
+- **Con un proveedor custom**, debes definir tú mismo todos los URIs en `provider`.
+
+---
+
+**En resumen:**
+
+- **`registration`** = la configuración de **tu cliente** (credenciales, scopes, flujo, redirect).
+- **`provider`** = la configuración del **servidor de autorización** (endpoints, formato de usuario, claves).
