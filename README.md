@@ -64,6 +64,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 
 - **[Docker](devops/DOCKER.MD)** - Contenedores, Docker Compose, volúmenes y redes
 - **[Kubernetes y Helm](devops/KUBERNETES_HELM.MD)** - Orquestación de contenedores con Kubernetes y Helm Charts
+- **[Caddy Server](devops/CADDY.MD)** - Servidor web moderno con HTTPS automático, reverse proxy y configuración simple
 - **[Nginx y Cassandra](devops/NGINX_CASSANDRA.MD)** - Servidor web Nginx y base de datos Cassandra
 
 ---
@@ -101,6 +102,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 - Kubernetes y Helm
 - Python (Guía completa)
 - AWS
+- Caddy Server
 - Nginx y Cassandra
 
 ---
@@ -113,6 +115,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 - **Spring Boot** - Framework completo para aplicaciones Java
 - **Kubernetes y Helm** - Orquestación y despliegue de contenedores
 - **Spring Security** - Seguridad integral en aplicaciones
+- **Caddy Server** - Servidor web moderno con configuración completa
 
 ---
 
@@ -124,7 +127,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 | **JavaScript/TypeScript** | React, Event Loop, TypeScript & NestJS |
 | **Python** | Python Completo |
 | **Bases de Datos** | SQL Avanzado, JDBC, NoSQL |
-| **DevOps** | Docker, Kubernetes, Nginx |
+| **DevOps** | Docker, Kubernetes, Caddy, Nginx |
 | **Cloud** | AWS, Cloudflare |
 | **Seguridad** | Spring Security, OAuth 2.0, Cifrados, SSL |
 | **Frontend** | React, CSS, Hooks, Window Events |
@@ -146,4 +149,4 @@ Este repositorio es de documentación personal y está en constante actualizaci�
 
 ---
 
-**Última actualización**: Octubre 2025
+**Última actualización**: Enero 2025
