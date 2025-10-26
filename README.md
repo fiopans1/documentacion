@@ -149,4 +149,4 @@ Este repositorio es de documentación personal y está en constante actualizaci�
 
 ---
 
-**Última actualización**: Enero 2025
+**Última actualización**: Octubre 2025
