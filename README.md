@@ -18,7 +18,8 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 - **[JDBC](backend/java/JDBC.MD)** - Conexión a bases de datos, consultas, ResultSet y manejo de resultados
 - **[Jackson](backend/java/JACKSON.MD)** - Serialización y deserialización JSON
 - **[Maven](backend/java/MAVEN.MD)** - Gestión de dependencias y construcción de proyectos
-- **[Multithreading en Java](backend/java/MULTITHREADENJAVA.MD)** - Programación concurrente
+- **[Concurrencia y Paralelismo en Java](backend/java/CONCURRENCIA_PARALELISMO_JAVA.MD)** - Guía completa de concurrencia: Thread, Runnable, Callable, ExecutorService, ScheduledExecutorService, CompletableFuture, Fork/Join, Locks, Variables Atómicas, Utilidades de Concurrencia, Colecciones Thread-Safe, Virtual Threads (Java 21+), Patrones y Mejores Prácticas
+- **[Multithreading en Java](backend/java/MULTITHREADENJAVA.MD)** - Programación concurrente básica
 - **[Debugger IntelliJ](backend/java/DEBUGGERINTELIJ.MD)** - Depuración de aplicaciones Java
 
 #### Python
@@ -91,6 +92,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 ### 🟡 Nivel Avanzado
 - React (Guía completa)
 - Spring Boot (Guía completa)
+- Concurrencia y Paralelismo en Java
 - JDBC con ResultSet
 - SQL Avanzado
 - TypeScript y NestJS
@@ -123,7 +125,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 
 | Tecnología | Guía(s) |
 |------------|---------|
-| **Java** | Spring Boot, JDBC, Maven, Multithreading |
+| **Java** | Spring Boot, JDBC, Maven, Concurrencia y Paralelismo, Multithreading |
 | **JavaScript/TypeScript** | React, Event Loop, TypeScript & NestJS |
 | **Python** | Python Completo |
 | **Bases de Datos** | SQL Avanzado, JDBC, NoSQL |
