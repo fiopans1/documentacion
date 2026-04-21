@@ -24,6 +24,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 
 #### Python
 - **[Python Completo](backend/python/PYTHON.MD)** - Guía exhaustiva de Python desde básico hasta avanzado
+- **[FastAPI](backend/python/FASTAPI.MD)** - Guía completa de FastAPI: rutas, validación, autenticación JWT, bases de datos, WebSockets, testing y despliegue
 
 #### TypeScript
 - **[TypeScript y NestJS](backend/typescript/TYPESCRIPT_NESTJS.MD)** - TypeScript y framework NestJS para backend
@@ -92,6 +93,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 ### 🟡 Nivel Avanzado
 - React (Guía completa)
 - Spring Boot (Guía completa)
+- FastAPI (Guía completa)
 - Concurrencia y Paralelismo en Java
 - JDBC con ResultSet
 - SQL Avanzado
@@ -113,6 +115,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 
 ### Guías Grandes y Completas
 - **Python** - Desde sintaxis básica hasta frameworks avanzados
+- **FastAPI** - Framework moderno para APIs con Python
 - **React** - De componentes básicos a patrones avanzados
 - **Spring Boot** - Framework completo para aplicaciones Java
 - **Kubernetes y Helm** - Orquestación y despliegue de contenedores
@@ -127,7 +130,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 |------------|---------|
 | **Java** | Spring Boot, JDBC, Maven, Concurrencia y Paralelismo, Multithreading |
 | **JavaScript/TypeScript** | React, Event Loop, TypeScript & NestJS |
-| **Python** | Python Completo |
+| **Python** | Python Completo, FastAPI |
 | **Bases de Datos** | SQL Avanzado, JDBC, NoSQL |
 | **DevOps** | Docker, Kubernetes, Caddy, Nginx |
 | **Cloud** | AWS, Cloudflare |
