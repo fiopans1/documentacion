@@ -264,6 +264,8 @@ def listar_productos():
 
 ### Agrupar rutas con APIRouter
 
+**`APIRouter`** es una clase que permite organizar y modularizar las rutas de la aplicación. Funciona como una mini-aplicación FastAPI que agrupa endpoints relacionados (por ejemplo, todos los endpoints de usuarios). Luego se incluye en la app principal con `app.include_router()`. Admite prefijos de URL, tags para la documentación y respuestas predeterminadas.
+
 ```python
 # routers/usuarios.py
 from fastapi import APIRouter
@@ -315,6 +317,8 @@ app.include_router(pedidos.router)
 ---
 
 ## 5. Parámetros de Ruta
+
+Los parámetros de ruta son valores dinámicos que forman parte de la URL (por ejemplo `/usuarios/{usuario_id}`). FastAPI los convierte automáticamente al tipo anotado y lanza un error 422 si la conversión falla.
 
 ### Parámetros básicos
 
@@ -377,6 +381,16 @@ def obtener_por_rol(rol: RolUsuario):
 
 ### Parámetros de ruta con validación
 
+**`Path`** es una función de FastAPI (importada desde `fastapi`) que permite añadir metadatos y restricciones de validación a un parámetro de ruta. Es equivalente a `Query` pero para parámetros que van dentro de la URL. Sus argumentos más usados son:
+
+| Argumento | Descripción |
+|-----------|-------------|
+| `title` / `description` | Metadatos para la documentación automática |
+| `ge`, `gt`, `le`, `lt` | Restricciones numéricas (≥, >, ≤, <) |
+| `min_length` / `max_length` | Longitud mínima/máxima para strings |
+| `pattern` | Expresión regular que debe cumplir el valor |
+| `examples` | Ejemplos que aparecen en Swagger UI |
+
 ```python
 from fastapi import FastAPI, Path
 
@@ -410,6 +424,8 @@ def obtener_archivo(ruta_archivo: str):
 ---
 
 ## 6. Parámetros de Query
+
+Los parámetros de query son los valores que se pasan en la URL después del símbolo `?` (por ejemplo `/items?skip=0&limit=10`). En FastAPI se definen como argumentos de la función que **no** aparecen en la ruta. Si tienen valor por defecto son opcionales; si no, son obligatorios.
 
 ### Parámetros de query básicos
 
@@ -450,6 +466,16 @@ def listar_items(
 ```
 
 ### Parámetros de query con validación
+
+**`Query`** es una función de FastAPI que añade metadatos y restricciones de validación a un parámetro de query. Actúa como valor por defecto del argumento de la función. Admite los mismos argumentos que `Path` más algunos específicos para listas:
+
+| Argumento | Descripción |
+|-----------|-------------|
+| `default` | Valor por defecto (`...` para hacerlo obligatorio) |
+| `min_length` / `max_length` | Longitud mínima/máxima para strings |
+| `pattern` | Expresión regular que debe cumplir el valor |
+| `ge`, `gt`, `le`, `lt` | Restricciones numéricas |
+| `title` / `description` | Metadatos para la documentación |
 
 ```python
 from fastapi import FastAPI, Query
@@ -530,6 +556,15 @@ def obtener_items_usuario(
 ---
 
 ## 7. Request Body y Modelos Pydantic
+
+El **request body** es el cuerpo de la petición HTTP (generalmente JSON) que el cliente envía al servidor. FastAPI lo lee, valida y convierte automáticamente usando **modelos Pydantic**.
+
+**`BaseModel`** es la clase base de Pydantic de la que heredan todos los modelos de datos. Al declarar una clase que hereda de `BaseModel` se obtiene de forma automática:
+- Validación de tipos en tiempo de ejecución
+- Conversión automática de tipos (por ejemplo, un string `"42"` a `int 42`)
+- Serialización a/desde JSON
+- Generación de esquemas JSON Schema para la documentación
+- Mensajes de error descriptivos cuando la validación falla
 
 ### Modelos Pydantic básicos
 
@@ -630,6 +665,8 @@ def actualizar_item(
 
 ### Múltiples modelos en el body
 
+**`Body`** es la función equivalente a `Query` y `Path` pero para campos individuales dentro del body de la petición. Se usa cuando se quiere incluir un valor simple (como un entero o un string) directamente en el JSON del body junto con otros modelos, o para añadir validaciones y metadatos a campos del body.
+
 ```python
 from fastapi import Body
 
@@ -695,7 +732,20 @@ class Item(BaseModel):
 
 ## 8. Validación de Datos
 
+Pydantic ofrece herramientas avanzadas para definir reglas de validación directamente en los modelos.
+
 ### Validación con Pydantic
+
+**`Field`** es la función de Pydantic equivalente a `Query`/`Path` para los campos de un modelo `BaseModel`. Permite añadir restricciones de validación, valores por defecto, descripciones y otros metadatos directamente sobre el atributo del modelo:
+
+| Argumento | Descripción |
+|-----------|-------------|
+| `default` / `default_factory` | Valor por defecto estático o generado dinámicamente |
+| `min_length` / `max_length` | Longitud para strings |
+| `gt`, `ge`, `lt`, `le` | Restricciones numéricas (>, ≥, <, ≤) |
+| `description` | Descripción que aparece en la documentación |
+| `pattern` | Expresión regular para strings |
+| `examples` | Ejemplos para Swagger UI |
 
 ```python
 from pydantic import BaseModel, Field, field_validator, model_validator
@@ -726,6 +776,10 @@ class Producto(BaseModel):
 ```
 
 ### Validadores personalizados
+
+**`@field_validator`** es un decorador de Pydantic que permite definir lógica de validación personalizada para un campo concreto. El método decorado recibe el valor del campo y debe devolver el valor (opcionalmente transformado) o lanzar un `ValueError` si la validación falla. Se declara como método de clase (`@classmethod`).
+
+**`@model_validator`** es similar pero actúa sobre el modelo completo, por lo que tiene acceso a todos sus campos. Es útil para validaciones cruzadas (por ejemplo, comprobar que dos campos son iguales). Con `mode="after"` se ejecuta una vez que el modelo ya está construido, por lo que `self` es la instancia completa.
 
 ```python
 from pydantic import BaseModel, field_validator, model_validator
@@ -831,6 +885,12 @@ Cuando la validación falla, FastAPI devuelve automáticamente un error 422 con 
 ---
 
 ## 9. Modelos de Respuesta
+
+FastAPI permite controlar exactamente qué datos se devuelven al cliente usando el parámetro `response_model` en el decorador de la ruta. Esto garantiza que información sensible (como contraseñas) no se filtre accidentalmente.
+
+**`response_model`**: Parámetro del decorador (`@app.get`, `@app.post`, etc.) que recibe un modelo Pydantic. FastAPI serializa la respuesta usando ese modelo, **filtrando automáticamente** los campos que no estén definidos en él.
+
+**`status`**: Módulo de FastAPI (importado desde `fastapi`) que contiene constantes con nombres descriptivos para los códigos de estado HTTP, como `status.HTTP_201_CREATED`, `status.HTTP_404_NOT_FOUND`, etc. Úsalos en lugar de números "mágicos" para hacer el código más legible.
 
 ### Definir modelos de respuesta
 
@@ -952,6 +1012,8 @@ def obtener_item(item_id: int):
 
 ### Recibir datos de formularios
 
+**`Form`** es la función de FastAPI que indica que un parámetro se debe leer del cuerpo de la petición como un campo de formulario HTML (`application/x-www-form-urlencoded` o `multipart/form-data`) en lugar de JSON. Requiere tener instalado `python-multipart`.
+
 ```python
 from fastapi import FastAPI, Form
 
@@ -970,6 +1032,10 @@ def login(
 ```
 
 ### Subir archivos
+
+**`File`** es la función de FastAPI que, al igual que `Form`, declara que el parámetro proviene de un formulario `multipart/form-data`. Normalmente se usa junto con `UploadFile`.
+
+**`UploadFile`** es la clase de FastAPI que representa un archivo subido. Proporciona acceso al nombre del archivo (`filename`), el tipo MIME (`content_type`) y el contenido en sí mediante métodos asíncronos (`await archivo.read()`). A diferencia de usar `bytes` directamente, `UploadFile` almacena el archivo en un buffer temporal y es mucho más eficiente con archivos grandes.
 
 ```python
 from fastapi import FastAPI, File, UploadFile
@@ -1036,6 +1102,12 @@ async def crear_perfil(
 
 ### HTTPException
 
+**`HTTPException`** es la excepción estándar de FastAPI para devolver respuestas de error HTTP. Al lanzarla (`raise`), FastAPI interrumpe el procesamiento del endpoint y devuelve automáticamente una respuesta JSON con el código de estado y el mensaje de error indicados. Sus parámetros son:
+
+- `status_code`: Código de estado HTTP (404, 400, 401, 403, 500…)
+- `detail`: Mensaje de error o cualquier objeto JSON-serializable con información adicional
+- `headers`: Diccionario opcional de cabeceras HTTP a incluir en la respuesta (útil por ejemplo para añadir `WWW-Authenticate` en errores 401)
+
 ```python
 from fastapi import FastAPI, HTTPException, status
 
@@ -1055,6 +1127,8 @@ def obtener_item(item_id: str):
 ```
 
 ### Excepciones personalizadas
+
+**`@app.exception_handler(ExcepcionClass)`** es un decorador que registra una función como manejador de una excepción concreta. Cuando esa excepción se lanza en cualquier parte de la aplicación, FastAPI llama automáticamente a la función registrada en lugar de devolver el error por defecto. La función recibe el objeto `Request` y la instancia de la excepción.
 
 ```python
 from fastapi import FastAPI, Request
@@ -1142,6 +1216,8 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 ## 12. Dependency Injection
 
 La inyección de dependencias es uno de los sistemas más potentes de FastAPI. Permite reutilizar lógica, gestionar recursos y organizar el código de forma limpia.
+
+**`Depends`** es la función central del sistema de inyección de dependencias de FastAPI. Se usa como valor por defecto de un parámetro de un endpoint (o de otra dependencia). FastAPI llama automáticamente a la función pasada a `Depends`, resuelve sus propias dependencias de forma recursiva y le inyecta el resultado al endpoint. Las dependencias pueden ser funciones normales, funciones `async`, funciones con `yield` (para gestionar recursos con limpieza automática) o clases.
 
 ### Dependencia básica
 
@@ -1298,6 +1374,8 @@ async def middleware_logging(request: Request, call_next):
 
 ### Middleware con clases (BaseHTTPMiddleware)
 
+**`BaseHTTPMiddleware`** es la clase base de Starlette para crear middleware orientado a objetos. Al heredar de ella se sobreescribe el método `dispatch(request, call_next)`, donde `call_next` es una función que ejecuta el resto del pipeline (otros middlewares y el endpoint). Esto permite ejecutar lógica tanto **antes** (antes de llamar a `call_next`) como **después** (después de obtener la respuesta) de cada petición.
+
 ```python
 from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi import Request
@@ -1395,6 +1473,14 @@ app.add_middleware(
 ## 15. Autenticación y Autorización
 
 ### Autenticación con JWT (JSON Web Tokens)
+
+Los **JWT** son tokens firmados digitalmente que permiten verificar la identidad del usuario sin necesidad de consultar la base de datos en cada petición. Un token JWT contiene un payload (datos del usuario) y una firma que garantiza que no ha sido manipulado.
+
+**`OAuth2PasswordBearer`**: Esquema de seguridad de FastAPI que extrae automáticamente el token Bearer del header `Authorization` de la petición. El parámetro `tokenUrl` indica la URL del endpoint de login donde se obtiene el token. Al declararlo como dependencia, FastAPI añade el botón "Authorize" en Swagger UI.
+
+**`CryptContext`** (de `passlib`): Objeto que gestiona el hashing y verificación de contraseñas. Con `schemes=["bcrypt"]` usa el algoritmo bcrypt, que es seguro y lento por diseño para dificultar ataques de fuerza bruta.
+
+**`jwt`** (de `python-jose`): Módulo para crear (`jwt.encode`) y verificar (`jwt.decode`) tokens JWT. El payload se firma con una clave secreta usando el algoritmo indicado (habitualmente HS256).
 
 ```bash
 # Instalar dependencias
@@ -1573,6 +1659,15 @@ async def contenido_premium(
 ---
 
 ## 16. Bases de Datos con SQLAlchemy
+
+**SQLAlchemy** es el ORM (Object-Relational Mapper) más popular de Python. Permite interactuar con bases de datos relacionales usando clases Python en lugar de SQL directo.
+
+Conceptos clave:
+- **`create_engine`**: Crea la conexión al motor de base de datos a partir de una URL de conexión. Es el punto de entrada de SQLAlchemy.
+- **`declarative_base()`**: Función que devuelve una clase base (`Base`) de la que deben heredar todos los modelos ORM. Registra los modelos para que SQLAlchemy sepa qué tablas crear.
+- **`sessionmaker`**: Fábrica de sesiones. Una **sesión** (`Session`) es la unidad de trabajo en SQLAlchemy: agrupa operaciones de base de datos y gestiona las transacciones. `autocommit=False` y `autoflush=False` son los valores recomendados para tener control manual de las transacciones.
+- **`Column`**: Define una columna de la tabla con su tipo (`Integer`, `String`, `Boolean`…) y restricciones (`primary_key`, `nullable`, `unique`, `index`…).
+- **`relationship`**: Define una relación entre tablas a nivel de Python (sin SQL directo). Permite acceder a objetos relacionados como atributos (`usuario.items`).
 
 ### Configuración inicial
 
@@ -2073,7 +2168,16 @@ app = FastAPI(lifespan=lifespan)
 
 ## 19. WebSockets
 
-FastAPI soporta WebSockets para comunicación bidireccional en tiempo real.
+Los WebSockets permiten una conexión **bidireccional persistente** entre el cliente y el servidor. A diferencia de HTTP (donde el cliente siempre inicia), con WebSockets el servidor también puede enviar datos en cualquier momento. Son ideales para chats, notificaciones en tiempo real, dashboards, juegos, etc.
+
+**`WebSocket`**: Clase de FastAPI/Starlette que representa una conexión WebSocket. Sus métodos principales son:
+- `await websocket.accept()`: Acepta la conexión (obligatorio al inicio)
+- `await websocket.receive_text()`: Espera y recibe un mensaje de texto del cliente
+- `await websocket.send_text(msg)`: Envía un mensaje de texto al cliente
+- `await websocket.receive_json()` / `send_json()`: Para mensajes en formato JSON
+- `await websocket.close()`: Cierra la conexión
+
+**`WebSocketDisconnect`**: Excepción que se lanza automáticamente cuando el cliente cierra la conexión. Debe capturarse para limpiar recursos.
 
 ### WebSocket básico
 
@@ -2172,6 +2276,10 @@ async def websocket_chat(websocket: WebSocket, nombre_usuario: str):
 
 Las Background Tasks permiten ejecutar tareas después de enviar la respuesta al cliente. Son útiles para enviar emails, procesar datos, escribir logs, etc.
 
+**`BackgroundTasks`**: Clase de FastAPI que gestiona una cola de tareas a ejecutar en segundo plano. Se inyecta automáticamente como parámetro del endpoint (igual que `Request`). El método `add_task(func, *args, **kwargs)` encola la función con sus argumentos; la tarea se ejecuta **después** de que la respuesta HTTP ya se ha enviado al cliente, por lo que no bloquea la respuesta.
+
+> ⚠️ Las background tasks de FastAPI son adecuadas para tareas ligeras y rápidas. Para tareas pesadas o distribuidas (procesamiento de imágenes, colas de trabajo, etc.) se recomienda usar soluciones como **Celery** con Redis/RabbitMQ.
+
 ### Background Task básica
 
 ```python
@@ -2263,6 +2371,10 @@ def listar_items():
 ## 21. Testing
 
 ### Configuración de tests
+
+**`TestClient`**: Clase de FastAPI (basada en `httpx`) que permite hacer peticiones HTTP a la aplicación **directamente en memoria**, sin necesidad de levantar un servidor real. Se usa en los tests para llamar a los endpoints y verificar las respuestas. La sintaxis es idéntica a la de `requests`/`httpx` (`.get()`, `.post()`, `.put()`, `.delete()`…).
+
+**`pytest`**: Framework de testing de Python. FastAPI recomienda usarlo por su sencillez y potencia. Los fixtures de pytest (decorados con `@pytest.fixture`) permiten preparar y limpiar recursos (como bases de datos de prueba) para cada test.
 
 ```bash
 # Instalar dependencias de testing
