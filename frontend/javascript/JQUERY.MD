@@ -763,12 +763,14 @@ $(function () {
       return;
     }
 
-    $('#lista-tareas').append(`
-      <li>
-        <span>${tarea}</span>
-        <button class="eliminar">Eliminar</button>
-      </li>
-    `);
+    const $item = $('<li>');
+    const $texto = $('<span>').text(tarea);
+    const $botonEliminar = $('<button>')
+      .addClass('eliminar')
+      .text('Eliminar');
+
+    $item.append($texto, $botonEliminar);
+    $('#lista-tareas').append($item);
 
     $('#tarea').val('');
   });
