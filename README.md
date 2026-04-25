@@ -40,6 +40,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 
 #### JavaScript
 - **[Event Loop](frontend/javascript/EVENT_LOOP.md)** - Funcionamiento del Event Loop en JavaScript
+- **[jQuery](frontend/javascript/JQUERY.MD)** - Guía completa de jQuery: selectores, DOM, eventos, AJAX, efectos, formularios, plugins y buenas prácticas
 
 #### CSS
 - **[CSS Básico](frontend/css/CSS.MD)** - Estilos y CSS fundamentales
@@ -129,13 +130,13 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 | Tecnología | Guía(s) |
 |------------|---------|
 | **Java** | Spring Boot, JDBC, Maven, Concurrencia y Paralelismo, Multithreading |
-| **JavaScript/TypeScript** | React, Event Loop, TypeScript & NestJS |
+| **JavaScript/TypeScript** | React, Event Loop, jQuery, TypeScript & NestJS |
 | **Python** | Python Completo, FastAPI |
 | **Bases de Datos** | SQL Avanzado, JDBC, NoSQL |
 | **DevOps** | Docker, Kubernetes, Caddy, Nginx |
 | **Cloud** | AWS, Cloudflare |
 | **Seguridad** | Spring Security, OAuth 2.0, Cifrados, SSL |
-| **Frontend** | React, CSS, Hooks, Window Events |
+| **Frontend** | React, jQuery, CSS, Hooks, Window Events |
 
 ---
 
