@@ -39,6 +39,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 
 #### React
 - **[React](frontend/react/REACT.MD)** - Guía completa sobre React
+- **[React-Bootstrap](frontend/react/REACT_BOOTSTRAP.MD)** - Guía completa de React-Bootstrap: instalación, componentes, variantes y classnames/utilidades más útiles de Bootstrap
 - **[Hooks](frontend/react/HOOKS.MD)** - Hooks de React en profundidad
 - **[Window y Eventos en React](frontend/react/WINDOW_EVENTS.MD)** - Manejo de window, addEventListener y eventos del navegador
 
@@ -47,7 +48,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 - **[jQuery](frontend/javascript/JQUERY.MD)** - Guía completa de jQuery: selectores, DOM, eventos, AJAX, efectos, formularios, plugins y buenas prácticas
 
 #### CSS
-- **[CSS Básico](frontend/css/CSS.MD)** - Estilos y CSS fundamentales
+- **[CSS](frontend/css/CSS.MD)** - Guía completa de CSS: cascada, selectores, box model, flexbox, grid, responsive, variables, animaciones y accesibilidad
 - **[Posicionamiento CSS](frontend/css/POSICIONAMIENTO.MD)** - Z-index, Grid, Flexbox y layouts avanzados
 
 ---
@@ -91,8 +92,9 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 ### 🟢 Nivel Básico/Intermedio
 - Git
 - HTML Semántico
-- CSS Básico
+- CSS
 - React Básico
+- React-Bootstrap
 - Spring Boot Rápido
 - Docker Básico
 
@@ -105,6 +107,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 - JDBC con ResultSet
 - SQL Avanzado
 - TypeScript y NestJS
+- CSS (Guía completa)
 - Posicionamiento CSS
 
 ### 🔴 Nivel Experto
@@ -136,14 +139,14 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 | Tecnología | Guía(s) |
 |------------|---------|
 | **Java** | Spring Boot, JDBC, Maven, Concurrencia y Paralelismo, Multithreading |
-| **JavaScript/TypeScript** | React, Event Loop, jQuery, TypeScript & NestJS |
+| **JavaScript/TypeScript** | React, React-Bootstrap, Event Loop, jQuery, TypeScript & NestJS |
 | **HTML** | HTML Semántico |
 | **Python** | Python Completo, FastAPI, Python + Bases de Datos + FastAPI |
 | **Bases de Datos** | SQL Avanzado, JDBC, NoSQL |
 | **DevOps** | Docker, Kubernetes, Caddy, Nginx |
 | **Cloud** | AWS, Cloudflare |
 | **Seguridad** | Spring Security, OAuth 2.0, Cifrados, SSL |
-| **Frontend** | HTML Semántico, React, jQuery, CSS, Hooks, Window Events |
+| **Frontend** | HTML Semántico, React, React-Bootstrap, jQuery, CSS, Hooks, Window Events |
 
 ---
 
