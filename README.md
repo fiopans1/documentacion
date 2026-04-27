@@ -34,6 +34,9 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 
 ### 🎨 Frontend
 
+#### HTML
+- **[HTML Semántico](frontend/html/HTML_SEMANTICO.MD)** - Guía completa sobre estructura semántica, accesibilidad, SEO y buenas prácticas en HTML
+
 #### React
 - **[React](frontend/react/REACT.MD)** - Guía completa sobre React
 - **[React-Bootstrap](frontend/react/REACT_BOOTSTRAP.MD)** - Guía completa de React-Bootstrap: instalación, componentes, variantes y classnames/utilidades más útiles de Bootstrap
@@ -88,6 +91,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 
 ### 🟢 Nivel Básico/Intermedio
 - Git
+- HTML Semántico
 - CSS
 - React Básico
 - React-Bootstrap
@@ -136,12 +140,13 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 |------------|---------|
 | **Java** | Spring Boot, JDBC, Maven, Concurrencia y Paralelismo, Multithreading |
 | **JavaScript/TypeScript** | React, React-Bootstrap, Event Loop, jQuery, TypeScript & NestJS |
+| **HTML** | HTML Semántico |
 | **Python** | Python Completo, FastAPI, Python + Bases de Datos + FastAPI |
 | **Bases de Datos** | SQL Avanzado, JDBC, NoSQL |
 | **DevOps** | Docker, Kubernetes, Caddy, Nginx |
 | **Cloud** | AWS, Cloudflare |
 | **Seguridad** | Spring Security, OAuth 2.0, Cifrados, SSL |
-| **Frontend** | React, React-Bootstrap, jQuery, CSS, Hooks, Window Events |
+| **Frontend** | HTML Semántico, React, React-Bootstrap, jQuery, CSS, Hooks, Window Events |
 
 ---
 
