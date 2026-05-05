@@ -11,6 +11,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 #### Java
 - **[Spring Boot](backend/java/springboot/SPRINGBOOT.MD)** - Guía completa sobre Spring Boot framework
 - **[Spring Security](backend/java/springboot/SPRINGSECURITY.MD)** - Seguridad y autenticación en Spring
+- **[CSRF Token y JWT por Cookie en Spring Security](backend/java/springboot/CSRF_Y_JWT_POR_COOKIE_EN_SPRING_SECURITY.MD)** - Implementación completa de protección CSRF por cookie y autenticación JWT por cookie en Spring Security
 - **[OAuth 2.0 con Spring Boot](backend/java/springboot/CONFIGURAR%20OAUTH2%20CON%20SPRINGBOOT.MD)** - Configuración avanzada de OAuth 2.0
 - **[Spring Boot Rápido](backend/java/springboot/SPRINGBOOTRAPIDO.MD)** - Inicio rápido con Spring Boot
 - **[Estructura de Proyecto](backend/java/springboot/ESTRUCTURAPROYECTO.MD)** - Organización de proyectos Spring Boot
@@ -108,6 +109,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 
 ### 🔴 Nivel Experto
 - Spring Security
+- CSRF Token y JWT por Cookie en Spring Security
 - OAuth 2.0
 - Kubernetes y Helm
 - Python (Guía completa)
@@ -126,6 +128,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 - **Spring Boot** - Framework completo para aplicaciones Java
 - **Kubernetes y Helm** - Orquestación y despliegue de contenedores
 - **Spring Security** - Seguridad integral en aplicaciones
+- **CSRF Token y JWT por Cookie en Spring Security** - Seguridad web con cookies, CSRF y autenticación stateless
 - **Caddy Server** - Servidor web moderno con configuración completa
 
 ---
@@ -134,13 +137,13 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 
 | Tecnología | Guía(s) |
 |------------|---------|
-| **Java** | Spring Boot, JDBC, Maven, Concurrencia y Paralelismo, Multithreading |
+| **Java** | Spring Boot, Spring Security, CSRF + JWT por Cookie, JDBC, Maven, Concurrencia y Paralelismo, Multithreading |
 | **JavaScript/TypeScript** | React, React-Bootstrap, Event Loop, jQuery, TypeScript & NestJS |
 | **Python** | Python Completo, FastAPI, Python + Bases de Datos + FastAPI |
 | **Bases de Datos** | SQL Avanzado, JDBC, NoSQL |
 | **DevOps** | Docker, Kubernetes, Caddy, Nginx |
 | **Cloud** | AWS, Cloudflare |
-| **Seguridad** | Spring Security, OAuth 2.0, Cifrados, SSL |
+| **Seguridad** | Spring Security, CSRF + JWT por Cookie, OAuth 2.0, Cifrados, SSL |
 | **Frontend** | React, React-Bootstrap, jQuery, CSS, Hooks, Window Events |
 
 ---
