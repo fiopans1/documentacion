@@ -13,6 +13,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 - **[Spring Security](backend/java/springboot/SPRINGSECURITY.MD)** - Seguridad y autenticación en Spring
 - **[CSRF Token y JWT por Cookie en Spring Security](backend/java/springboot/CSRF_Y_JWT_POR_COOKIE_EN_SPRING_SECURITY.MD)** - Implementación completa de protección CSRF por cookie y autenticación JWT por cookie en Spring Security
 - **[OAuth 2.0 con Spring Boot](backend/java/springboot/CONFIGURAR%20OAUTH2%20CON%20SPRINGBOOT.MD)** - Configuración avanzada de OAuth 2.0
+- **[HikariCP](backend/java/springboot/HIKARI.MD)** - Pool de conexiones JDBC con Spring Boot, configuración, estructura y personalización de `HikariDataSource`
 - **[Spring Boot Rápido](backend/java/springboot/SPRINGBOOTRAPIDO.MD)** - Inicio rápido con Spring Boot
 - **[Estructura de Proyecto](backend/java/springboot/ESTRUCTURAPROYECTO.MD)** - Organización de proyectos Spring Boot
 - **[OpenSSL con Spring Security](backend/java/springboot/USAROPENSSLCONSPRINGSECURITY.MD)** - Integración de certificados SSL
@@ -102,6 +103,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 - Python + Bases de Datos + FastAPI
 - Concurrencia y Paralelismo en Java
 - JDBC con ResultSet
+- HikariCP
 - SQL Avanzado
 - TypeScript y NestJS
 - CSS (Guía completa)
@@ -126,6 +128,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 - **FastAPI** - Framework moderno para APIs con Python
 - **React** - De componentes básicos a patrones avanzados
 - **Spring Boot** - Framework completo para aplicaciones Java
+- **HikariCP** - Pool de conexiones JDBC y personalización de `HikariDataSource`
 - **Kubernetes y Helm** - Orquestación y despliegue de contenedores
 - **Spring Security** - Seguridad integral en aplicaciones
 - **CSRF Token y JWT por Cookie en Spring Security** - Seguridad web con cookies, CSRF y autenticación stateless
@@ -137,7 +140,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 
 | Tecnología | Guía(s) |
 |------------|---------|
-| **Java** | Spring Boot, Spring Security, CSRF + JWT por Cookie, JDBC, Maven, Concurrencia y Paralelismo, Multithreading |
+| **Java** | Spring Boot, Spring Security, CSRF + JWT por Cookie, HikariCP, JDBC, Maven, Concurrencia y Paralelismo, Multithreading |
 | **JavaScript/TypeScript** | React, React-Bootstrap, Event Loop, jQuery, TypeScript & NestJS |
 | **Python** | Python Completo, FastAPI, Python + Bases de Datos + FastAPI |
 | **Bases de Datos** | SQL Avanzado, JDBC, NoSQL |
@@ -163,4 +166,4 @@ Este repositorio es de documentación personal y está en constante actualizaci�
 
 ---
 
-**Última actualización**: Abril 2026
+**Última actualización**: Mayo 2026
