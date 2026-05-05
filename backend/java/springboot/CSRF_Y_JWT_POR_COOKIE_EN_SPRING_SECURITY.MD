@@ -244,9 +244,9 @@ Un servicio simple podría verse así:
 ```java
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -273,9 +273,9 @@ public class JwtService {
             .issuedAt(Date.from(now))
             .expiration(Date.from(now.plus(15, ChronoUnit.MINUTES)))
             .claim("roles", userDetails.getAuthorities().stream()
-                .map(authority -> authority.getAuthority())
+                .map(GrantedAuthority::getAuthority)
                 .toList())
-            .signWith(secretKey, SignatureAlgorithm.HS256)
+            .signWith(secretKey)
             .compact();
     }
 
