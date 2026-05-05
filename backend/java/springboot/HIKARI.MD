@@ -145,9 +145,9 @@ import java.sql.ResultSet;
 public class Main {
     public static void main(String[] args) throws Exception {
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:postgresql://localhost:5432/appdb");
-        config.setUsername("postgres");
-        config.setPassword("secret");
+        config.setJdbcUrl(System.getenv("DB_URL"));
+        config.setUsername(System.getenv("DB_USER"));
+        config.setPassword(System.getenv("DB_PASSWORD"));
         config.setMaximumPoolSize(10);
         config.setMinimumIdle(2);
         config.setPoolName("main-pool");
@@ -307,9 +307,9 @@ public class DataSourceConfig {
     @Bean
     public DataSource dataSource() {
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:postgresql://localhost:5432/appdb");
-        config.setUsername("postgres");
-        config.setPassword("secret");
+        config.setJdbcUrl(System.getenv("DB_URL"));
+        config.setUsername(System.getenv("DB_USER"));
+        config.setPassword(System.getenv("DB_PASSWORD"));
         config.setMaximumPoolSize(15);
         config.setMinimumIdle(3);
         config.setPoolName("custom-pool");
@@ -417,9 +417,9 @@ public class DataSourceConfig {
     @Bean
     public CustomHikariDataSource dataSource() {
         CustomHikariDataSource ds = new CustomHikariDataSource();
-        ds.setJdbcUrl("jdbc:postgresql://localhost:5432/appdb");
-        ds.setUsername("postgres");
-        ds.setPassword("secret");
+        ds.setJdbcUrl(System.getenv("DB_URL"));
+        ds.setUsername(System.getenv("DB_USER"));
+        ds.setPassword(System.getenv("DB_PASSWORD"));
         return ds;
     }
 }
@@ -452,9 +452,9 @@ public final class DataSourceFactory {
 
     public static HikariDataSource createPostgresDataSource() {
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:postgresql://localhost:5432/appdb");
-        config.setUsername("postgres");
-        config.setPassword("secret");
+        config.setJdbcUrl(System.getenv("DB_URL"));
+        config.setUsername(System.getenv("DB_USER"));
+        config.setPassword(System.getenv("DB_PASSWORD"));
         config.setPoolName("factory-pool");
         return new HikariDataSource(config);
     }
