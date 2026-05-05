@@ -90,7 +90,7 @@ No suele tener sentido abrir conexiones manualmente con `DriverManager` en una a
 
 ## 4. Instalación y dependencias
 
-## Maven
+### Maven
 
 Si es un proyecto Java puro:
 
@@ -122,7 +122,7 @@ o:
 </dependency>
 ```
 
-## Gradle
+### Gradle
 
 ```gradle
 implementation 'com.zaxxer:HikariCP:5.1.0'
@@ -132,7 +132,7 @@ implementation 'com.zaxxer:HikariCP:5.1.0'
 
 ## 5. Uso básico en Java
 
-## Configuración programática
+### Configuración programática
 
 ```java
 import com.zaxxer.hikari.HikariConfig;
@@ -183,7 +183,7 @@ Spring Boot detecta Hikari automáticamente si:
 - Tienes una URL de base de datos configurada
 - No has definido otro `DataSource` manualmente
 
-## `application.properties`
+### `application.properties`
 
 ```properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/appdb
@@ -199,7 +199,7 @@ spring.datasource.hikari.idle-timeout=600000
 spring.datasource.hikari.max-lifetime=1800000
 ```
 
-## `application.yml`
+### `application.yml`
 
 ```yaml
 spring:
@@ -217,7 +217,7 @@ spring:
       max-lifetime: 1800000
 ```
 
-## Qué crea Spring Boot internamente
+### Qué crea Spring Boot internamente
 
 En una configuración típica:
 
@@ -267,7 +267,7 @@ Puedes no tener `DataSourceConfig.java` y dejar que Spring Boot lo haga todo con
 
 Tienes varias formas de adaptarlo.
 
-## Opción A: solo con propiedades
+### Opción A: solo con propiedades
 
 Es la más simple y recomendada cuando no necesitas lógica extra.
 
@@ -289,7 +289,7 @@ spring:
 - No necesitas varios datasources
 - No necesitas lógica de construcción propia
 
-## Opción B: crear tu propio bean `HikariDataSource`
+### Opción B: crear tu propio bean `HikariDataSource`
 
 Útil cuando quieres controlar completamente la instancia.
 
@@ -325,7 +325,7 @@ public class DataSourceConfig {
 - Quieres decidir valores en tiempo de ejecución
 - Quieres varios beans `DataSource`
 
-## Opción C: usar `@ConfigurationProperties`
+### Opción C: usar `@ConfigurationProperties`
 
 Es la mejor mezcla entre configuración externa y control del bean.
 
@@ -383,7 +383,7 @@ Extender la clase tiene sentido cuando quieres:
 - centralizar comportamiento compartido
 - añadir inicialización común
 
-## Ejemplo de extensión
+### Ejemplo de extensión
 
 ```java
 import com.zaxxer.hikari.HikariConfig;
@@ -425,19 +425,19 @@ public class DataSourceConfig {
 }
 ```
 
-## Cuándo conviene extenderlo
+### Cuándo conviene extenderlo
 
 - Si quieres una clase reutilizable para varios proyectos
 - Si siempre aplicas la misma configuración base
 - Si vas a integrar métricas, hooks o naming homogéneo
 
-## Cuándo no conviene
+### Cuándo no conviene
 
 - Si solo necesitas cambiar `maximumPoolSize` o `connectionTimeout`
 - Si puedes resolverlo con propiedades
 - Si solo quieres una configuración específica de un entorno
 
-## Alternativa más limpia: composición
+### Alternativa más limpia: composición
 
 Muchas veces es mejor encapsular la construcción:
 
@@ -501,23 +501,23 @@ Ayuda a detectar conexiones que no se devuelven al pool a tiempo.
 
 ## 11. Errores comunes
 
-## 1. Pool demasiado grande
+### 1. Pool demasiado grande
 
 Poner un `maximumPoolSize` muy alto puede saturar la base de datos.
 
-## 2. No cerrar conexiones
+### 2. No cerrar conexiones
 
 Aunque uses pool, debes cerrar `Connection`, `Statement` y `ResultSet`. Cerrar la conexión **la devuelve al pool**, no la destruye necesariamente.
 
-## 3. Configurar tiempos incoherentes
+### 3. Configurar tiempos incoherentes
 
 Por ejemplo, un `maxLifetime` mayor que el timeout real del servidor de base de datos puede provocar reconexiones inesperadas.
 
-## 4. Crear varios pools sin necesidad
+### 4. Crear varios pools sin necesidad
 
 Cada pool consume recursos. No crees uno por servicio o por repositorio.
 
-## 5. Sobrescribir `HikariDataSource` sin una razón clara
+### 5. Sobrescribir `HikariDataSource` sin una razón clara
 
 Si solo quieres cambiar propiedades, no necesitas herencia.
 
