@@ -17,6 +17,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 - **[Spring Boot Rápido](backend/java/springboot/SPRINGBOOTRAPIDO.MD)** - Inicio rápido con Spring Boot
 - **[Estructura de Proyecto](backend/java/springboot/ESTRUCTURAPROYECTO.MD)** - Organización de proyectos Spring Boot
 - **[OpenSSL con Spring Security](backend/java/springboot/USAROPENSSLCONSPRINGSECURITY.MD)** - Integración de certificados SSL
+- **[LangChain4j](backend/java/LANGCHAIN4J.MD)** - Guía completa de IA generativa con Java: fundamentos de LLMs, AI Services, memoria, tools, RAG, Spring Boot y buenas prácticas
 - **[JDBC](backend/java/JDBC.MD)** - Conexión a bases de datos, consultas, ResultSet y manejo de resultados
 - **[Jackson](backend/java/JACKSON.MD)** - Serialización y deserialización JSON
 - **[Maven](backend/java/MAVEN.MD)** - Gestión de dependencias y construcción de proyectos
@@ -93,6 +94,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 - CSS
 - React Básico
 - React-Bootstrap
+- LangChain4j
 - Spring Boot Rápido
 - Docker Básico
 
@@ -101,6 +103,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 - Spring Boot (Guía completa)
 - FastAPI (Guía completa)
 - Python + Bases de Datos + FastAPI
+- LangChain4j
 - Concurrencia y Paralelismo en Java
 - JDBC con ResultSet
 - HikariCP
@@ -129,6 +132,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 - **React** - De componentes básicos a patrones avanzados
 - **Spring Boot** - Framework completo para aplicaciones Java
 - **HikariCP** - Pool de conexiones JDBC y personalización de `HikariDataSource`
+- **LangChain4j** - Desde fundamentos de IA y LLMs hasta AI Services, tools, memoria, RAG y Spring Boot
 - **Kubernetes y Helm** - Orquestación y despliegue de contenedores
 - **Spring Security** - Seguridad integral en aplicaciones
 - **CSRF Token y JWT por Cookie en Spring Security** - Seguridad web con cookies, CSRF y autenticación stateless
@@ -140,7 +144,8 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 
 | Tecnología | Guía(s) |
 |------------|---------|
-| **Java** | Spring Boot, Spring Security, CSRF + JWT por Cookie, HikariCP, JDBC, Maven, Concurrencia y Paralelismo, Multithreading |
+| **Java** | Spring Boot, Spring Security, CSRF + JWT por Cookie, HikariCP, LangChain4j, JDBC, Jackson, Maven, Concurrencia y Paralelismo, Multithreading |
+| **IA / LLMs** | LangChain4j |
 | **JavaScript/TypeScript** | React, React-Bootstrap, Event Loop, jQuery, TypeScript & NestJS |
 | **Python** | Python Completo, FastAPI, Python + Bases de Datos + FastAPI |
 | **Bases de Datos** | SQL Avanzado, JDBC, NoSQL |
