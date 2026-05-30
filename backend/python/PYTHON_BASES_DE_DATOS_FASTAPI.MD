@@ -981,6 +981,7 @@ Así entiendes tanto la base técnica como la arquitectura correcta para una API
 ## 📚 Guías relacionadas de este repositorio
 
 - [FastAPI](FASTAPI.MD)
+- [SQLAlchemy para FastAPI](SQLALCHEMY_FASTAPI.MD)
 - [Python Completo](PYTHON.MD)
 - [SQL Avanzado](../../databases/SQL_AVANZADO.MD)
 - [Relaciones entre Tablas SQL](../../databases/RELACIONES%20TABLAS%20CON%20SQL.MD)
