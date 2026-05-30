@@ -29,7 +29,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 - **[Python Completo](backend/python/PYTHON.MD)** - Guía exhaustiva de Python desde básico hasta avanzado
 - **[FastAPI](backend/python/FASTAPI.MD)** - Guía completa de FastAPI: rutas, validación, autenticación JWT, bases de datos, WebSockets, testing y despliegue
 - **[Python + Bases de Datos + FastAPI](backend/python/PYTHON_BASES_DE_DATOS_FASTAPI.MD)** - Guía práctica para conectar Python con bases de datos relacionales y usar esa integración dentro de FastAPI
-- **[SQLAlchemy para FastAPI](backend/python/SQLALCHEMY_FASTAPI.MD)** - Guía completa y complementaria sobre SQLAlchemy 2.x orientada a su integración con FastAPI
+- **[SQLAlchemy para FastAPI](backend/python/SQLALCHEMY_FASTAPI.MD)** - Guía de SQLAlchemy 2.x para FastAPI con ORM, async, migraciones y testing
 
 #### TypeScript
 - **[TypeScript y NestJS](backend/typescript/TYPESCRIPT_NESTJS.MD)** - TypeScript y framework NestJS para backend
