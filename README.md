@@ -72,6 +72,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 
 - **[Docker](devops/DOCKER.MD)** - Contenedores, Docker Compose, volúmenes y redes
 - **[Kubernetes y Helm](devops/KUBERNETES_HELM.MD)** - Orquestación de contenedores con Kubernetes y Helm Charts
+- **[GitHub Actions](devops/GITHUB_ACTIONS.MD)** - Guía completa de GitHub Actions: workflows, jobs, runners, actions, matrices, secretos, artefactos, seguridad y despliegues
 - **[Caddy Server](devops/CADDY.MD)** - Servidor web moderno con HTTPS automático, reverse proxy y configuración simple
 - **[Nginx y Cassandra](devops/NGINX_CASSANDRA.MD)** - Servidor web Nginx y base de datos Cassandra
 
@@ -97,6 +98,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 - LangChain4j
 - Spring Boot Rápido
 - Docker Básico
+- GitHub Actions
 
 ### 🟡 Nivel Avanzado
 - React (Guía completa)
@@ -109,6 +111,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 - HikariCP
 - SQL Avanzado
 - TypeScript y NestJS
+- GitHub Actions
 - CSS (Guía completa)
 - Posicionamiento CSS
 
@@ -134,6 +137,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 - **HikariCP** - Pool de conexiones JDBC y personalización de `HikariDataSource`
 - **LangChain4j** - Desde fundamentos de IA y LLMs hasta AI Services, tools, memoria, RAG y Spring Boot
 - **Kubernetes y Helm** - Orquestación y despliegue de contenedores
+- **GitHub Actions** - Automatización de CI/CD, workflows, seguridad y despliegues en GitHub
 - **Spring Security** - Seguridad integral en aplicaciones
 - **CSRF Token y JWT por Cookie en Spring Security** - Seguridad web con cookies, CSRF y autenticación stateless
 - **Caddy Server** - Servidor web moderno con configuración completa
@@ -149,7 +153,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 | **JavaScript/TypeScript** | React, React-Bootstrap, Event Loop, jQuery, TypeScript & NestJS |
 | **Python** | Python Completo, FastAPI, Python + Bases de Datos + FastAPI |
 | **Bases de Datos** | SQL Avanzado, JDBC, NoSQL |
-| **DevOps** | Docker, Kubernetes, Caddy, Nginx |
+| **DevOps** | Docker, Kubernetes, GitHub Actions, Caddy, Nginx |
 | **Cloud** | AWS, Cloudflare |
 | **Seguridad** | Spring Security, CSRF + JWT por Cookie, OAuth 2.0, Cifrados, SSL |
 | **Frontend** | React, React-Bootstrap, jQuery, CSS, Hooks, Window Events |
