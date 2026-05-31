@@ -818,7 +818,7 @@ steps:
     run: curl -H "Authorization: ******" https://api.example.com/data
 ```
 
-Aquí el token nunca se escribe en el YAML en texto plano; GitHub lo inyecta en tiempo de ejecución.
+Aquí el token nunca se escribe en el YAML en texto plano; GitHub lo inyecta en tiempo de ejecución. Si el valor apareciera en logs, GitHub intentaría enmascararlo automáticamente.
 
 ### Buenas prácticas
 
@@ -1743,6 +1743,17 @@ Esto es mala idea:
 ```
 
 Aunque GitHub intente enmascararlo, exponer secretos en logs sigue siendo una práctica peligrosa y evitable.
+
+Alternativa correcta:
+
+```yaml
+- name: Consumir API sin imprimir el secreto
+  env:
+    API_TOKEN: ${{ secrets.API_TOKEN }}
+  run: curl -H "Authorization: ******" https://api.example.com/health
+```
+
+Aquí el secreto se usa para autenticar la petición, pero no se imprime por consola.
 
 ---
 
