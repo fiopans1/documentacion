@@ -818,7 +818,7 @@ steps:
     run: curl -H "Authorization: Bearer $API_TOKEN" https://api.example.com/data
 ```
 
-Aquí el token nunca se escribe en el YAML en texto plano; GitHub lo inyecta en tiempo de ejecución. Si el valor apareciera en logs, GitHub intentaría enmascararlo automáticamente.
+Aquí el token nunca se escribe en el YAML en texto plano; GitHub lo inyecta en tiempo de ejecución. Si ese valor llegara a aparecer en logs, GitHub enmascara automáticamente los secretos registrados, pero aun así nunca debes diseñar un step para exponerlos.
 
 ### Buenas prácticas
 
@@ -1743,6 +1743,8 @@ Esto es mala idea:
 ```
 
 Aunque GitHub intente enmascararlo, exponer secretos en logs sigue siendo una práctica peligrosa y evitable.
+
+El problema no es solo lo que se ve en pantalla: el comando llega a ejecutarse con el valor real del secreto, y el enmascarado ocurre después, al renderizar los logs.
 
 Alternativa correcta:
 
