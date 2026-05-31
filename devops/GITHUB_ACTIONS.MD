@@ -815,7 +815,7 @@ steps:
   - name: Llamar a una API privada
     env:
       API_TOKEN: ${{ secrets.API_TOKEN }}
-    run: curl -H "Authorization: ******" https://api.example.com/data
+    run: curl -H "Authorization: Bearer $API_TOKEN" https://api.example.com/data
 ```
 
 Aquí el token nunca se escribe en el YAML en texto plano; GitHub lo inyecta en tiempo de ejecución. Si el valor apareciera en logs, GitHub intentaría enmascararlo automáticamente.
@@ -1750,7 +1750,7 @@ Alternativa correcta:
 - name: Consumir API sin imprimir el secreto
   env:
     API_TOKEN: ${{ secrets.API_TOKEN }}
-  run: curl -H "Authorization: ******" https://api.example.com/health
+  run: curl -H "Authorization: Bearer $API_TOKEN" https://api.example.com/health
 ```
 
 Aquí el secreto se usa para autenticar la petición, pero no se imprime por consola.
