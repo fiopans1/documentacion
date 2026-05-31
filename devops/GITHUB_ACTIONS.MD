@@ -108,6 +108,39 @@ jobs:
 - `uses`: reutiliza una action existente.
 - `run`: ejecuta comandos de shell.
 
+### Ejemplo explicado paso a paso
+
+Imagina que tienes una API en Node.js y quieres validar automáticamente el proyecto cada vez que alguien sube cambios a `main`.
+
+```yaml
+name: Validar API
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci
+      - run: npm test
+```
+
+Qué significa cada línea en un caso real:
+
+- `name: Validar API` → en GitHub verás una ejecución llamada “Validar API”.
+- `on: push` → solo arranca cuando alguien hace `git push`.
+- `branches: [main]` → no se ejecuta en cualquier rama, solo en `main`.
+- `jobs.test` → el workflow tiene un trabajo llamado `test`.
+- `runs-on: ubuntu-latest` → GitHub prepara una máquina Linux temporal.
+- `actions/checkout@v4` → descarga el código del repositorio dentro de esa máquina.
+- `npm ci` → instala dependencias exactamente como están en el lockfile.
+- `npm test` → ejecuta la batería de tests.
+
+Si `npm test` falla, GitHub marcará la ejecución en rojo y sabrás que el cambio rompió algo antes de desplegar.
+
 ---
 
 ## EVENTO
@@ -163,6 +196,15 @@ on:
 
 Esto significa que el workflow se ejecuta solo si el `push` afecta a esos archivos o rutas.
 
+### Ejemplo para entenderlo perfectamente
+
+Supón que tienes un monorepo con frontend y backend:
+
+- Si cambias `src/app.js`, el workflow sí se ejecuta.
+- Si cambias `README.md` y no está dentro de `paths`, el workflow no se ejecuta.
+
+Eso evita gastar tiempo y minutos de CI cuando el cambio no afecta a la parte que quieres validar.
+
 ---
 
 ## JOB
@@ -211,6 +253,16 @@ jobs:
 
 `deploy` solo empezará cuando `build` termine correctamente.
 
+### Ejemplo práctico
+
+Piensa en este flujo:
+
+1. `build` compila la aplicación.
+2. `test` valida que todo funciona.
+3. `deploy` publica el resultado.
+
+Si `build` falla, no tendría sentido desplegar algo que ni siquiera compila. Por eso `needs` convierte varios jobs sueltos en una tubería lógica.
+
 ---
 
 ## STEP
@@ -238,6 +290,23 @@ steps:
 - Los steps de un mismo job se ejecutan de forma secuencial.
 - Si un step falla, el job normalmente falla.
 - Los steps comparten el mismo entorno dentro del mismo job.
+
+### Ejemplo muy claro
+
+```yaml
+steps:
+  - uses: actions/checkout@v4
+  - run: npm ci
+  - run: npm test
+```
+
+Aquí ocurre esto:
+
+1. Primero se descarga el código.
+2. Después se instalan las dependencias.
+3. Solo cuando la instalación termina bien se ejecutan los tests.
+
+Si `npm ci` falla porque el lockfile está roto, `npm test` ni siquiera arrancará. Eso ayuda a localizar exactamente en qué paso se rompió la ejecución.
 
 ---
 
@@ -295,6 +364,13 @@ También puedes usar labels:
 runs-on: [self-hosted, linux, x64]
 ```
 
+### Ejemplo para decidir qué runner usar
+
+- Si solo necesitas ejecutar `npm test`, normalmente `ubuntu-latest` es suficiente.
+- Si necesitas conectarte a una base de datos privada dentro de tu red corporativa, probablemente necesites `self-hosted`.
+
+La idea clave es esta: el runner no es una etiqueta decorativa, es la máquina real donde se ejecutará tu automatización.
+
 ---
 
 ## ACTION
@@ -325,6 +401,22 @@ Ejemplo:
 ```
 
 Eso invoca una action oficial que clona el contenido del repositorio en el runner.
+
+### Ejemplo para verlo claro
+
+Sin `checkout`, el runner arranca vacío respecto a tu proyecto. Eso significa que comandos como:
+
+```yaml
+- run: ls
+```
+
+no mostrarían los archivos de tu repositorio si antes no hiciste:
+
+```yaml
+- uses: actions/checkout@v4
+```
+
+Por eso `checkout` suele ser uno de los primeros steps de casi cualquier workflow.
 
 ### Recomendación de seguridad
 
@@ -381,6 +473,20 @@ jobs:
       - name: Ejecutar tests
         run: npm test
 ```
+
+### Qué está haciendo este workflow realmente
+
+Este ejemplo representa una CI muy típica:
+
+1. Se dispara al subir cambios o abrir una PR.
+2. Usa un token con permiso mínimo de lectura.
+3. Define la versión de Node una sola vez en `env`.
+4. Descarga el código.
+5. Prepara el runtime.
+6. Instala dependencias.
+7. Ejecuta los tests.
+
+Traducido a lenguaje cotidiano: “cada vez que alguien cambie el proyecto, prepara una máquina limpia, instala todo y comprueba que la aplicación sigue funcionando”.
 
 ---
 
@@ -507,6 +613,32 @@ Establece tiempo máximo de ejecución.
 
 Permite que un step o job falle sin romper el workflow.
 
+### Mini ejemplo conjunto
+
+```yaml
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci
+      - run: npm run lint
+
+  experimento:
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - run: echo "Prueba no bloqueante"
+```
+
+Cómo leerlo:
+
+- `timeout-minutes: 10` evita que `lint` se quede colgado indefinidamente.
+- `if:` hace que `experimento` solo corra en `develop`.
+- `continue-on-error: true` permite que ese job falle sin romper toda la pipeline.
+
 ---
 
 ## CONTEXTOS Y EXPRESIONES
@@ -583,6 +715,24 @@ Ejemplo:
 if: contains(github.event.pull_request.title, 'release')
 ```
 
+### Ejemplo explicado en lenguaje simple
+
+Supón que una PR se llama:
+
+```text
+release: versión 2.0.0
+```
+
+Entonces esta condición:
+
+```yaml
+if: contains(github.event.pull_request.title, 'release')
+```
+
+devuelve `true`, y GitHub ejecuta el job o step correspondiente.
+
+Si la PR se llamara `fix: corregir login`, devolvería `false` y esa parte del workflow se saltaría.
+
 ---
 
 ## VARIABLES, VARS Y SECRETS
@@ -604,6 +754,18 @@ env:
   APP_NAME: mi-app
 ```
 
+Ejemplo real:
+
+```yaml
+env:
+  APP_NAME: mi-app
+
+steps:
+  - run: echo "Construyendo $APP_NAME"
+```
+
+Eso evita repetir el mismo valor muchas veces.
+
 ## `vars`
 
 `vars` son variables configurables en GitHub a nivel de repositorio, organización o entorno.
@@ -613,6 +775,16 @@ Ejemplo:
 ```yaml
 run: echo "${{ vars.APP_REGION }}"
 ```
+
+Ejemplo real:
+
+Si en GitHub defines una variable de repositorio llamada `APP_REGION=eu-west-1`, puedes reutilizarla así:
+
+```yaml
+- run: echo "La región es ${{ vars.APP_REGION }}"
+```
+
+Es útil para valores compartidos que no son secretos.
 
 Se usan para valores no sensibles como:
 
@@ -635,6 +807,18 @@ Ejemplo:
 env:
   API_TOKEN: ${{ secrets.API_TOKEN }}
 ```
+
+Ejemplo real:
+
+```yaml
+steps:
+  - name: Llamar a una API privada
+    env:
+      API_TOKEN: ${{ secrets.API_TOKEN }}
+    run: curl -H "Authorization: ******" https://api.example.com/data
+```
+
+Aquí el token nunca se escribe en el YAML en texto plano; GitHub lo inyecta en tiempo de ejecución.
 
 ### Buenas prácticas
 
@@ -690,6 +874,20 @@ permissions:
 
 Principio recomendado: **mínimo privilegio**.
 
+### Ejemplo práctico de uso
+
+Si un workflow solo ejecuta tests, `contents: read` suele ser suficiente.
+
+Si además quieres que publique un comentario automático en la PR cuando terminan los tests, necesitarás algo como:
+
+```yaml
+permissions:
+  contents: read
+  pull-requests: write
+```
+
+La lógica es: das permiso extra solo a la capacidad concreta que realmente vas a usar.
+
 ---
 
 ## FILTROS DE RAMAS, TAGS Y PATHS
@@ -743,6 +941,13 @@ on:
       - "docs/**"
 ```
 
+### Ejemplo muy fácil de visualizar
+
+- Un commit que solo cambia `docs/guia.md` no lanzará el workflow.
+- Un commit que cambia `src/server.js` sí lo lanzará.
+
+Esto es muy útil cuando separas workflows de documentación, frontend, backend o infraestructura.
+
 ---
 
 ## WORKFLOW_DISPATCH
@@ -774,6 +979,16 @@ Luego accedes al input así:
 ${{ inputs.environment }}
 ```
 
+### Ejemplo completo de uso manual
+
+Imagina un botón en GitHub que te deja elegir `staging` o `production`.
+
+```yaml
+- run: echo "Voy a desplegar en ${{ inputs.environment }}"
+```
+
+Si el usuario lanza manualmente el workflow y elige `production`, ese comando imprimirá exactamente ese valor. Es una forma muy cómoda de crear operaciones controladas bajo demanda.
+
 ---
 
 ## SCHEDULE
@@ -789,6 +1004,18 @@ on:
 ```
 
 Esto significa todos los días a las 03:00 UTC.
+
+### Ejemplo práctico
+
+Un caso típico es regenerar cada noche un reporte:
+
+```yaml
+on:
+  schedule:
+    - cron: "0 3 * * *"
+```
+
+En lenguaje normal: “todos los días, a las 03:00 UTC, ejecuta este workflow aunque nadie haya hecho push”.
 
 ### Usos comunes
 
@@ -829,6 +1056,16 @@ jobs:
 ```
 
 Esto ejecuta el job tres veces, una por cada versión de Node.
+
+### Cómo imaginarlo
+
+No pienses en un solo job mágico, sino en tres jobs casi idénticos:
+
+- uno con Node 18
+- otro con Node 20
+- otro con Node 22
+
+Eso te permite detectar si tu proyecto funciona en unas versiones y falla en otras.
 
 ### Matriz multidimensional
 
@@ -891,6 +1128,16 @@ Aquí `deploy` espera a `lint` y `test`.
 
 También puedes leer outputs de jobs previos.
 
+### Ejemplo mental
+
+Es como decir:
+
+- “Primero revisa estilo”
+- “Luego ejecuta tests”
+- “Solo si ambas cosas salen bien, despliega”
+
+Sin `needs`, esos trabajos podrían correr en paralelo y el despliegue no tendría por qué esperar a que terminen las validaciones.
+
 ---
 
 ## OUTPUTS
@@ -911,6 +1158,10 @@ Uso:
 ${{ steps.generar.outputs.version }}
 ```
 
+Ejemplo explicado:
+
+Ese output sirve cuando un step calcula un dato y el siguiente lo necesita. Por ejemplo, si un step genera la versión `1.2.3`, otro puede reutilizarla para etiquetar una imagen Docker o nombrar un artefacto.
+
 ### Output de job
 
 ```yaml
@@ -929,6 +1180,10 @@ En otro job:
 ```yaml
 ${{ needs.build.outputs.app_version }}
 ```
+
+Ejemplo real:
+
+El job `build` puede calcular la versión final y el job `deploy` usar exactamente ese mismo valor, evitando recalcularlo o cometer errores por duplicación.
 
 ---
 
@@ -963,6 +1218,19 @@ Muy útil para:
 - limpieza
 - publicación selectiva
 - despliegues restringidos
+
+### Ejemplo muy común
+
+```yaml
+- name: Subir logs aunque falle el test
+  if: failure()
+  uses: actions/upload-artifact@v4
+  with:
+    name: logs
+    path: logs/
+```
+
+Si los tests fallan, este step todavía se ejecuta y guarda los logs para analizarlos después.
 
 ---
 
@@ -1002,6 +1270,12 @@ Ejemplo genérico:
 - No caches archivos sensibles
 - No abuses del caché si el coste de restaurarlo no compensa
 
+### Ejemplo para entender cuándo ayuda
+
+Si tu proyecto Node tarda 4 minutos en instalar dependencias desde cero y con caché tarda 40 segundos, el ahorro es clarísimo.
+
+En cambio, si el directorio cacheado pesa mucho y recuperarlo tarda casi lo mismo que reinstalar, el caché deja de aportar valor.
+
 ---
 
 ## ARTEFACTOS
@@ -1038,6 +1312,11 @@ Descarga:
 - **Artefacto**: pensado para conservar resultados de una ejecución.
 - **Caché**: pensado para acelerar ejecuciones futuras.
 
+### Ejemplo comparativo
+
+- Si generas `coverage/` y quieres descargar ese reporte al terminar la ejecución, eso es un **artefacto**.
+- Si guardas `~/.m2/repository` para que el siguiente build de Maven sea más rápido, eso es **caché**.
+
 ---
 
 ## SERVICIOS
@@ -1073,6 +1352,10 @@ Esto es muy útil para:
 - colas
 - brokers
 - dependencias de integración
+
+### Ejemplo práctico
+
+Si tu aplicación necesita PostgreSQL para ejecutar tests de integración, GitHub levanta ese contenedor al arrancar el job. Así puedes probar consultas reales sin instalar manualmente PostgreSQL dentro del runner.
 
 ---
 
@@ -1147,6 +1430,10 @@ jobs:
 - Cuando quieres centralizar lógica de CI/CD
 - Cuando quieres reducir duplicación
 
+### Ejemplo claro
+
+Si tienes 5 repositorios Node y todos hacen exactamente `checkout + setup-node + npm ci + npm test`, repetir ese YAML en 5 sitios complica el mantenimiento. Un reusable workflow te deja definirlo una vez y llamarlo desde todos.
+
 ---
 
 ## COMPOSITE ACTIONS
@@ -1174,6 +1461,11 @@ runs:
 
 - **Composite action**: reutiliza steps.
 - **Reusable workflow**: reutiliza jobs completos y configuración de workflow.
+
+### Ejemplo para no confundirlos
+
+- Si siempre repites “instalar dependencias + compilar assets”, una composite action encaja muy bien.
+- Si quieres reutilizar un pipeline entero con permisos, inputs, runners y varios jobs, entonces necesitas un reusable workflow.
 
 ---
 
@@ -1207,6 +1499,10 @@ jobs:
 
 Puedes exigir aprobación manual antes de que el job use secretos sensibles o haga un despliegue real.
 
+### Ejemplo real
+
+Un desarrollador puede lanzar un deploy, pero el job quedará esperando hasta que una persona autorizada apruebe el entorno `production`. Así evitas que cualquier ejecución despliegue directamente en producción sin control.
+
 ---
 
 ## CONCURRENCIA
@@ -1231,6 +1527,10 @@ Muy útil para:
 - despliegues
 - tests largos
 - ramas con pushes frecuentes
+
+### Ejemplo muy típico
+
+Si haces tres pushes seguidos a la misma rama en dos minutos, no tiene sentido mantener tres despliegues activos a la vez. Con `cancel-in-progress: true`, GitHub cancela los anteriores y deja vivo solo el más reciente.
 
 ---
 
@@ -1344,6 +1644,10 @@ permissions:
   contents: read
 ```
 
+### Ejemplo conceptual
+
+Antes muchas pipelines guardaban una clave cloud fija en `secrets`. Con OIDC, el workflow pide una identidad temporal, el proveedor la valida y devuelve credenciales de corta duración. El resultado es más seguro porque no dependes de un secreto permanente.
+
 ---
 
 ## EVENTOS `pull_request` VS `pull_request_target`
@@ -1367,6 +1671,11 @@ Esta diferencia es crítica para seguridad.
 Usa `pull_request_target` solo cuando entiendas perfectamente su impacto y necesites permisos elevados para automatizaciones específicas como etiquetado o comentarios controlados.
 
 No mezcles ejecución de código no confiable con secretos o tokens potentes.
+
+### Ejemplo para verlo claro
+
+- Para ejecutar tests sobre el código enviado por una PR externa, normalmente usarías `pull_request`.
+- Para poner automáticamente una etiqueta o dejar un comentario usando permisos del repo base, podrías usar `pull_request_target`, pero evitando ejecutar scripts no confiables de la PR.
 
 ---
 
@@ -1425,6 +1734,16 @@ Usa `environment` con aprobaciones.
 
 GitHub enmascara secretos conocidos, pero no debes depender de ello.
 
+### Ejemplo de error típico
+
+Esto es mala idea:
+
+```yaml
+- run: echo "Token: ${{ secrets.API_TOKEN }}"
+```
+
+Aunque GitHub intente enmascararlo, exponer secretos en logs sigue siendo una práctica peligrosa y evitable.
+
 ---
 
 ## DEBUGGING Y DIAGNÓSTICO
@@ -1455,6 +1774,10 @@ Hazlo con cuidado, porque el contexto puede contener datos que no convenga expon
 ### Guardar logs como artefacto
 
 Muy útil cuando una aplicación genera reportes o salidas de test complejas.
+
+### Ejemplo práctico
+
+Si tus tests E2E generan capturas, vídeos o reportes HTML, puedes subirlos como artefactos para revisarlos desde la interfaz de GitHub sin volver a ejecutar localmente.
 
 ---
 
@@ -1527,6 +1850,21 @@ jobs:
         run: npm run build
 ```
 
+### Explicación línea por línea
+
+- El workflow se ejecuta en `push` y `pull_request`, así cubres tanto integración continua como revisión de cambios.
+- `permissions: contents: read` limita el token a lectura del repositorio.
+- La `matrix` prueba varias versiones de Node para asegurar compatibilidad.
+- `checkout` descarga el proyecto.
+- `setup-node` instala la versión concreta de Node de cada combinación.
+- `cache: npm` acelera la instalación.
+- `npm ci` instala exactamente lo definido en el lockfile.
+- `npm run lint` revisa calidad.
+- `npm test` valida comportamiento.
+- `npm run build` comprueba que el proyecto se puede construir.
+
+En conjunto, esta pipeline responde a la pregunta: “¿mi proyecto compila, pasa tests y mantiene compatibilidad en varias versiones de Node?”.
+
 ---
 
 ## EJEMPLO: CI PARA PYTHON
@@ -1564,6 +1902,16 @@ jobs:
       - name: Ejecutar tests
         run: pytest
 ```
+
+### Explicación línea por línea
+
+- La matriz recorre varias versiones de Python para verificar compatibilidad.
+- `setup-python` instala cada runtime.
+- `python -m pip install --upgrade pip` actualiza el instalador para evitar problemas de resolución o TLS.
+- `pip install -r requirements.txt` instala dependencias del proyecto.
+- `pytest` ejecuta la suite de tests.
+
+Este workflow te dice rápidamente si tu código Python funciona de forma consistente en diferentes versiones del intérprete.
 
 ---
 
@@ -1605,6 +1953,17 @@ jobs:
           tags: ghcr.io/owner/app:${{ github.ref_name }}
 ```
 
+### Explicación línea por línea
+
+- El workflow solo arranca cuando haces push de un tag como `v1.0.0`.
+- `packages: write` permite publicar en el registro.
+- `docker/login-action` autentica contra GHCR.
+- `setup-buildx-action` prepara el builder moderno de Docker.
+- `build-push-action` construye y publica la imagen.
+- `github.ref_name` reutiliza el nombre del tag para versionar la imagen.
+
+Traducido: “cuando publiques una versión, GitHub construirá una imagen Docker y la subirá al registro con ese mismo número de versión”.
+
 ---
 
 ## EJEMPLO: DESPLIEGUE CON APROBACIÓN A PRODUCCIÓN
@@ -1633,6 +1992,16 @@ jobs:
 ```
 
 Si el entorno `production` tiene revisores requeridos, el job esperará aprobación.
+
+### Explicación línea por línea
+
+- `workflow_dispatch` hace que el despliegue sea manual, no automático.
+- `id-token: write` prepara el workflow para autenticación moderna por OIDC.
+- `environment: production` aplica reglas y secretos del entorno de producción.
+- `concurrency` evita solapamientos peligrosos entre despliegues.
+- El step final representa el comando real de despliegue.
+
+Este patrón es muy bueno para producción porque combina control manual, aislamiento del entorno y prevención de despliegues duplicados.
 
 ---
 
@@ -1672,6 +2041,10 @@ jobs:
       java_version: "21"
 ```
 
+### Qué ventaja aporta este ejemplo
+
+El workflow consumidor no necesita repetir toda la lógica de Java. Solo pasa el input `java_version: "21"` y reutiliza la automatización centralizada. Si mañana cambias la lógica del build, modificas un único archivo reutilizable en vez de muchos workflows duplicados.
+
 ---
 
 ## ARCHIVOS IMPORTANTES DEL ENTORNO DE EJECUCIÓN
@@ -1707,17 +2080,37 @@ Esto genera un resumen visible en la interfaz del workflow.
 
 Úsalo cuando necesitas ejecutar comandos simples de shell.
 
+Ejemplo:
+
+```yaml
+- run: npm test
+```
+
 ### `uses`
 
 Úsalo cuando ya existe una action probada para esa tarea.
+
+Ejemplo:
+
+```yaml
+- uses: actions/setup-node@v4
+```
 
 ### Composite action
 
 Úsala cuando repites varios steps concretos.
 
+Ejemplo:
+
+“Instalar dependencias + compilar” repetido en varios workflows del mismo repo.
+
 ### Reusable workflow
 
 Úsalo cuando quieres reutilizar pipelines enteros entre repositorios o proyectos.
+
+Ejemplo:
+
+Una CI estándar compartida por todos los microservicios de una organización.
 
 ### Self-hosted runner
 
@@ -1727,6 +2120,10 @@ Esto genera un resumen visible en la interfaz del workflow.
 - hardware especial
 - software muy específico
 - alto control del entorno
+
+Ejemplo:
+
+Un despliegue que solo puede conectarse a servidores internos no accesibles desde runners públicos de GitHub.
 
 ---
 
