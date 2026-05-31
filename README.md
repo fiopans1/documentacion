@@ -29,6 +29,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 - **[Python Completo](backend/python/PYTHON.MD)** - Guía exhaustiva de Python desde básico hasta avanzado
 - **[FastAPI](backend/python/FASTAPI.MD)** - Guía completa de FastAPI: rutas, validación, autenticación JWT, bases de datos, WebSockets, testing y despliegue
 - **[Python + Bases de Datos + FastAPI](backend/python/PYTHON_BASES_DE_DATOS_FASTAPI.MD)** - Guía práctica para conectar Python con bases de datos relacionales y usar esa integración dentro de FastAPI
+- **[SQLAlchemy para FastAPI](backend/python/SQLALCHEMY_FASTAPI.MD)** - Guía de SQLAlchemy 2.x para FastAPI con ORM, async, migraciones y testing
 
 #### TypeScript
 - **[TypeScript y NestJS](backend/typescript/TYPESCRIPT_NESTJS.MD)** - TypeScript y framework NestJS para backend
@@ -103,6 +104,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 - Spring Boot (Guía completa)
 - FastAPI (Guía completa)
 - Python + Bases de Datos + FastAPI
+- SQLAlchemy para FastAPI
 - LangChain4j
 - Concurrencia y Paralelismo en Java
 - JDBC con ResultSet
@@ -147,7 +149,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 | **Java** | Spring Boot, Spring Security, CSRF + JWT por Cookie, HikariCP, LangChain4j, JDBC, Jackson, Maven, Concurrencia y Paralelismo, Multithreading |
 | **IA / LLMs** | LangChain4j |
 | **JavaScript/TypeScript** | React, React-Bootstrap, Event Loop, jQuery, TypeScript & NestJS |
-| **Python** | Python Completo, FastAPI, Python + Bases de Datos + FastAPI |
+| **Python** | Python Completo, FastAPI, Python + Bases de Datos + FastAPI, SQLAlchemy para FastAPI |
 | **Bases de Datos** | SQL Avanzado, JDBC, NoSQL |
 | **DevOps** | Docker, Kubernetes, Caddy, Nginx |
 | **Cloud** | AWS, Cloudflare |
