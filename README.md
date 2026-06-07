@@ -41,6 +41,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 #### React
 - **[React](frontend/react/REACT.MD)** - Guía completa sobre React
 - **[React-Bootstrap](frontend/react/REACT_BOOTSTRAP.MD)** - Guía completa de React-Bootstrap: instalación, componentes, variantes y classnames/utilidades más útiles de Bootstrap
+- **[Zustand](frontend/react/ZUSTAND.MD)** - Guía completa de Zustand: estado global en React, stores, acciones async, persistencia, slices, middleware y buenas prácticas
 - **[Hooks](frontend/react/HOOKS.MD)** - Hooks de React en profundidad
 - **[Window y Eventos en React](frontend/react/WINDOW_EVENTS.MD)** - Manejo de window, addEventListener y eventos del navegador
 
@@ -103,6 +104,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 
 ### 🟡 Nivel Avanzado
 - React (Guía completa)
+- Zustand
 - Spring Boot (Guía completa)
 - FastAPI (Guía completa)
 - Python + Bases de Datos + FastAPI
@@ -135,6 +137,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 - **Python** - Desde sintaxis básica hasta frameworks avanzados
 - **FastAPI** - Framework moderno para APIs con Python
 - **React** - De componentes básicos a patrones avanzados
+- **Zustand** - Manejo de estado global en React con stores, middleware y ejemplos prácticos
 - **Spring Boot** - Framework completo para aplicaciones Java
 - **HikariCP** - Pool de conexiones JDBC y personalización de `HikariDataSource`
 - **LangChain4j** - Desde fundamentos de IA y LLMs hasta AI Services, tools, memoria, RAG y Spring Boot
@@ -152,13 +155,13 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 |------------|---------|
 | **Java** | Spring Boot, Spring Security, CSRF + JWT por Cookie, HikariCP, LangChain4j, JDBC, Jackson, Maven, Concurrencia y Paralelismo, Multithreading |
 | **IA / LLMs** | LangChain4j |
-| **JavaScript/TypeScript** | React, React-Bootstrap, Event Loop, jQuery, TypeScript & NestJS |
+| **JavaScript/TypeScript** | React, React-Bootstrap, Zustand, Event Loop, jQuery, TypeScript & NestJS |
 | **Python** | Python Completo, FastAPI, Python + Bases de Datos + FastAPI, SQLAlchemy para FastAPI |
 | **Bases de Datos** | SQL Avanzado, JDBC, NoSQL |
 | **DevOps** | Docker, Kubernetes, GitHub Actions, Caddy, Nginx |
 | **Cloud** | AWS, Cloudflare |
 | **Seguridad** | Spring Security, CSRF + JWT por Cookie, OAuth 2.0, Cifrados, SSL |
-| **Frontend** | React, React-Bootstrap, jQuery, CSS, Hooks, Window Events |
+| **Frontend** | React, React-Bootstrap, Zustand, jQuery, CSS, Hooks, Window Events |
 
 ---
 
@@ -177,4 +180,4 @@ Este repositorio es de documentación personal y está en constante actualizaci�
 
 ---
 
-**Última actualización**: Mayo 2026
+**Última actualización**: Junio 2026
