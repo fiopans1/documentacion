@@ -180,4 +180,4 @@ Este repositorio es de documentación personal y está en constante actualizaci�
 
 ---
 
-**Última actualización**: Mayo 2026
+**Última actualización**: Junio 2026
