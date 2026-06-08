@@ -42,6 +42,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 - **[React](frontend/react/REACT.MD)** - Guía completa sobre React
 - **[React-Bootstrap](frontend/react/REACT_BOOTSTRAP.MD)** - Guía completa de React-Bootstrap: instalación, componentes, variantes y classnames/utilidades más útiles de Bootstrap
 - **[Zustand](frontend/react/ZUSTAND.MD)** - Guía completa de Zustand: estado global en React, stores, acciones async, persistencia, slices, middleware y buenas prácticas
+- **[Chuleta rápida: Zustand y Redux](frontend/react/CHULETA_ZUSTAND_REDUX.MD)** - Resumen corto con ejemplos simples de Zustand y Redux Toolkit usando varios slices
 - **[Hooks](frontend/react/HOOKS.MD)** - Hooks de React en profundidad
 - **[Window y Eventos en React](frontend/react/WINDOW_EVENTS.MD)** - Manejo de window, addEventListener y eventos del navegador
 
@@ -97,6 +98,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 - CSS
 - React Básico
 - React-Bootstrap
+- Chuleta rápida: Zustand y Redux
 - LangChain4j
 - Spring Boot Rápido
 - Docker Básico
@@ -155,13 +157,13 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 |------------|---------|
 | **Java** | Spring Boot, Spring Security, CSRF + JWT por Cookie, HikariCP, LangChain4j, JDBC, Jackson, Maven, Concurrencia y Paralelismo, Multithreading |
 | **IA / LLMs** | LangChain4j |
-| **JavaScript/TypeScript** | React, React-Bootstrap, Zustand, Event Loop, jQuery, TypeScript & NestJS |
+| **JavaScript/TypeScript** | React, React-Bootstrap, Zustand, Chuleta rápida: Zustand y Redux, Event Loop, jQuery, TypeScript & NestJS |
 | **Python** | Python Completo, FastAPI, Python + Bases de Datos + FastAPI, SQLAlchemy para FastAPI |
 | **Bases de Datos** | SQL Avanzado, JDBC, NoSQL |
 | **DevOps** | Docker, Kubernetes, GitHub Actions, Caddy, Nginx |
 | **Cloud** | AWS, Cloudflare |
 | **Seguridad** | Spring Security, CSRF + JWT por Cookie, OAuth 2.0, Cifrados, SSL |
-| **Frontend** | React, React-Bootstrap, Zustand, jQuery, CSS, Hooks, Window Events |
+| **Frontend** | React, React-Bootstrap, Zustand, Chuleta rápida: Zustand y Redux, jQuery, CSS, Hooks, Window Events |
 
 ---
 
