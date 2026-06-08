@@ -151,7 +151,7 @@ Una etiqueta suele tener:
 ### Etiquetas con atributos
 
 ```html
-<a href="https://example.com" target="_blank">Ir al sitio</a>
+<a href="https://example.com" target="_blank" rel="noopener noreferrer">Ir al sitio</a>
 ```
 
 Aquí:
