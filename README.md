@@ -38,6 +38,9 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 
 ### 🎨 Frontend
 
+#### HTML
+- **[HTML Normativo y Etiquetas](frontend/html/HTML.MD)** - Guía completa de HTML: estructura base, etiquetas semánticas, texto, listas, enlaces, imágenes, tablas, formularios, multimedia, accesibilidad y buenas prácticas de HTML normativo
+
 #### React
 - **[React](frontend/react/REACT.MD)** - Guía completa sobre React
 - **[React-Bootstrap](frontend/react/REACT_BOOTSTRAP.MD)** - Guía completa de React-Bootstrap: instalación, componentes, variantes y classnames/utilidades más útiles de Bootstrap
@@ -95,6 +98,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 
 ### 🟢 Nivel Básico/Intermedio
 - Git
+- HTML Normativo y Etiquetas
 - CSS
 - React Básico
 - React-Bootstrap
@@ -136,6 +140,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 ## 🎯 Guías Destacadas
 
 ### Guías Grandes y Completas
+- **HTML Normativo y Etiquetas** - Estructura del documento, semántica, formularios, tablas, multimedia, accesibilidad y uso correcto de etiquetas HTML
 - **Python** - Desde sintaxis básica hasta frameworks avanzados
 - **FastAPI** - Framework moderno para APIs con Python
 - **React** - De componentes básicos a patrones avanzados
@@ -156,6 +161,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 | Tecnología | Guía(s) |
 |------------|---------|
 | **Java** | Spring Boot, Spring Security, CSRF + JWT por Cookie, HikariCP, LangChain4j, JDBC, Jackson, Maven, Concurrencia y Paralelismo, Multithreading |
+| **HTML** | HTML Normativo y Etiquetas |
 | **IA / LLMs** | LangChain4j |
 | **JavaScript/TypeScript** | React, React-Bootstrap, Zustand, Chuleta rápida: Zustand y Redux, Event Loop, jQuery, TypeScript & NestJS |
 | **Python** | Python Completo, FastAPI, Python + Bases de Datos + FastAPI, SQLAlchemy para FastAPI |
@@ -163,7 +169,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 | **DevOps** | Docker, Kubernetes, GitHub Actions, Caddy, Nginx |
 | **Cloud** | AWS, Cloudflare |
 | **Seguridad** | Spring Security, CSRF + JWT por Cookie, OAuth 2.0, Cifrados, SSL |
-| **Frontend** | React, React-Bootstrap, Zustand, Chuleta rápida: Zustand y Redux, jQuery, CSS, Hooks, Window Events |
+| **Frontend** | HTML Normativo y Etiquetas, React, React-Bootstrap, Zustand, Chuleta rápida: Zustand y Redux, jQuery, CSS, Hooks, Window Events |
 
 ---
 
