@@ -11,10 +11,13 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 #### Java
 - **[Spring Boot](backend/java/springboot/SPRINGBOOT.MD)** - Guía completa sobre Spring Boot framework
 - **[Spring Security](backend/java/springboot/SPRINGSECURITY.MD)** - Seguridad y autenticación en Spring
+- **[CSRF Token y JWT por Cookie en Spring Security](backend/java/springboot/CSRF_Y_JWT_POR_COOKIE_EN_SPRING_SECURITY.MD)** - Implementación completa de protección CSRF por cookie y autenticación JWT por cookie en Spring Security
 - **[OAuth 2.0 con Spring Boot](backend/java/springboot/CONFIGURAR%20OAUTH2%20CON%20SPRINGBOOT.MD)** - Configuración avanzada de OAuth 2.0
+- **[HikariCP](backend/java/springboot/HIKARI.MD)** - Pool de conexiones JDBC con Spring Boot, configuración, estructura y personalización de `HikariDataSource`
 - **[Spring Boot Rápido](backend/java/springboot/SPRINGBOOTRAPIDO.MD)** - Inicio rápido con Spring Boot
 - **[Estructura de Proyecto](backend/java/springboot/ESTRUCTURAPROYECTO.MD)** - Organización de proyectos Spring Boot
 - **[OpenSSL con Spring Security](backend/java/springboot/USAROPENSSLCONSPRINGSECURITY.MD)** - Integración de certificados SSL
+- **[LangChain4j](backend/java/LANGCHAIN4J.MD)** - Guía completa de IA generativa con Java: fundamentos de LLMs, AI Services, memoria, tools, RAG, Spring Boot y buenas prácticas
 - **[JDBC](backend/java/JDBC.MD)** - Conexión a bases de datos, consultas, ResultSet y manejo de resultados
 - **[Jackson](backend/java/JACKSON.MD)** - Serialización y deserialización JSON
 - **[Maven](backend/java/MAVEN.MD)** - Gestión de dependencias y construcción de proyectos
@@ -26,6 +29,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 - **[Python Completo](backend/python/PYTHON.MD)** - Guía exhaustiva de Python desde básico hasta avanzado
 - **[FastAPI](backend/python/FASTAPI.MD)** - Guía completa de FastAPI: rutas, validación, autenticación JWT, bases de datos, WebSockets, testing y despliegue
 - **[Python + Bases de Datos + FastAPI](backend/python/PYTHON_BASES_DE_DATOS_FASTAPI.MD)** - Guía práctica para conectar Python con bases de datos relacionales y usar esa integración dentro de FastAPI
+- **[SQLAlchemy para FastAPI](backend/python/SQLALCHEMY_FASTAPI.MD)** - Guía de SQLAlchemy 2.x para FastAPI con ORM, async, migraciones y testing
 
 #### TypeScript
 - **[TypeScript y NestJS](backend/typescript/TYPESCRIPT_NESTJS.MD)** - TypeScript y framework NestJS para backend
@@ -36,10 +40,13 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 
 #### HTML
 - **[HTML Semántico](frontend/html/HTML_SEMANTICO.MD)** - Guía completa sobre estructura semántica, accesibilidad, SEO y buenas prácticas en HTML
+- **[HTML Normativo y Etiquetas](frontend/html/HTML.MD)** - Guía completa de HTML: estructura base, etiquetas semánticas, texto, listas, enlaces, imágenes, tablas, formularios, multimedia, accesibilidad y buenas prácticas de HTML normativo
 
 #### React
 - **[React](frontend/react/REACT.MD)** - Guía completa sobre React
 - **[React-Bootstrap](frontend/react/REACT_BOOTSTRAP.MD)** - Guía completa de React-Bootstrap: instalación, componentes, variantes y classnames/utilidades más útiles de Bootstrap
+- **[Zustand](frontend/react/ZUSTAND.MD)** - Guía completa de Zustand: estado global en React, stores, acciones async, persistencia, slices, middleware y buenas prácticas
+- **[Chuleta rápida: Zustand y Redux](frontend/react/CHULETA_ZUSTAND_REDUX.MD)** - Resumen corto con ejemplos simples de Zustand y Redux Toolkit usando varios slices
 - **[Hooks](frontend/react/HOOKS.MD)** - Hooks de React en profundidad
 - **[Window y Eventos en React](frontend/react/WINDOW_EVENTS.MD)** - Manejo de window, addEventListener y eventos del navegador
 
@@ -72,6 +79,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 
 - **[Docker](devops/DOCKER.MD)** - Contenedores, Docker Compose, volúmenes y redes
 - **[Kubernetes y Helm](devops/KUBERNETES_HELM.MD)** - Orquestación de contenedores con Kubernetes y Helm Charts
+- **[GitHub Actions](devops/GITHUB_ACTIONS.MD)** - Guía completa de GitHub Actions: workflows, jobs, runners, actions, matrices, secretos, artefactos, seguridad y despliegues
 - **[Caddy Server](devops/CADDY.MD)** - Servidor web moderno con HTTPS automático, reverse proxy y configuración simple
 - **[Nginx y Cassandra](devops/NGINX_CASSANDRA.MD)** - Servidor web Nginx y base de datos Cassandra
 
@@ -92,26 +100,36 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 ### 🟢 Nivel Básico/Intermedio
 - Git
 - HTML Semántico
+- HTML Normativo y Etiquetas
 - CSS
 - React Básico
 - React-Bootstrap
+- Chuleta rápida: Zustand y Redux
+- LangChain4j
 - Spring Boot Rápido
 - Docker Básico
+- GitHub Actions
 
 ### 🟡 Nivel Avanzado
 - React (Guía completa)
+- Zustand
 - Spring Boot (Guía completa)
 - FastAPI (Guía completa)
 - Python + Bases de Datos + FastAPI
+- SQLAlchemy para FastAPI
+- LangChain4j
 - Concurrencia y Paralelismo en Java
 - JDBC con ResultSet
+- HikariCP
 - SQL Avanzado
 - TypeScript y NestJS
+- GitHub Actions
 - CSS (Guía completa)
 - Posicionamiento CSS
 
 ### 🔴 Nivel Experto
 - Spring Security
+- CSRF Token y JWT por Cookie en Spring Security
 - OAuth 2.0
 - Kubernetes y Helm
 - Python (Guía completa)
@@ -124,12 +142,18 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 ## 🎯 Guías Destacadas
 
 ### Guías Grandes y Completas
+- **HTML Normativo y Etiquetas** - Estructura del documento, semántica, formularios, tablas, multimedia, accesibilidad y uso correcto de etiquetas HTML
 - **Python** - Desde sintaxis básica hasta frameworks avanzados
 - **FastAPI** - Framework moderno para APIs con Python
 - **React** - De componentes básicos a patrones avanzados
+- **Zustand** - Manejo de estado global en React con stores, middleware y ejemplos prácticos
 - **Spring Boot** - Framework completo para aplicaciones Java
+- **HikariCP** - Pool de conexiones JDBC y personalización de `HikariDataSource`
+- **LangChain4j** - Desde fundamentos de IA y LLMs hasta AI Services, tools, memoria, RAG y Spring Boot
 - **Kubernetes y Helm** - Orquestación y despliegue de contenedores
+- **GitHub Actions** - Automatización de CI/CD, workflows, seguridad y despliegues en GitHub
 - **Spring Security** - Seguridad integral en aplicaciones
+- **CSRF Token y JWT por Cookie en Spring Security** - Seguridad web con cookies, CSRF y autenticación stateless
 - **Caddy Server** - Servidor web moderno con configuración completa
 
 ---
@@ -138,15 +162,16 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 
 | Tecnología | Guía(s) |
 |------------|---------|
-| **Java** | Spring Boot, JDBC, Maven, Concurrencia y Paralelismo, Multithreading |
-| **JavaScript/TypeScript** | React, React-Bootstrap, Event Loop, jQuery, TypeScript & NestJS |
-| **HTML** | HTML Semántico |
-| **Python** | Python Completo, FastAPI, Python + Bases de Datos + FastAPI |
+| **Java** | Spring Boot, Spring Security, CSRF + JWT por Cookie, HikariCP, LangChain4j, JDBC, Jackson, Maven, Concurrencia y Paralelismo, Multithreading |
+| **HTML** | HTML Normativo y Etiquetas, HTML Semántico |
+| **IA / LLMs** | LangChain4j |
+| **JavaScript/TypeScript** | React, React-Bootstrap, Zustand, Chuleta rápida: Zustand y Redux, Event Loop, jQuery, TypeScript & NestJS |
+| **Python** | Python Completo, FastAPI, Python + Bases de Datos + FastAPI, SQLAlchemy para FastAPI |
 | **Bases de Datos** | SQL Avanzado, JDBC, NoSQL |
-| **DevOps** | Docker, Kubernetes, Caddy, Nginx |
+| **DevOps** | Docker, Kubernetes, GitHub Actions, Caddy, Nginx |
 | **Cloud** | AWS, Cloudflare |
-| **Seguridad** | Spring Security, OAuth 2.0, Cifrados, SSL |
-| **Frontend** | HTML Semántico, React, React-Bootstrap, jQuery, CSS, Hooks, Window Events |
+| **Seguridad** | Spring Security, CSRF + JWT por Cookie, OAuth 2.0, Cifrados, SSL |
+| **Frontend** | HTML Normativo y Etiquetas, HTML Semántico, React, React-Bootstrap, Zustand, Chuleta rápida: Zustand y Redux, jQuery, CSS, Hooks, Window Events |
 
 ---
 
@@ -165,4 +190,4 @@ Este repositorio es de documentación personal y está en constante actualizaci�
 
 ---
 
-**Última actualización**: Abril 2026
+**Última actualización**: Junio 2026
