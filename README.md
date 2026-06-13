@@ -40,6 +40,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 ### 🎨 Frontend
 
 #### HTML
+- **[HTML Semántico](frontend/html/HTML_SEMANTICO.MD)** - Guía completa sobre estructura semántica, accesibilidad, SEO y buenas prácticas en HTML
 - **[HTML Normativo y Etiquetas](frontend/html/HTML.MD)** - Guía completa de HTML: estructura base, etiquetas semánticas, texto, listas, enlaces, imágenes, tablas, formularios, multimedia, accesibilidad y buenas prácticas de HTML normativo
 
 #### React
@@ -99,6 +100,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 
 ### 🟢 Nivel Básico/Intermedio
 - Git
+- HTML Semántico
 - HTML Normativo y Etiquetas
 - CSS
 - React Básico
@@ -165,7 +167,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 | Tecnología | Guía(s) |
 |------------|---------|
 | **Java** | Spring Boot, Spring Security, CSRF + JWT por Cookie, HikariCP, LangChain4j, JDBC, Jackson, Maven, Concurrencia y Paralelismo, Multithreading |
-| **HTML** | HTML Normativo y Etiquetas |
+| **HTML** | HTML Normativo y Etiquetas, HTML Semántico |
 | **IA / LLMs** | LangChain4j, LangChain para Python |
 | **JavaScript/TypeScript** | React, React-Bootstrap, Zustand, Chuleta rápida: Zustand y Redux, Event Loop, jQuery, TypeScript & NestJS |
 | **Python** | Python Completo, FastAPI, Python + Bases de Datos + FastAPI, SQLAlchemy para FastAPI, LangChain para Python |
@@ -173,7 +175,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 | **DevOps** | Docker, Kubernetes, GitHub Actions, Caddy, Nginx |
 | **Cloud** | AWS, Cloudflare |
 | **Seguridad** | Spring Security, CSRF + JWT por Cookie, OAuth 2.0, Cifrados, SSL |
-| **Frontend** | HTML Normativo y Etiquetas, React, React-Bootstrap, Zustand, Chuleta rápida: Zustand y Redux, jQuery, CSS, Hooks, Window Events |
+| **Frontend** | HTML Normativo y Etiquetas, HTML Semántico, React, React-Bootstrap, Zustand, Chuleta rápida: Zustand y Redux, jQuery, CSS, Hooks, Window Events |
 
 ---
 
