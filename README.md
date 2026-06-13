@@ -30,6 +30,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 - **[FastAPI](backend/python/FASTAPI.MD)** - Guía completa de FastAPI: rutas, validación, autenticación JWT, bases de datos, WebSockets, testing y despliegue
 - **[Python + Bases de Datos + FastAPI](backend/python/PYTHON_BASES_DE_DATOS_FASTAPI.MD)** - Guía práctica para conectar Python con bases de datos relacionales y usar esa integración dentro de FastAPI
 - **[SQLAlchemy para FastAPI](backend/python/SQLALCHEMY_FASTAPI.MD)** - Guía de SQLAlchemy 2.x para FastAPI con ORM, async, migraciones y testing
+- **[LangChain para Python](backend/python/LANGCHAIN_PYTHON.MD)** - Guía completa de LangChain en Python: conceptos, prompts, LCEL, salidas estructuradas, RAG, tools, memoria y estructura de proyecto
 
 #### TypeScript
 - **[TypeScript y NestJS](backend/typescript/TYPESCRIPT_NESTJS.MD)** - TypeScript y framework NestJS para backend
@@ -104,6 +105,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 - React-Bootstrap
 - Chuleta rápida: Zustand y Redux
 - LangChain4j
+- LangChain para Python
 - Spring Boot Rápido
 - Docker Básico
 - GitHub Actions
@@ -116,6 +118,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 - Python + Bases de Datos + FastAPI
 - SQLAlchemy para FastAPI
 - LangChain4j
+- LangChain para Python
 - Concurrencia y Paralelismo en Java
 - JDBC con ResultSet
 - HikariCP
@@ -148,6 +151,7 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 - **Spring Boot** - Framework completo para aplicaciones Java
 - **HikariCP** - Pool de conexiones JDBC y personalización de `HikariDataSource`
 - **LangChain4j** - Desde fundamentos de IA y LLMs hasta AI Services, tools, memoria, RAG y Spring Boot
+- **LangChain para Python** - Desde instalación, prompts y LCEL hasta RAG, tools, memoria y una arquitectura base para proyectos con IA
 - **Kubernetes y Helm** - Orquestación y despliegue de contenedores
 - **GitHub Actions** - Automatización de CI/CD, workflows, seguridad y despliegues en GitHub
 - **Spring Security** - Seguridad integral en aplicaciones
@@ -162,9 +166,9 @@ Bienvenido al repositorio de documentación técnica. Aquí encontrarás guías 
 |------------|---------|
 | **Java** | Spring Boot, Spring Security, CSRF + JWT por Cookie, HikariCP, LangChain4j, JDBC, Jackson, Maven, Concurrencia y Paralelismo, Multithreading |
 | **HTML** | HTML Normativo y Etiquetas |
-| **IA / LLMs** | LangChain4j |
+| **IA / LLMs** | LangChain4j, LangChain para Python |
 | **JavaScript/TypeScript** | React, React-Bootstrap, Zustand, Chuleta rápida: Zustand y Redux, Event Loop, jQuery, TypeScript & NestJS |
-| **Python** | Python Completo, FastAPI, Python + Bases de Datos + FastAPI, SQLAlchemy para FastAPI |
+| **Python** | Python Completo, FastAPI, Python + Bases de Datos + FastAPI, SQLAlchemy para FastAPI, LangChain para Python |
 | **Bases de Datos** | SQL Avanzado, JDBC, NoSQL |
 | **DevOps** | Docker, Kubernetes, GitHub Actions, Caddy, Nginx |
 | **Cloud** | AWS, Cloudflare |
